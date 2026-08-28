@@ -36,9 +36,9 @@ jobs:
         run: dart analyze --fatal-infos
 
       - name: Test
-        run: dart test --coverage=coverage
+        run: dart test --coverage=coverage --branch-coverage
 
-      - name: Enforce 100% coverage
+      - name: Enforce 100% line AND branch coverage
         run: |
           dart pub global activate coverage
           dart pub global run coverage:format_coverage \

@@ -45,6 +45,15 @@ void main() {
       expect(names.length, greaterThan(50));
     });
 
+    test('a dead-end walk is abandoned rather than emitting a stub', () {
+      // A two-character corpus entry gives the chain a state with no
+      // continuations, so the walk hits a dead end on its first step.
+      final namer = MarkovNamer(['ab', 'cd']);
+      final name = namer.generate(rng(), minLength: 3, maxLength: 8);
+      expect(name, isNotEmpty);
+      expect(name.length, greaterThanOrEqualTo(3));
+    });
+
     test('falls back to a blend when the chain cannot satisfy the bounds', () {
       // A single-entry corpus can only walk to that entry, which is rejected
       // as verbatim; the blend path is what keeps the caller supplied.

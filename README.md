@@ -48,8 +48,8 @@ All of these run in CI and must pass:
 
 ```sh
 dart analyze --fatal-infos          # no lint suppressions without asking
-dart test --coverage=coverage       # 100% coverage is the bar
-scripts/check_coverage.sh <lcov>    # fails closed, never warns
+dart test --coverage=coverage --branch-coverage
+scripts/check_coverage.sh <lcov>    # 100% lines AND branches; fails closed
 scripts/check_rng_parity.sh         # VM and JavaScript must agree bit for bit
 scripts/check_file_length.sh --all  # 250 lines, code and prose
 ```

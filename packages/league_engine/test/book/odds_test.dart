@@ -47,6 +47,14 @@ void main() {
         expect(const Odds(1.5).format(OddsFormat.fractional), '1/2');
       });
 
+      test('an extreme favourite skips denominators it cannot express', () {
+        // Profit below 1/100 rounds to a numerator of 0 for every candidate
+        // denominator, which must be skipped rather than printed as "0/1".
+        final f = const Odds(1.001).fractional;
+        expect(f.numerator, greaterThanOrEqualTo(1));
+        expect(const Odds(1.001).format(OddsFormat.fractional), isNot('0/1'));
+      });
+
       test('reduces to the closest sensible denominator', () {
         final f = const Odds(1.91).fractional;
         expect(f.numerator / f.denominator, closeTo(0.91, 0.02));
