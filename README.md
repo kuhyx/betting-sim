@@ -31,15 +31,30 @@ shows a negative per-night expectation, the bookmaker has a bug.
 ```
 packages/league_engine/   pure Dart, zero Flutter imports, `dart run`-able
 app/                      Flutter — Android native, Linux via Chrome-wrapped web
-tools/balance/            throwaway balancing harness, never shipped
 ```
 
+See `DOCS-architecture.md` for how the pieces fit, `DOCS-seeding.md` for why
+the engine owns its random number generator, and `DOCS-acceptance-gate.md` for
+what the four gate numbers mean.
+
 ## Running
+
+The engine, headless:
 
 ```sh
 cd packages/league_engine
 dart pub get
 dart test
+dart run bin/acceptance.dart 200 9000
+```
+
+The game:
+
+```sh
+cd app
+flutter pub get
+flutter run -d chrome      # desktop is a Chrome-wrapped web build
+flutter run -d <device>    # Android
 ```
 
 ## Gates
