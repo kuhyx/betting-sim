@@ -57,12 +57,12 @@ void main() {
 
     test('toString names the club', () {
       expect(
-        Team(
+        const Team(
           id: 0,
           name: 'Ravenshambe United',
           town: 'Ravenshambe',
-          players: const [],
-          rating: const Rating(),
+          players: [],
+          rating: Rating(),
         ).toString(),
         'Team(Ravenshambe United)',
       );

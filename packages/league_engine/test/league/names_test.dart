@@ -26,7 +26,7 @@ void main() {
       final namer = MarkovNamer(townCorpus);
       final source = rng();
       for (var i = 0; i < 300; i++) {
-        final name = namer.generate(source, minLength: 6, maxLength: 11);
+        final name = namer.generate(source, minLength: 6);
         expect(name.length, inInclusiveRange(6, 11));
       }
     });
