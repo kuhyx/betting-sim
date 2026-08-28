@@ -2,6 +2,7 @@
 /// bookmaker.
 library;
 
+export 'src/engine/match_runner.dart';
 export 'src/latent/config.dart';
 export 'src/latent/decay.dart';
 export 'src/latent/modifiers.dart';
