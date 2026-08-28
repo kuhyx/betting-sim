@@ -2,6 +2,11 @@
 /// bookmaker.
 library;
 
+export 'src/latent/config.dart';
+export 'src/latent/decay.dart';
+export 'src/latent/modifiers.dart';
+export 'src/latent/shocks.dart';
+export 'src/latent/state.dart';
 export 'src/league/entities.dart';
 export 'src/league/generate.dart';
 export 'src/league/name_corpus.dart';
