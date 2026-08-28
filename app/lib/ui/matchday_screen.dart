@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:betting_sim/state/game.dart';
 import 'package:betting_sim/state/tuning.dart';
 import 'package:betting_sim/ui/action_bar.dart';
@@ -77,10 +79,14 @@ class _MatchdayScreenState extends State<MatchdayScreen> {
     _game.advanceDay();
     final settled = _game.history.take(_game.history.length - before).toList();
     if (settled.isNotEmpty && mounted) {
-      showModalBottomSheet<void>(
-        context: context,
-        backgroundColor: Tokens.inkRaised1,
-        builder: (_) => ResultsSheet(bets: settled),
+      // Nothing here waits on the sheet closing -- the day is already
+      // settled by the time it opens, so it is a report, not a step.
+      unawaited(
+        showModalBottomSheet<void>(
+          context: context,
+          backgroundColor: Tokens.inkRaised1,
+          builder: (_) => ResultsSheet(bets: settled),
+        ),
       );
     }
   }

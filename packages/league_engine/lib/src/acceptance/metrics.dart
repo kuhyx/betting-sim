@@ -70,8 +70,7 @@ StrategyMetrics summarise(String name, List<SeasonResult> seasons) {
   // toward the bet frequency rather than measuring risk.
   final dayRois = <double>[
     for (final s in seasons)
-      for (final d in s.activeMatchdays)
-        if (d.roi case final r?) r,
+      for (final d in s.activeMatchdays) ?d.roi,
   ]..sort();
 
   final clvs = <double>[

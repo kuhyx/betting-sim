@@ -4,4 +4,8 @@ coverage/
 *.js
 *.js.map
 .packages
+# Libraries ignore their lock -- consumers resolve their own versions, so a
+# committed one is noise that goes stale. The APP is the reproducible build,
+# so its lock is tracked (see !app/pubspec.lock below).
 pubspec.lock
+!app/pubspec.lock

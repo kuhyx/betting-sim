@@ -132,9 +132,7 @@ String formatReport(AcceptanceReport report, Duration elapsed) {
   }
   buffer.writeln();
 
-  for (final gate in report.gates) {
-    buffer.writeln(gate);
-  }
+  report.gates.forEach(buffer.writeln);
   buffer
     ..writeln()
     ..writeln(report.passed ? 'ALL GATES PASSED' : 'GATES FAILED');
