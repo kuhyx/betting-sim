@@ -2,6 +2,11 @@
 /// bookmaker.
 library;
 
+export 'src/league/entities.dart';
+export 'src/league/generate.dart';
+export 'src/league/name_corpus.dart';
+export 'src/league/names.dart';
+export 'src/league/schedule.dart';
 export 'src/ratings/glicko2_types.dart';
 export 'src/ratings/glicko2_update.dart';
 export 'src/ratings/glicko2_volatility.dart';
