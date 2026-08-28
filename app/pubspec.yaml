@@ -1,0 +1,38 @@
+name: betting_sim
+description: A sports-betting simulator with a fictional sport and fake money.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  league_engine:
+    path: ../packages/league_engine
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^9.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon/
+
+# Regenerate the source art with:
+#   PYTHONPATH=~/testsAndMisc python3 -m python_pkg.app_icons \
+#     generate --app betting_sim --android
+# The glyph and accent live in that shared generator, never here: one icon
+# family across every app.
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#211D1B"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  adaptive_icon_monochrome: "assets/icon/icon_monochrome.png"
+  min_sdk_android: 21
