@@ -2,6 +2,13 @@
 /// bookmaker.
 library;
 
+export 'src/book/clv.dart';
+export 'src/book/flow.dart';
+export 'src/book/limits.dart';
+export 'src/book/margin.dart';
+export 'src/book/odds.dart';
+export 'src/book/opening.dart';
+export 'src/book/pricing.dart';
 export 'src/engine/match_runner.dart';
 export 'src/latent/config.dart';
 export 'src/latent/decay.dart';
