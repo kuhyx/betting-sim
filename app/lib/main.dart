@@ -1,5 +1,6 @@
 import 'package:betting_sim/ui/matchday_screen.dart';
 import 'package:betting_sim/ui/tokens.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +18,10 @@ class BettingSimApp extends StatelessWidget {
       title: 'betting-sim',
       theme: buildTheme(),
       debugShowCheckedModeBanner: false,
-      home: const MatchdayScreen(),
+      // The ONE read of kDebugMode in the app. The balance knobs let a
+      // player rewrite the game's difficulty, so the surface must not ship;
+      // scripts/check_debug_absent.sh asserts that on the built artifact.
+      home: const MatchdayScreen(showDebugTuning: kDebugMode),
     );
   }
 }

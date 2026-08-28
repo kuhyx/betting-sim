@@ -1,4 +1,4 @@
-import 'package:betting_sim/state/game.dart';
+import 'package:betting_sim/state/cards.dart';
 import 'package:betting_sim/ui/odds_button.dart';
 import 'package:betting_sim/ui/tokens.dart';
 import 'package:flutter/material.dart';

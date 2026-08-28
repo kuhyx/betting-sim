@@ -1,66 +1,8 @@
+import 'package:betting_sim/state/cards.dart';
+import 'package:betting_sim/state/performance.dart';
+import 'package:betting_sim/state/tuning.dart';
 import 'package:flutter/foundation.dart';
 import 'package:league_engine/league_engine.dart';
-
-/// A fixture as the player sees it: the two clubs and the prices on offer.
-class FixtureCard {
-  /// Creates a fixture card.
-  const FixtureCard({
-    required this.home,
-    required this.away,
-    required this.market,
-    required this.context,
-    required this.index,
-  });
-
-  /// The home club.
-  final Team home;
-
-  /// The away club.
-  final Team away;
-
-  /// The prices.
-  final Market market;
-
-  /// Everything needed to play the match.
-  final MatchContext context;
-
-  /// Which fixture on the matchday this is.
-  final int index;
-}
-
-/// A bet the player has struck, once settled.
-class PlayerBet {
-  /// Creates a settled player bet.
-  const PlayerBet({
-    required this.fixture,
-    required this.selection,
-    required this.stake,
-    required this.taken,
-    required this.profit,
-    required this.result,
-  });
-
-  /// What was backed.
-  final String fixture;
-
-  /// Which outcome.
-  final Selection selection;
-
-  /// How much was staked.
-  final double stake;
-
-  /// The price taken.
-  final Odds taken;
-
-  /// Profit, negative for a loss.
-  final double profit;
-
-  /// The final score.
-  final String result;
-
-  /// Whether the bet won.
-  bool get won => profit > 0;
-}
 
 /// The playable slice: one league, one bankroll, one matchday at a time.
 ///
@@ -68,8 +10,8 @@ class PlayerBet {
 /// of its own -- everything here delegates, so the UI can never drift from the
 /// engine the acceptance gate measures.
 class GameState extends ChangeNotifier {
-  /// Starts a new game from [masterSeed].
-  GameState({this.masterSeed = 20260828}) {
+  /// Starts a new game from [masterSeed], priced by [tuning].
+  GameState({this.masterSeed = 20260828, this.tuning = const Tuning()}) {
     _league = generateLeague(masterSeed);
     _states = <int, LatentState>{
       for (final t in _league.teams) t.id: const LatentState(),
@@ -80,19 +22,34 @@ class GameState extends ChangeNotifier {
   /// The save's root seed.
   final int masterSeed;
 
-  static const _model = DixonColesModel();
-  static const _runner = MatchRunner(model: _model);
-  static const _decay = LatentDecay();
-  static const _maker = MarketMaker(
-    model: _model,
-    bookmaker: Bookmaker(),
-    openingLine: OpeningLine(),
-    flow: MoneyFlow(),
-    bookLatentAwareness: 0.7,
-  );
+  /// The balance knobs this game was generated under.
+  ///
+  /// Immutable: changing a knob changes pricing, so the fixtures already shown
+  /// were quoted under the old one. Retuning constructs a fresh [GameState]
+  /// rather than mutating this one -- see the debug settings surface.
+  final Tuning tuning;
+
+  /// The player's running ROI and CLV.
+  final Performance performance = Performance();
+
+  static const _clv = ClvCalculator();
 
   late final League _league;
   late Map<int, LatentState> _states;
+
+  late final DixonColesModel _model = tuning.model;
+  late final MatchRunner _runner = MatchRunner(
+    model: _model,
+    latentConfig: tuning.latentConfig,
+  );
+  late final LatentDecay _decay = LatentDecay(tuning.latentConfig);
+  late final MarketMaker _maker = MarketMaker(
+    model: _model,
+    bookmaker: tuning.bookmaker,
+    openingLine: const OpeningLine(),
+    flow: const MoneyFlow(),
+    bookLatentAwareness: tuning.bookLatentAwareness,
+  );
 
   int _day = 0;
   double _bankroll = 1000;
@@ -147,23 +104,7 @@ class GameState extends ChangeNotifier {
       final staked = _slip[card.index];
 
       if (staked != null) {
-        final bet = Bet(
-          selection: staked.selection,
-          stake: staked.stake,
-          taken: card.market.priceOf(staked.selection),
-        );
-        final profit = settle(bet, result);
-        _bankroll += profit;
-        _history.add(
-          PlayerBet(
-            fixture: '${card.home.name} v ${card.away.name}',
-            selection: staked.selection,
-            stake: staked.stake,
-            taken: bet.taken,
-            profit: profit,
-            result: '${result.homeScore}-${result.awayScore}',
-          ),
-        );
+        _settleBet(card, staked, result);
       }
 
       _states[card.home.id] = _decay.afterMatch(
@@ -190,6 +131,37 @@ class GameState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _settleBet(
+    FixtureCard card,
+    ({Selection selection, double stake}) staked,
+    MatchResult result,
+  ) {
+    final bet = Bet(
+      selection: staked.selection,
+      stake: staked.stake,
+      taken: card.market.priceOf(staked.selection),
+    );
+    final profit = settle(bet, result);
+    final clv = _clv.forBet(
+      selection: bet.selection,
+      taken: bet.taken,
+      closing: card.closing,
+    );
+    _bankroll += profit;
+    performance.record(stake: staked.stake, profit: profit, clv: clv);
+    _history.add(
+      PlayerBet(
+        fixture: '${card.home.name} v ${card.away.name}',
+        selection: staked.selection,
+        stake: staked.stake,
+        taken: bet.taken,
+        profit: profit,
+        result: '${result.homeScore}-${result.awayScore}',
+        closingLineValue: clv,
+      ),
+    );
+  }
+
   void _openDay() {
     _fixtures = <FixtureCard>[
       for (final (index, fixture) in _league.fixturesOn(_day).indexed)
@@ -213,12 +185,17 @@ class GameState extends ChangeNotifier {
       awayState: _states[away.id]!,
       seedPath: path,
     );
+    final markets = _maker.marketsFor(
+      ctx: ctx,
+      home: home,
+      away: away,
+      path: path,
+    );
     return FixtureCard(
       home: home,
       away: away,
-      market: _maker
-          .marketsFor(ctx: ctx, home: home, away: away, path: path)
-          .opening,
+      market: markets.opening,
+      closing: markets.closing,
       context: ctx,
       index: index,
     );

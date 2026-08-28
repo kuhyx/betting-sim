@@ -1,5 +1,7 @@
 import 'package:betting_sim/state/game.dart';
+import 'package:betting_sim/state/tuning.dart';
 import 'package:betting_sim/ui/action_bar.dart';
+import 'package:betting_sim/ui/debug_panel.dart';
 import 'package:betting_sim/ui/fixture_tile.dart';
 import 'package:betting_sim/ui/results_sheet.dart';
 import 'package:betting_sim/ui/tokens.dart';
@@ -9,14 +11,23 @@ import 'package:league_engine/league_engine.dart';
 /// The playable slice: fixtures, prices, a bet slip and a settle button.
 class MatchdayScreen extends StatefulWidget {
   /// Creates the screen.
-  const MatchdayScreen({super.key});
+  ///
+  /// [showDebugTuning] is a required plain bool rather than a `kDebugMode`
+  /// default: the constant is read in exactly one place, `main.dart`, so the
+  /// panel cannot be reached in a release build, and tests can drive both
+  /// states without one. Defaulting it here would also const-fold to `true`
+  /// under `flutter test` and trip avoid_redundant_argument_values.
+  const MatchdayScreen({required this.showDebugTuning, super.key});
+
+  /// Whether the debug tuning surface may be shown.
+  final bool showDebugTuning;
 
   @override
   State<MatchdayScreen> createState() => _MatchdayScreenState();
 }
 
 class _MatchdayScreenState extends State<MatchdayScreen> {
-  final GameState _game = GameState();
+  GameState _game = GameState();
   OddsFormat _format = OddsFormat.decimal;
   double _stakeSize = 10;
 
@@ -35,6 +46,24 @@ class _MatchdayScreenState extends State<MatchdayScreen> {
   }
 
   void _onChanged() => setState(() {});
+
+  /// Rebuilds the season under [tuning].
+  ///
+  /// A full restart, not a re-price: the knobs decide what the book quotes, so
+  /// every fixture already shown was priced under the old value and the
+  /// bankroll it produced is no longer comparable. The master seed is
+  /// deliberately CARRIED OVER -- the same fixtures at a different awareness
+  /// is what makes the setting feelable rather than merely different.
+  void _retune(Tuning tuning) {
+    final old = _game;
+    setState(() {
+      _game = GameState(masterSeed: old.masterSeed, tuning: tuning)
+        ..addListener(_onChanged);
+    });
+    old
+      ..removeListener(_onChanged)
+      ..dispose();
+  }
 
   void _cycleFormat() {
     setState(() {
@@ -104,6 +133,12 @@ class _MatchdayScreenState extends State<MatchdayScreen> {
                       );
                     },
                   ),
+          ),
+          DebugTuningPanel(
+            tuning: _game.tuning,
+            performance: _game.performance,
+            onChanged: _retune,
+            enabled: widget.showDebugTuning,
           ),
           if (!_game.seasonOver)
             ActionBar(

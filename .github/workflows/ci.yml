@@ -105,3 +105,10 @@ jobs:
       # engine survives JavaScript's 53-bit numbers.
       - name: Build web
         run: flutter build web --release
+
+      # The balance knobs let a player rewrite the game's difficulty, so the
+      # debug tuning surface must not ship. Asserted on the built artifact
+      # rather than trusted to kDebugMode's const-folding -- and asserted BOTH
+      # ways, so a typo'd canary fails instead of silently passing.
+      - name: The tuning panel does not ship
+        run: bash ../scripts/check_debug_absent.sh

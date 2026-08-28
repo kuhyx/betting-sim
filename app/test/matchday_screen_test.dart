@@ -3,12 +3,22 @@ import 'package:betting_sim/ui/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _app() => MaterialApp(theme: buildTheme(), home: const MatchdayScreen());
+/// The screen as it SHIPS: the debug tuning panel hidden.
+///
+/// Explicitly false rather than defaulted, because the default is `kDebugMode`
+/// and widget tests run in debug -- so leaving it implicit would test a
+/// layout no player ever sees, and push the controls below off-screen. The
+/// panel gets its own tests in debug_panel_test.dart.
+Widget _app() => MaterialApp(
+  theme: buildTheme(),
+  home: const MatchdayScreen(showDebugTuning: false),
+);
 
 void main() {
   group('MatchdayScreen', () {
-    testWidgets('shows the matchday, bankroll and a card of fixtures',
-        (tester) async {
+    testWidgets('shows the matchday, bankroll and a card of fixtures', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app());
 
       expect(find.text('matchday 1 of 38'), findsOneWidget);
@@ -44,8 +54,9 @@ void main() {
       expect(find.text('SKIP MATCHDAY'), findsOneWidget);
     });
 
-    testWidgets('changing the stake size changes what is staked',
-        (tester) async {
+    testWidgets('changing the stake size changes what is staked', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app());
 
       await tester.tap(find.text('50'));
@@ -56,8 +67,9 @@ void main() {
       expect(find.text('staked 50'), findsOneWidget);
     });
 
-    testWidgets('the odds format toggle cycles through all three',
-        (tester) async {
+    testWidgets('the odds format toggle cycles through all three', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app());
 
       expect(find.text('decimal'), findsOneWidget);
@@ -74,8 +86,9 @@ void main() {
       expect(find.text('decimal'), findsOneWidget);
     });
 
-    testWidgets('playing a matchday settles bets and shows the results',
-        (tester) async {
+    testWidgets('playing a matchday settles bets and shows the results', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app());
 
       await tester.tap(find.text('HOME').first);

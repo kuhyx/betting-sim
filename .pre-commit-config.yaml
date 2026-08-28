@@ -30,6 +30,24 @@ repos:
         files: '\.dart$'
         pass_filenames: false
 
+      # The app is a SEPARATE package, so the engine's analyze/format hooks
+      # above do not reach it. Without these two the app's gates ran only in
+      # CI -- which is how an unformatted test file reached main and failed the
+      # very first run of the workflow.
+      - id: app-analyze
+        name: flutter analyze (fatal infos)
+        entry: bash -c 'cd app && flutter analyze --fatal-infos'
+        language: system
+        files: '^app/.*\.dart$'
+        pass_filenames: false
+
+      - id: app-format
+        name: dart format (app)
+        entry: bash -c 'cd app && dart format --output=none --set-exit-if-changed lib test'
+        language: system
+        files: '^app/.*\.dart$'
+        pass_filenames: false
+
       # The engine ships to Android and to a Chrome-wrapped web build; a save
       # is a seed plus event deltas, so the platforms must agree bit for bit.
       - id: rng-parity
