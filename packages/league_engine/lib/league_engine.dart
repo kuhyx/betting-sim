@@ -19,3 +19,7 @@ export 'src/rng/mix32.dart';
 export 'src/rng/scripted.dart';
 export 'src/rng/seeds.dart';
 export 'src/rng/source.dart';
+export 'src/scoreline/dixon_coles.dart';
+export 'src/scoreline/events.dart';
+export 'src/scoreline/poisson_params.dart';
+export 'src/scoreline/protocol.dart';
