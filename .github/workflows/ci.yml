@@ -24,7 +24,7 @@ jobs:
       # generator under JavaScript as well as the VM.
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "24.20.0"
 
       - name: Install dependencies
         run: dart pub get
