@@ -1,0 +1,13 @@
+name: league_engine
+description: >-
+  Deterministic, headless simulation of a fictional low-scoring sports league
+  and its bookmaker. Pure Dart: no Flutter, no I/O, no global randomness.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+dev_dependencies:
+  test: ^1.25.0
+  very_good_analysis: ^9.0.0

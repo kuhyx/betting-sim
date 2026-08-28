@@ -1,0 +1,71 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  engine:
+    name: league_engine
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/league_engine
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      # Node is needed by the RNG parity gate, which runs the engine's
+      # generator under JavaScript as well as the VM.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      - name: Test
+        run: dart test --coverage=coverage
+
+      - name: Enforce 100% coverage
+        run: |
+          dart pub global activate coverage
+          dart pub global run coverage:format_coverage \
+            --lcov --in=coverage --out=coverage/lcov.info \
+            --report-on=lib --check-ignore
+          bash ../../scripts/check_coverage.sh coverage/lcov.info
+
+      # The engine ships to Android AND to a Chrome-wrapped web build. A save
+      # is a seed plus event deltas, so the two platforms must agree bit for
+      # bit or a synced game replays differently.
+      - name: RNG cross-platform parity
+        run: bash ../../scripts/check_rng_parity.sh
+
+  gates:
+    name: shared gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The gates and their exemption lists live in the shared utils repo so
+      # every repo enforces the same rules. Checking it out beats vendoring a
+      # copy, which is exactly how a gate and a survey start disagreeing.
+      - name: Check out the shared gates
+        uses: actions/checkout@v4
+        with:
+          repository: kuhyx/utils
+          path: .utils
+
+      - name: Enforce the 250-line cap
+        run: UTILS_ROOT=.utils bash scripts/check_file_length.sh --all

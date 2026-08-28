@@ -1,0 +1,40 @@
+# Local gates only: each delegates to the shared implementation in ~/utils, so
+# every repo enforces one set of rules rather than a drifting copy.
+repos:
+  - repo: local
+    hooks:
+      - id: file-length
+        name: 250-line cap (code and prose)
+        entry: scripts/check_file_length.sh
+        language: script
+        pass_filenames: true
+
+      - id: md-naming
+        name: markdown naming convention
+        entry: scripts/check_md_naming.sh
+        language: script
+        files: '\.md$'
+        pass_filenames: true
+
+      - id: dart-analyze
+        name: dart analyze (fatal infos)
+        entry: bash -c 'cd packages/league_engine && dart analyze --fatal-infos'
+        language: system
+        files: '\.dart$'
+        pass_filenames: false
+
+      - id: dart-format
+        name: dart format
+        entry: bash -c 'cd packages/league_engine && dart format --output=none --set-exit-if-changed .'
+        language: system
+        files: '\.dart$'
+        pass_filenames: false
+
+      # The engine ships to Android and to a Chrome-wrapped web build; a save
+      # is a seed plus event deltas, so the platforms must agree bit for bit.
+      - id: rng-parity
+        name: RNG parity (VM vs JavaScript)
+        entry: scripts/check_rng_parity.sh
+        language: script
+        files: 'packages/league_engine/lib/src/rng/.*\.dart$'
+        pass_filenames: false
