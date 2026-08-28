@@ -45,7 +45,8 @@ void main() {
     });
 
     test('uses a scripted draw exactly once', () {
-      // Technique (a): the scripted source reaches the branch deterministically.
+      // Technique (a): the scripted source reaches the branch
+      // deterministically, with no seed search.
       final rng = ScriptedRandomSource(uniforms: [0.001]);
       expect(
         const LatentShocks().rollInjury(const LatentState(), rng),
