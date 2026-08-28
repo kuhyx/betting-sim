@@ -52,6 +52,11 @@ jobs:
       - name: RNG cross-platform parity
         run: bash ../../scripts/check_rng_parity.sh
 
+      # The acceptance gate: the project's stop-the-world condition. A small
+      # season count keeps CI fast; the full run is a separate off-hours job.
+      - name: Acceptance gate (smoke)
+        run: bash ../../scripts/check_acceptance.sh 150
+
   gates:
     name: shared gates
     runs-on: ubuntu-latest

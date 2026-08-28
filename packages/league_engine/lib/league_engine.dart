@@ -2,6 +2,13 @@
 /// bookmaker.
 library;
 
+export 'src/acceptance/gate.dart';
+export 'src/acceptance/metrics.dart';
+export 'src/acceptance/runner.dart';
+export 'src/bettors/oracle_bettor.dart';
+export 'src/bettors/protocol.dart';
+export 'src/bettors/random_bettor.dart';
+export 'src/bettors/skilled_bettor.dart';
 export 'src/book/clv.dart';
 export 'src/book/flow.dart';
 export 'src/book/limits.dart';
@@ -9,7 +16,10 @@ export 'src/book/margin.dart';
 export 'src/book/odds.dart';
 export 'src/book/opening.dart';
 export 'src/book/pricing.dart';
+export 'src/engine/market_maker.dart';
 export 'src/engine/match_runner.dart';
+export 'src/engine/results.dart';
+export 'src/engine/season_runner.dart';
 export 'src/latent/config.dart';
 export 'src/latent/decay.dart';
 export 'src/latent/modifiers.dart';

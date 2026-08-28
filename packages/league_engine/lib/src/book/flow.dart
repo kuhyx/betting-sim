@@ -38,14 +38,20 @@ class MoneyFlow {
     Selection popular,
     RandomSource rng,
   ) {
+    // Public money leans first, THEN sharp money corrects toward the truth.
+    // The order matters: applying the public lean LAST left it uncorrected, so
+    // the close sat permanently 1.02pp above truth on the popular side and
+    // every bettor -- including a random one -- collected free closing-line
+    // value. CLV is zero-sum across a market; a random bettor showing positive
+    // CLV means the line is drifting, not moving.
+    final leaned = List<double>.of(current.asList);
+    leaned[popular.index] +=
+        publicBiasStrength * publicWeight * (rng.uniform01() - 0.5);
+
     final moved = <double>[
       for (var i = 0; i < 3; i++)
-        current.asList[i] + sharpWeight * (truth.asList[i] - current.asList[i]),
+        leaned[i] + sharpWeight * (truth.asList[i] - leaned[i]),
     ];
-
-    // Public money leans on one side regardless of price.
-    final lean = publicBiasStrength * publicWeight * rng.uniform01();
-    moved[popular.index] += lean;
 
     final total = moved.reduce((a, b) => a + b);
     return OutcomeProbs(

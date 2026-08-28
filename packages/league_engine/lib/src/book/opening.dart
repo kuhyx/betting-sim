@@ -11,7 +11,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// markets are the softest.
 class OpeningLine {
   /// Creates an opening-line model.
-  const OpeningLine({this.baseNoise = 0.05, this.uncertaintyWeight = 0.0004});
+  const OpeningLine({this.baseNoise = 0.02, this.uncertaintyWeight = 0.00005});
 
   /// Baseline error in the book's probability estimate.
   final double baseNoise;
@@ -21,6 +21,11 @@ class OpeningLine {
   /// Ties the book's confidence to the SAME rating-deviation number that
   /// drives scouting fog, so "nobody knows this club yet" widens the market
   /// and blurs the player's information at once.
+  ///
+  /// Kept small deliberately. At 0.0004 a pair of unrated clubs (combined RD
+  /// 700) gave sigma 0.33 -- larger than the probabilities themselves, so the
+  /// book quoted 256/1 on a coin flip and a RANDOM bettor returned +410% a
+  /// season. A book is uncertain, not deranged.
   final double uncertaintyWeight;
 
   /// Returns the book's noisy estimate of [truth].
@@ -43,5 +48,10 @@ class OpeningLine {
     );
   }
 
-  static double _positive(double p) => p < 0.01 ? 0.01 : p;
+  /// The floor under a single outcome's estimate.
+  ///
+  /// A real book never quotes 250/1 on one of three football outcomes; 0.02
+  /// caps the worst price near 50/1 before the margin, which is already
+  /// generous for this sport.
+  static double _positive(double p) => p < 0.02 ? 0.02 : p;
 }
