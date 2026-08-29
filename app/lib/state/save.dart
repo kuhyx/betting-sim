@@ -2,15 +2,16 @@ import 'dart:convert';
 
 import 'package:betting_sim/state/cards.dart';
 import 'package:betting_sim/state/friends.dart';
+import 'package:betting_sim/state/life.dart';
 import 'package:betting_sim/state/tuning.dart';
 import 'package:league_engine/league_engine.dart';
 
 /// The save format's version. Bumped whenever the shape below changes.
 ///
-/// 2 added the friend bets. A version 1 save would have been rejected anyway,
-/// by failing to parse -- but silently relying on that would make the number
-/// a lie, and the next change might not be so obliging.
-const int saveVersion = 2;
+/// 2 added the friend bets, 3 the life. Older saves would have been rejected
+/// anyway, by failing to parse -- but relying on that silently would make the
+/// number a lie, and the next change might not be so obliging.
+const int saveVersion = 3;
 
 /// A save: a seed, the knobs it was struck under, how far in it is, and every
 /// bet that has settled.
@@ -29,6 +30,7 @@ class SaveData {
     required this.day,
     required this.bets,
     required this.peerBets,
+    required this.life,
   });
 
   /// The root seed the season was generated from.
@@ -50,6 +52,9 @@ class SaveData {
   /// nothing in the seed knows which offers you took.
   final List<PeerBet> peerBets;
 
+  /// The clock, the needs, the rent and the shopping.
+  final LifeSnapshot life;
+
   /// Renders this save as JSON text.
   String encode() => jsonEncode(<String, dynamic>{
     'version': saveVersion,
@@ -63,6 +68,16 @@ class SaveData {
     },
     'bets': bets.map(_betToJson).toList(),
     'peerBets': peerBets.map(_peerToJson).toList(),
+    'life': <String, dynamic>{
+      'dayOfSeason': life.dayOfSeason,
+      'lifeMoney': life.lifeMoney,
+      'arrears': life.arrears,
+      'ending': life.ending.name,
+      'energy': life.needs.energy,
+      'fullness': life.needs.fullness,
+      'stress': life.needs.stress,
+      'owned': life.owned.toList(),
+    },
   });
 
   /// Parses [raw], or returns null if it is missing, corrupt or from a
@@ -83,6 +98,7 @@ class SaveData {
       final tuning = json['tuning']! as Map<String, dynamic>;
       final bets = json['bets']! as List<dynamic>;
       final peers = json['peerBets']! as List<dynamic>;
+      final life = json['life']! as Map<String, dynamic>;
       return SaveData(
         masterSeed: json['masterSeed']! as int,
         day: json['day']! as int,
@@ -98,6 +114,20 @@ class SaveData {
         peerBets: <PeerBet>[
           for (final bet in peers) _peerFromJson(bet! as Map<String, dynamic>),
         ],
+        life: LifeSnapshot(
+          dayOfSeason: life['dayOfSeason']! as int,
+          lifeMoney: life['lifeMoney']! as double,
+          arrears: life['arrears']! as int,
+          ending: RunEnding.values.byName(life['ending']! as String),
+          needs: Needs(
+            energy: life['energy']! as double,
+            fullness: life['fullness']! as double,
+            stress: life['stress']! as double,
+          ),
+          owned: <String>{
+            for (final id in life['owned']! as List<dynamic>) id! as String,
+          },
+        ),
       );
     } on Object {
       // Any malformed field at all: a missing key, a string where a number

@@ -107,6 +107,25 @@ a friend's noise is applied in LOG-ODDS, not in probability. Adding 0.06 to a
 0.50 chance is a nudge and to a 0.08 chance nearly a doubling, and the layer's
 money is concentrated exactly on the long prices.
 
+**Gate 6a — a working life is affordable.** Somebody who works their shifts,
+eats and sleeps must reach the end of the season housed, fed and solvent.
+
+If the person doing everything right cannot make rent, the numbers are wrong,
+and betting would not be a stake so much as the only option. It is deliberately
+TIGHT: the grafter finishes a season a little down on where they started. The
+job keeps a roof on; the betting is how you actually get anywhere.
+
+**Gate 6b — betting is not a living.** A season's rent must dwarf what even
+PERFECT knowledge returns on the money you start with, by at least ten times.
+
+This is the gate that gives the bankroll a floor worth fearing. A season of
+rent is 12,160; the oracle's entire season of cheating on a 1,000 bankroll is
+worth about 196. So "can I just bet for a living" is answered by arithmetic
+rather than by opinion, and somebody who stops working is put out in week four.
+
+The life layer has no RNG and no bettor at all, which is why it can be asserted
+this flatly.
+
 ## The oracle is a control, not a subject
 
 `OracleBettor` reads the true probabilities and so cheats by construction. It

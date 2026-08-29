@@ -20,5 +20,6 @@ extension GameSave on GameState {
     // goes back the other way.
     bets: List<PlayerBet>.of(history.reversed),
     peerBets: List<PeerBet>.of(peerHistory.reversed),
+    life: life.snapshot,
   );
 }

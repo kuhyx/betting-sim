@@ -3,6 +3,7 @@
 library;
 
 export 'src/acceptance/gate.dart';
+export 'src/acceptance/gate_life.dart';
 export 'src/acceptance/gate_media.dart';
 export 'src/acceptance/gate_social.dart';
 export 'src/acceptance/metrics.dart';
@@ -37,6 +38,10 @@ export 'src/league/generate.dart';
 export 'src/league/name_corpus.dart';
 export 'src/league/names.dart';
 export 'src/league/schedule.dart';
+export 'src/life/activities.dart';
+export 'src/life/economy.dart';
+export 'src/life/life_runner.dart';
+export 'src/life/needs.dart';
 export 'src/media/desk.dart';
 export 'src/media/post_writer.dart';
 export 'src/media/tip.dart';

@@ -46,7 +46,7 @@ void main() {
       expect(SaveData.decode(''), isNull);
       expect(SaveData.decode('not json at all'), isNull);
       expect(SaveData.decode('{"version":999}'), isNull);
-      expect(SaveData.decode('{"version":2}'), isNull);
+      expect(SaveData.decode('{"version":3}'), isNull);
       // A save from before friend bets existed. Rejected by version, not by
       // luck: it would also have failed to parse, but that is not a contract.
       expect(
@@ -127,9 +127,11 @@ void main() {
     });
 
     test('carries the calendar with it', () {
+      // Two rounds played means two weeks lived, and the morning after the
+      // second Saturday is a Sunday.
       final game = _played(2);
-      expect(game.date.weekday, Weekday.saturday);
-      expect(game.date.week, 2);
+      expect(game.date.weekday, Weekday.sunday);
+      expect(game.date.week, 1);
       expect(GameState.fromSave(game.toSave()).date, game.date);
     });
   });

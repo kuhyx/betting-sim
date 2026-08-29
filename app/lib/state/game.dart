@@ -1,7 +1,10 @@
 import 'package:betting_sim/state/cards.dart';
 import 'package:betting_sim/state/day_builder.dart';
 import 'package:betting_sim/state/friends.dart';
+import 'package:betting_sim/state/life.dart';
+import 'package:betting_sim/state/matchday.dart';
 import 'package:betting_sim/state/performance.dart';
+import 'package:betting_sim/state/purse.dart';
 import 'package:betting_sim/state/records.dart';
 import 'package:betting_sim/state/save.dart';
 import 'package:betting_sim/state/settler.dart';
@@ -26,16 +29,18 @@ class GameState extends ChangeNotifier {
 
   /// Rebuilds the game [save] describes, by REPLAYING it.
   ///
-  /// A save carries no league, no hidden state and no scorelines, so there is
-  /// nothing to load: the only way back to matchday N is to play matchdays 0
-  /// to N-1 again from the same seed. That is the point of the seed-plus-
-  /// deltas format -- if replay ever diverged, this constructor would be the
-  /// thing that noticed, rather than a save silently disagreeing with itself.
+  /// A save carries no league, no hidden state and no scorelines: the only way
+  /// back to matchday N is to play 0 to N-1 again from the same seed. If
+  /// replay ever diverged, this is what would notice.
   factory GameState.fromSave(SaveData save) {
     final game = GameState(masterSeed: save.masterSeed, tuning: save.tuning);
+    // Rounds only, never the days: the league replays from the seed, and how
+    // somebody spent a Tuesday does not.
     for (var i = 0; i < save.day; i++) {
-      game.advanceDay();
+      game._playRound();
     }
+    game.life.restore(save.life);
+    game.purse.adjust(save.life.lifeMoney);
     save.bets.forEach(game._replay);
     save.peerBets.forEach(game._replayPeer);
     return game;
@@ -49,13 +54,15 @@ class GameState extends ChangeNotifier {
 
   /// The balance knobs this game was generated under.
   ///
-  /// Immutable: changing a knob changes pricing, so the fixtures already shown
-  /// were quoted under the old one. Retuning constructs a fresh [GameState]
-  /// rather than mutating this one -- see the debug settings surface.
+  /// Immutable: changing a knob changes pricing, so retuning builds a fresh
+  /// [GameState] rather than mutating this one.
   final Tuning tuning;
 
-  /// The player's running ROI and CLV.
-  final Performance performance = Performance();
+  /// The money, and everything it has done.
+  final Purse purse = Purse();
+
+  /// The player's running ROI and CLV against the book.
+  Performance get performance => purse.performance;
 
   late final League _league;
   late Map<int, LatentState> _states;
@@ -94,13 +101,10 @@ class GameState extends ChangeNotifier {
   );
 
   int _day = 0;
-  double _bankroll = openingBankroll;
   List<FixtureCard> _fixtures = <FixtureCard>[];
-  final List<PlayerBet> _history = <PlayerBet>[];
   final Map<int, ({Selection selection, double stake})> _slip =
       <int, ({Selection selection, double stake})>{};
   List<PlayedMatch> _played = <PlayedMatch>[];
-  final List<PeerBet> _peerHistory = <PeerBet>[];
 
   /// Which matchday is showing.
   int get day => _day;
@@ -108,35 +112,38 @@ class GameState extends ChangeNotifier {
   /// How many matchdays the season has.
   int get totalDays => _league.matchdays;
 
+  /// How the week is going: the clock, the needs, the rent.
+  final LifeState life = LifeState();
+
   /// Today's date. The season runs a round a week; the other six days are
   /// where everything that is not a match happens.
-  GameDate get date => calendar.dateOfMatchday(_day.clamp(0, totalDays - 1));
+  GameDate get date => life.date;
 
   /// The player's money.
-  double get bankroll => _bankroll;
+  double get bankroll => purse.bankroll;
 
   /// Today's fixtures and prices.
   List<FixtureCard> get fixtures => List.unmodifiable(_fixtures);
 
   /// Every settled bet, most recent first.
-  List<PlayerBet> get history => List.unmodifiable(_history.reversed);
+  List<PlayerBet> get history => purse.bets;
 
   /// Every settled friend bet, most recent first.
-  List<PeerBet> get peerHistory => List.unmodifiable(_peerHistory.reversed);
+  List<PeerBet> get peerHistory => purse.peerBets;
 
   /// The bets staked but not yet settled.
   Map<int, ({Selection selection, double stake})> get slip =>
       Map.unmodifiable(_slip);
 
-  /// The matches from the last matchday played, for watching back.
-  ///
-  /// Watching cannot change any of them -- they are already decided by the
-  /// time this list exists, which is the whole point of the narrator running
-  /// after the scoreline.
+  /// The matches from the last round, for watching back. Already decided by
+  /// the time this list exists, which is the point.
   List<PlayedMatch> get played => List.unmodifiable(_played);
 
-  /// Whether the season has finished.
-  bool get seasonOver => _day >= _league.matchdays;
+  /// Whether there is any more game to play.
+  ///
+  /// Either the fixtures ran out or you did: an eviction ends a run as surely
+  /// as the final whistle, which is the point of the rent existing at all.
+  bool get seasonOver => _day >= _league.matchdays || !life.running;
 
   /// Total staked on the current slip.
   double get slipStake => _slip.values.fold(0, (sum, b) => sum + b.stake);
@@ -152,99 +159,89 @@ class GameState extends ChangeNotifier {
   }
 
   /// Plays the matchday, settles the slip and moves on.
+  /// Lives one day of the week. Returns whether the round was played.
+  ///
+  /// The clock. Matches happen on the Saturday you reach rather than on a
+  /// button press, so an hour worked is an hour not spent on the feed.
+  bool liveDay(List<Activity> plan) {
+    final played = _liveOneDay(plan);
+    notifyListeners();
+    return played;
+  }
+
+  /// Gets on with the week however it goes, and plays the round at the end.
+  ///
+  /// The casual path, and the reason the clock cannot drift out of step with
+  /// the fixtures: a round cannot be played without the days in front of it
+  /// also happening. Unplanned days are spent the ordinary way.
   void advanceDay() {
-    if (seasonOver) {
-      return;
-    }
-
-    final played = <PlayedMatch>[];
-    for (final card in _fixtures) {
-      final result = _runner.run(card.context);
-      played.add(PlayedMatch.of(card, result));
-      for (final peer in records.settle(card, result)) {
-        _bankroll += peer.profit;
-        _peerHistory.add(peer);
-      }
-      final staked = _slip[card.index];
-
-      if (staked != null) {
-        _settleBet(card, staked, result);
-      }
-
-      _states[card.home.id] = _decay.afterMatch(
-        _states[card.home.id]!,
-        _outcomeFor(result, isHome: true),
-      );
-      _states[card.away.id] = _decay.afterMatch(
-        _states[card.away.id]!,
-        _outcomeFor(result, isHome: false),
-      );
-    }
-
-    for (final team in _league.teams) {
-      _states[team.id] = _decay.rest(_states[team.id]!);
-    }
-
-    _played = played;
-    _slip.clear();
-    records.nextDay();
-    _day++;
-    if (!seasonOver) {
-      _openDay();
-    } else {
-      _fixtures = <FixtureCard>[];
+    const ordinary = Grafter();
+    var played = false;
+    while (!seasonOver && !played) {
+      played = _liveOneDay(ordinary.planFor(life.date, life.needs));
     }
     notifyListeners();
   }
 
-  void _settleBet(
-    FixtureCard card,
-    ({Selection selection, double stake}) staked,
-    MatchResult result,
-  ) {
-    _replay(
-      settleCard(
-        card: card,
-        selection: staked.selection,
-        stake: staked.stake,
-        result: result,
-      ),
-    );
+  /// Buys [item], if it can be afforded.
+  void buy(Purchase item) {
+    purse.adjust(life.buy(item, purse.bankroll));
+    notifyListeners();
   }
 
-  /// Re-applies an already-settled bet from a save.
-  ///
-  /// Money and scoreboard only: the match it refers to was replayed by the
-  /// constructor, so re-running the engine here would play it twice.
-  void _replay(PlayerBet bet) {
-    _bankroll += bet.profit;
-    performance.record(
-      stake: bet.stake,
-      profit: bet.profit,
-      clv: bet.closingLineValue,
-    );
-    _history.add(bet);
+  bool _liveOneDay(List<Activity> plan) {
+    if (seasonOver) {
+      return false;
+    }
+    final today = life.date;
+    purse.adjust(life.live(plan));
+    if (today.weekday == LifeState.rentDay) {
+      purse.adjust(life.settleRent(purse.bankroll));
+    }
+    final playing = calendar.matchdayOn(today) == _day;
+    if (playing) {
+      _playRound();
+    }
+    if (life.dayOfSeason >= calendar.totalDays) {
+      life.finish();
+    }
+    return playing;
   }
+
+  void _playRound() {
+    final round = playMatchday(
+      fixtures: _fixtures,
+      slip: _slip,
+      runner: _runner,
+      decay: _decay,
+      records: records,
+      states: _states,
+      league: _league,
+    );
+    // `Records.settle` has already put the friend bets in the book, so only
+    // the money and the history are left to move.
+    round.bets.forEach(purse.take);
+    round.peerBets.forEach(purse.takePeer);
+
+    _played = round.played;
+    _slip.clear();
+    records.nextDay();
+    _day++;
+    _openDay();
+  }
+
+  /// Re-applies a settled bet from a save. Money only: the match it refers to
+  /// was already replayed by the constructor.
+  void _replay(PlayerBet bet) => purse.take(bet);
 
   /// Re-applies an already-settled friend bet from a save.
   void _replayPeer(PeerBet bet) {
-    _bankroll += bet.profit;
+    purse.takePeer(bet);
     records.friendBook.add(bet);
-    _peerHistory.add(bet);
   }
 
-  void _openDay() {
-    _fixtures = _builder.cardsFor(
-      league: _league,
-      day: _day,
-      states: _states,
-    );
-  }
-
-  static MatchOutcome _outcomeFor(MatchResult result, {required bool isHome}) {
-    if (result.drawn) {
-      return MatchOutcome.draw;
-    }
-    return result.homeWon == isHome ? MatchOutcome.win : MatchOutcome.loss;
-  }
+  /// Puts the next round's card up, or nothing if the season ran out.
+  void _openDay() => _fixtures = _day >= _league.matchdays
+      ? <FixtureCard>[]
+      : _builder.cardsFor(league: _league, day: _day, states: _states);
 }

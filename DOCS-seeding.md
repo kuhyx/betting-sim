@@ -75,7 +75,7 @@ below.
 | 21 | what they say about one fixture |
 | 30 | the circle of friends a save is stuck with |
 | 31 | what they want on one fixture |
-| 40-49 | reserved: the life sim |
+| 40-49 | unused: the life sim has no randomness at all |
 
 The narrator takes fourteen of them -- one per stat per side -- rather than
 one. That is not extravagance: sub-seeds are hashes of a path, so a slot is
@@ -87,6 +87,10 @@ noise. With a slot each, "morale does not touch corners" is an assertion of
 
 The rule that follows: **a new stat family takes a new slot.** Draw order
 *inside* a slot may only be appended to.
+
+The life sim claims no slot because it draws nothing. Whether you can make the
+rent is a BUDGET, not another thing to be unlucky at: a player who does the
+arithmetic should not then be evicted by a dice roll.
 
 ## What is frozen
 

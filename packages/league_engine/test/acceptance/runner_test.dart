@@ -24,7 +24,7 @@ void main() {
     });
 
     test('runs every gate', () {
-      expect(report.gates, hasLength(8));
+      expect(report.gates, hasLength(10));
       expect(report.passed, report.gates.every((g) => g.passed));
     });
 

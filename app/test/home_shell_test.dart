@@ -38,9 +38,9 @@ void main() {
 
       await tester.tap(find.byIcon(Icons.home));
       await tester.pumpAndSettle();
-      expect(find.text('not built yet'), findsOneWidget);
       // The life tab reads the calendar the season is actually on.
-      expect(find.textContaining('Sat wk1'), findsOneWidget);
+      expect(find.text('Mon wk1'), findsOneWidget);
+      expect(find.text('GET THROUGH THE DAY'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.sports_soccer));
       await tester.pumpAndSettle();

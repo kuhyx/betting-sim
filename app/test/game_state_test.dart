@@ -82,13 +82,19 @@ void main() {
       fail('no winning home bet found in 40 seeds');
     });
 
-    test('skipping a matchday costs nothing', () {
+    test('skipping a matchday still costs you a week', () {
+      // It used to cost nothing, which was the whole problem: a round was a
+      // button rather than seven days you had to get through. The bankroll
+      // now moves whether or not you bet, because rent does not care.
       final game = GameState();
       final before = game.bankroll;
       game.advanceDay();
-      expect(game.bankroll, before);
-      expect(game.history, isEmpty);
+
+      expect(game.history, isEmpty, reason: 'no bet was struck');
       expect(game.day, 1);
+      expect(game.bankroll, isNot(before));
+      expect(game.life.dayOfSeason, 6, reason: 'six days to the Saturday');
+      expect(game.life.needs.energy, lessThan(1));
     });
 
     test('the season ends after the last matchday', () {

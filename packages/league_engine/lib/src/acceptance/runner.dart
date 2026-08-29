@@ -1,4 +1,5 @@
 import 'package:league_engine/src/acceptance/gate.dart';
+import 'package:league_engine/src/acceptance/gate_life.dart';
 import 'package:league_engine/src/acceptance/gate_media.dart';
 import 'package:league_engine/src/acceptance/gate_social.dart';
 import 'package:league_engine/src/acceptance/metrics.dart';
@@ -13,6 +14,8 @@ import 'package:league_engine/src/book/opening.dart';
 import 'package:league_engine/src/book/pricing.dart';
 import 'package:league_engine/src/engine/results.dart';
 import 'package:league_engine/src/engine/season_runner.dart';
+import 'package:league_engine/src/league/calendar.dart';
+import 'package:league_engine/src/life/life_runner.dart';
 import 'package:league_engine/src/media/tipster.dart';
 import 'package:league_engine/src/social/proposal.dart';
 import 'package:league_engine/src/social/reviewers.dart';
@@ -138,6 +141,13 @@ AcceptanceReport runAcceptance({
   final acceptAll = amongFriends(const AcceptAllReviewer());
   final shrewd = amongFriends(const ShrewdReviewer());
 
+  // The life layer has no RNG and no bettor: whether the rent is payable is a
+  // budget, not another thing to be unlucky at.
+  const calendar = SeasonCalendar(matchdays: 38);
+  const life = LifeRunner();
+  final grafter = life.run(calendar: calendar, planner: const Grafter());
+  final idler = life.run(calendar: calendar, planner: const Idler());
+
   return AcceptanceReport(
     strategies: [
       ...metrics,
@@ -158,6 +168,8 @@ AcceptanceReport runAcceptance({
       gateTheFeedIsWorthReading(insider, crowd, oracle),
       gateFriendsAreCheaperThanTheBook(acceptAll, margin),
       gateChoosingBeatsAccepting(shrewd, acceptAll, oracle),
+      gateAWorkingLifeIsAffordable(grafter),
+      gateBettingIsNotALiving(oracle, idler),
     ],
     margin: margin,
     masterSeed: masterSeed,

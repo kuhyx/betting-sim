@@ -7,8 +7,8 @@ import 'package:betting_sim/state/save_store.dart';
 import 'package:betting_sim/state/tuning.dart';
 import 'package:betting_sim/ui/feed_screen.dart';
 import 'package:betting_sim/ui/friends_screen.dart';
+import 'package:betting_sim/ui/life_screen.dart';
 import 'package:betting_sim/ui/matchday_screen.dart';
-import 'package:betting_sim/ui/placeholder_tab.dart';
 import 'package:betting_sim/ui/tokens.dart';
 import 'package:flutter/material.dart';
 
@@ -111,10 +111,7 @@ class _HomeShellState extends State<HomeShell> {
           ),
           FeedScreen(game: game),
           FriendsScreen(game: game),
-          PlaceholderTab(
-            title: 'life',
-            blurb: 'work, sleep, eat, pay the rent. it is ${game.date.label}.',
-          ),
+          LifeScreen(game: game),
         ],
       ),
       bottomNavigationBar: NavigationBar(

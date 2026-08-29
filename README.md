@@ -77,9 +77,25 @@ decision rather than a free reroll, because a stubborn friend simply walks and
 the bet is gone. What you cannot see is how far each of them will move, and
 the only way to learn it is to try.
 
+## The week around it
+
+The matches are on Saturday. The other six days are yours, and they are where
+the stakes live: twenty-four hours to divide between a shift, sleep, meals,
+and reading up on the football. An hour spent working is an hour not spent on
+the feed, and the rent does not care which you picked.
+
+Rent comes out every Friday. Miss it twice and you are put out, and that is
+the run -- the bankroll finally has a floor you can fall through. Working full
+time keeps a roof on and very little else; getting anywhere means the betting.
+
+The shop sells four things and all of them are hours: a bicycle, a slow
+cooker, a decent telly, a chair that does not hurt. Nothing in it improves a
+price. Selling the edge would sell the only thing the game is about.
+
 ## Acceptance gate
 
-The engine is not finished until a headless batch prints three numbers:
+The engine is not finished until a headless batch prints ten numbers. The
+first four are about the bookmaker:
 
 1. **Skill pays over a season** — mean ROI positive, 95% CI excludes zero.
 2. **One night is a coin flip** — median matchday ROI ≤ 0, losing nights in

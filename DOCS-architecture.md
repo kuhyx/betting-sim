@@ -118,6 +118,17 @@ Pricing and playing draw from disjoint sub-seeds (`possession: 0` for
 pre-match weather and referee, `1` for the match, `2` for the book, `3` for the
 bettor), so no part can disturb another.
 
+## The life sim is a budget, not a dice roll
+
+`lib/src/life/` has no `RandomSource` anywhere in it. Whether you can make the
+rent follows from how you spent your hours, so a player who does the
+arithmetic cannot then be evicted by luck -- and the one number the whole game
+now hangs on, the bankroll, has a floor that behaves predictably.
+
+It is also the only layer that gates the others. Reading the feed and watching
+a match cost hours, and hours are what a shift pays for, so information has a
+price for the first time.
+
 ## The book is deliberately fallible
 
 `MarketMaker` prices a **partially latent-blind** view of each fixture rather
