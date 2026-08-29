@@ -156,6 +156,40 @@ void main() {
       expect(day.money, closeTo(-2 * _config.mealCost, 1e-9));
     });
 
+    test('somebody with nothing left cannot work', () {
+      // The moment energy has teeth. A shift you cannot stay awake for pays
+      // nothing, and the wages are what the rent comes out of -- so running
+      // yourself into the ground is a spiral rather than a bad afternoon.
+      final spent = liveDay(
+        const Needs(energy: 0),
+        _hours(Activity.work, 8),
+        _config,
+      );
+      expect(spent.money, 0, reason: 'no pay for a shift you slept through');
+      expect(spent.needs.energy, greaterThan(0), reason: 'you did sleep');
+
+      // And somebody who still has something left is paid as normal.
+      final fresh = liveDay(
+        const Needs(energy: 0.5),
+        _hours(Activity.work, 8),
+        _config,
+      );
+      expect(fresh.money, closeTo(8 * _config.wagePerHour, 1e-9));
+    });
+
+    test('collapsing mid-shift stops the pay from that hour on', () {
+      // Paid up to the point you gave out, and nothing after it: an hour's
+      // kip does not put you back on the floor.
+      const config = LifeConfig(hoursPerDay: 12);
+      final day = liveDay(
+        const Needs(energy: 0.05),
+        _hours(Activity.work, 12),
+        config,
+      );
+      expect(day.money, greaterThan(0));
+      expect(day.money, lessThan(12 * config.wagePerHour));
+    });
+
     test('honours a different length of day', () {
       const short = LifeConfig(hoursPerDay: 4);
       final day = liveDay(const Needs(), _hours(Activity.work, 8), short);

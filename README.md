@@ -88,6 +88,10 @@ Rent comes out every Friday. Miss it twice and you are put out, and that is
 the run -- the bankroll finally has a floor you can fall through. Working full
 time keeps a roof on and very little else; getting anywhere means the betting.
 
+Run yourself into the ground and the wages stop: once you give out, the rest
+of that shift is gone, because an hour's kip does not put you back on the
+floor. Skipping sleep to read one more preview is a real decision.
+
 The shop sells four things and all of them are hours: a bicycle, a slow
 cooker, a decent telly, a chair that does not hurt. Nothing in it improves a
 price. Selling the edge would sell the only thing the game is about.

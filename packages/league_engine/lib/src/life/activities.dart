@@ -105,6 +105,10 @@ class DayOutcome {
 ///
 /// Unallocated hours are spent idling: a day you do not plan is a day you
 /// spend badly, which is the honest version of "nothing happened".
+///
+/// Hour by hour rather than in one step, because the order matters twice
+/// over: going hungry costs energy, and running out of energy costs you the
+/// shift you were in the middle of.
 DayOutcome liveDay(
   Needs start,
   List<Activity> hours,
@@ -118,7 +122,17 @@ DayOutcome liveDay(
     for (var i = hours.length; i < config.hoursPerDay; i++) Activity.idle,
   ];
 
-  for (final activity in schedule) {
+  var collapsed = false;
+
+  for (final planned in schedule) {
+    // Once you have given out, the rest of the shift is gone: you were sent
+    // home, and an hour's kip does not put you back on the floor. Latching it
+    // for the day is what gives energy teeth -- without it, collapsing cost
+    // one hour in eight and nothing else.
+    collapsed = collapsed || needs.exhausted;
+    final activity = collapsed && planned == Activity.work
+        ? Activity.sleep
+        : planned;
     final effect = effectOf(activity, config);
     // Stress makes rest worth less, but never worthless.
     final rested = activity == Activity.sleep
