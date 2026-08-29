@@ -1,8 +1,9 @@
 import 'package:betting_sim/state/game.dart';
 import 'package:betting_sim/state/performance.dart';
+import 'package:betting_sim/state/save_store.dart';
 import 'package:betting_sim/state/tuning.dart';
 import 'package:betting_sim/ui/debug_panel.dart';
-import 'package:betting_sim/ui/matchday_screen.dart';
+import 'package:betting_sim/ui/home_shell.dart';
 import 'package:betting_sim/ui/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -206,8 +207,11 @@ void main() {
       addTearDown(tester.view.reset);
 
       await tester.pumpWidget(
-        const MaterialApp(home: MatchdayScreen(showDebugTuning: true)),
+        MaterialApp(
+          home: HomeShell(showDebugTuning: true, store: MemorySaveStore()),
+        ),
       );
+      await tester.pump();
 
       // Win or lose, betting moves the bankroll off its starting value.
       await tester.tap(find.text('HOME').first);

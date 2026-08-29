@@ -1,5 +1,7 @@
 import 'package:betting_sim/state/cards.dart';
+import 'package:betting_sim/state/day_builder.dart';
 import 'package:betting_sim/state/performance.dart';
+import 'package:betting_sim/state/save.dart';
 import 'package:betting_sim/state/tuning.dart';
 import 'package:flutter/foundation.dart';
 import 'package:league_engine/league_engine.dart';
@@ -18,6 +20,25 @@ class GameState extends ChangeNotifier {
     };
     _openDay();
   }
+
+  /// Rebuilds the game [save] describes, by REPLAYING it.
+  ///
+  /// A save carries no league, no hidden state and no scorelines, so there is
+  /// nothing to load: the only way back to matchday N is to play matchdays 0
+  /// to N-1 again from the same seed. That is the point of the seed-plus-
+  /// deltas format -- if replay ever diverged, this constructor would be the
+  /// thing that noticed, rather than a save silently disagreeing with itself.
+  factory GameState.fromSave(SaveData save) {
+    final game = GameState(masterSeed: save.masterSeed, tuning: save.tuning);
+    for (var i = 0; i < save.day; i++) {
+      game.advanceDay();
+    }
+    save.bets.forEach(game._replay);
+    return game;
+  }
+
+  /// What every game starts with.
+  static const double openingBankroll = 1000;
 
   /// The save's root seed.
   final int masterSeed;
@@ -51,8 +72,19 @@ class GameState extends ChangeNotifier {
     bookLatentAwareness: tuning.bookLatentAwareness,
   );
 
+  late final DayBuilder _builder = DayBuilder(
+    runner: _runner,
+    maker: _maker,
+    masterSeed: masterSeed,
+  );
+
+  /// Which calendar day each matchday falls on.
+  late final SeasonCalendar calendar = SeasonCalendar(
+    matchdays: _league.matchdays,
+  );
+
   int _day = 0;
-  double _bankroll = 1000;
+  double _bankroll = openingBankroll;
   List<FixtureCard> _fixtures = <FixtureCard>[];
   final List<PlayerBet> _history = <PlayerBet>[];
   final Map<int, ({Selection selection, double stake})> _slip =
@@ -63,6 +95,10 @@ class GameState extends ChangeNotifier {
 
   /// How many matchdays the season has.
   int get totalDays => _league.matchdays;
+
+  /// Today's date. The season runs a round a week; the other six days are
+  /// where everything that is not a match happens.
+  GameDate get date => calendar.dateOfMatchday(_day.clamp(0, totalDays - 1));
 
   /// The player's money.
   double get bankroll => _bankroll;
@@ -162,42 +198,33 @@ class GameState extends ChangeNotifier {
     );
   }
 
-  void _openDay() {
-    _fixtures = <FixtureCard>[
-      for (final (index, fixture) in _league.fixturesOn(_day).indexed)
-        _cardFor(index, fixture),
-    ];
+  /// The save that would restore this game.
+  SaveData toSave() => SaveData(
+    masterSeed: masterSeed,
+    tuning: tuning,
+    day: _day,
+    bets: List<PlayerBet>.of(_history),
+  );
+
+  /// Re-applies an already-settled bet from a save.
+  ///
+  /// Money and scoreboard only: the match it refers to was replayed by the
+  /// constructor, so re-running the engine here would play it twice.
+  void _replay(PlayerBet bet) {
+    _bankroll += bet.profit;
+    performance.record(
+      stake: bet.stake,
+      profit: bet.profit,
+      clv: bet.closingLineValue,
+    );
+    _history.add(bet);
   }
 
-  FixtureCard _cardFor(int index, Fixture fixture) {
-    final home = _league.teamById(fixture.homeId);
-    final away = _league.teamById(fixture.awayId);
-    final path = SeedPath(
-      master: masterSeed,
-      season: 0,
+  void _openDay() {
+    _fixtures = _builder.cardsFor(
+      league: _league,
       day: _day,
-      match: index,
-    );
-    final ctx = _runner.contextFor(
-      home: home,
-      away: away,
-      homeState: _states[home.id]!,
-      awayState: _states[away.id]!,
-      seedPath: path,
-    );
-    final markets = _maker.marketsFor(
-      ctx: ctx,
-      home: home,
-      away: away,
-      path: path,
-    );
-    return FixtureCard(
-      home: home,
-      away: away,
-      market: markets.opening,
-      closing: markets.closing,
-      context: ctx,
-      index: index,
+      states: _states,
     );
   }
 

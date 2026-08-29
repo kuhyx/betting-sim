@@ -11,6 +11,9 @@ dependencies:
     sdk: flutter
   league_engine:
     path: ../packages/league_engine
+  # Exact pin, no caret: the freshness gate compares a pinned version against
+  # the newest stable, and a range gives it nothing to compare.
+  shared_preferences: 2.5.5
 
 dev_dependencies:
   flutter_launcher_icons: 0.14.4

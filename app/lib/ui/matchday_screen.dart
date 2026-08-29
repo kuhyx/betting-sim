@@ -11,61 +11,46 @@ import 'package:flutter/material.dart';
 import 'package:league_engine/league_engine.dart';
 
 /// The playable slice: fixtures, prices, a bet slip and a settle button.
+///
+/// A view, not an owner: `HomeShell` holds the [GameState] so that the feed,
+/// friends and life tabs read the same bankroll and the same calendar.
 class MatchdayScreen extends StatefulWidget {
-  /// Creates the screen.
+  /// Creates the screen over [game].
   ///
   /// [showDebugTuning] is a required plain bool rather than a `kDebugMode`
   /// default: the constant is read in exactly one place, `main.dart`, so the
   /// panel cannot be reached in a release build, and tests can drive both
   /// states without one. Defaulting it here would also const-fold to `true`
   /// under `flutter test` and trip avoid_redundant_argument_values.
-  const MatchdayScreen({required this.showDebugTuning, super.key});
+  const MatchdayScreen({
+    required this.game,
+    required this.showDebugTuning,
+    required this.onRetune,
+    required this.onSettled,
+    super.key,
+  });
+
+  /// The game being played.
+  final GameState game;
 
   /// Whether the debug tuning surface may be shown.
   final bool showDebugTuning;
+
+  /// Called when a balance knob moves, which restarts the season.
+  final ValueChanged<Tuning> onRetune;
+
+  /// Called once a matchday has settled, so the shell can save.
+  final Future<void> Function() onSettled;
 
   @override
   State<MatchdayScreen> createState() => _MatchdayScreenState();
 }
 
 class _MatchdayScreenState extends State<MatchdayScreen> {
-  GameState _game = GameState();
   OddsFormat _format = OddsFormat.decimal;
   double _stakeSize = 10;
 
-  @override
-  void initState() {
-    super.initState();
-    _game.addListener(_onChanged);
-  }
-
-  @override
-  void dispose() {
-    _game
-      ..removeListener(_onChanged)
-      ..dispose();
-    super.dispose();
-  }
-
-  void _onChanged() => setState(() {});
-
-  /// Rebuilds the season under [tuning].
-  ///
-  /// A full restart, not a re-price: the knobs decide what the book quotes, so
-  /// every fixture already shown was priced under the old value and the
-  /// bankroll it produced is no longer comparable. The master seed is
-  /// deliberately CARRIED OVER -- the same fixtures at a different awareness
-  /// is what makes the setting feelable rather than merely different.
-  void _retune(Tuning tuning) {
-    final old = _game;
-    setState(() {
-      _game = GameState(masterSeed: old.masterSeed, tuning: tuning)
-        ..addListener(_onChanged);
-    });
-    old
-      ..removeListener(_onChanged)
-      ..dispose();
-  }
+  GameState get _game => widget.game;
 
   void _cycleFormat() {
     setState(() {
@@ -78,6 +63,7 @@ class _MatchdayScreenState extends State<MatchdayScreen> {
     final before = _game.history.length;
     _game.advanceDay();
     final settled = _game.history.take(_game.history.length - before).toList();
+    unawaited(widget.onSettled());
     if (settled.isNotEmpty && mounted) {
       // Nothing here waits on the sheet closing -- the day is already
       // settled by the time it opens, so it is a report, not a step.
@@ -143,7 +129,7 @@ class _MatchdayScreenState extends State<MatchdayScreen> {
           DebugTuningPanel(
             tuning: _game.tuning,
             performance: _game.performance,
-            onChanged: _retune,
+            onChanged: widget.onRetune,
             enabled: widget.showDebugTuning,
           ),
           if (!_game.seasonOver)
