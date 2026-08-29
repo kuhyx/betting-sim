@@ -10,6 +10,7 @@ class FixtureCard {
     required this.closing,
     required this.context,
     required this.index,
+    this.tips = const <Tip>[],
   });
 
   /// The home club.
@@ -34,6 +35,13 @@ class FixtureCard {
 
   /// Which fixture on the matchday this is.
   final int index;
+
+  /// What the internet is saying about it.
+  ///
+  /// Generated from the seed tree like everything else -- the sport, the
+  /// clubs and the money are invented, so the people arguing about them are
+  /// too. There is no network call anywhere in this app.
+  final List<Tip> tips;
 }
 
 /// A bet the player has struck, once settled.

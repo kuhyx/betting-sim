@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:betting_sim/state/game.dart';
+import 'package:betting_sim/state/game_save.dart';
 import 'package:betting_sim/state/save.dart';
 import 'package:betting_sim/state/save_store.dart';
 import 'package:betting_sim/state/tuning.dart';
+import 'package:betting_sim/ui/feed_screen.dart';
 import 'package:betting_sim/ui/matchday_screen.dart';
 import 'package:betting_sim/ui/placeholder_tab.dart';
 import 'package:betting_sim/ui/tokens.dart';
@@ -106,12 +108,7 @@ class _HomeShellState extends State<HomeShell> {
             onRetune: _retune,
             onSettled: _persist,
           ),
-          const PlaceholderTab(
-            title: 'feed',
-            blurb:
-                'tipsters, forum threads, and the record you keep of who '
-                'is actually any good.',
-          ),
+          FeedScreen(game: game),
           const PlaceholderTab(
             title: 'friends',
             blurb: 'bets proposed to you, and the ones you propose back.',

@@ -1,5 +1,6 @@
 import 'package:betting_sim/state/cards.dart';
 import 'package:betting_sim/state/day_builder.dart';
+import 'package:betting_sim/state/ledger.dart';
 import 'package:betting_sim/state/performance.dart';
 import 'package:betting_sim/state/save.dart';
 import 'package:betting_sim/state/settler.dart';
@@ -75,7 +76,19 @@ class GameState extends ChangeNotifier {
     runner: _runner,
     maker: _maker,
     masterSeed: masterSeed,
+    tipsters: tipsters,
   );
+
+  /// The people posting about this league. Fixed for the save, and never
+  /// labelled: which two of them are worth reading is the thing to find out.
+  late final List<Tipster> tipsters = generateTipsters(masterSeed);
+
+  /// What you have written down about them.
+  ///
+  /// Rebuilt by replaying, never stored: `fromSave` re-plays every matchday,
+  /// and every matchday folds its tips back in. A save carries no notebook
+  /// because it does not need one.
+  final TipsterLedger ledger = TipsterLedger();
 
   /// Which calendar day each matchday falls on.
   late final SeasonCalendar calendar = SeasonCalendar(
@@ -153,6 +166,7 @@ class GameState extends ChangeNotifier {
           result: result,
         ),
       );
+      ledger.record(card.tips, result, card.market);
       final staked = _slip[card.index];
 
       if (staked != null) {
@@ -198,14 +212,6 @@ class GameState extends ChangeNotifier {
       ),
     );
   }
-
-  /// The save that would restore this game.
-  SaveData toSave() => SaveData(
-    masterSeed: masterSeed,
-    tuning: tuning,
-    day: _day,
-    bets: List<PlayerBet>.of(_history),
-  );
 
   /// Re-applies an already-settled bet from a save.
   ///

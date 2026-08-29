@@ -42,8 +42,9 @@ The game is lacklustre. It misses:
 - [x] **1 — the match happens**: timeline, stats, players, on slots 4-17.
       Acceptance numbers stayed bit-identical; dixon_coles.dart and
       poisson_params.dart have an empty diff.
-- [ ] **2 — the internet**: tipsters and forum posts, possession 5.
-      Acceptance numbers legitimately move here.
+- [x] **2 — the internet**: tipsters and forum posts, slots 20-21, plus
+      gate 4. Gates 1-3 stayed bit-identical after all: the feed draws from
+      its own slots, and no existing bettor reads it.
 - [ ] **3 — friends**: proposals, accept/reject/counter, gate 4, possession 6
 - [ ] **4 — life sim**: needs, hours, job, rent, items, possession 7
 

@@ -10,6 +10,9 @@ import 'package:league_engine/src/latent/config.dart';
 import 'package:league_engine/src/latent/decay.dart';
 import 'package:league_engine/src/latent/state.dart';
 import 'package:league_engine/src/league/generate.dart';
+import 'package:league_engine/src/media/desk.dart';
+import 'package:league_engine/src/media/tip.dart';
+import 'package:league_engine/src/media/tipster.dart';
 import 'package:league_engine/src/rng/seeds.dart';
 import 'package:league_engine/src/rng/source.dart';
 import 'package:league_engine/src/scoreline/dixon_coles.dart';
@@ -27,6 +30,7 @@ class SeasonRunner {
     this.fatigueObservationNoise = 0.12,
     this.midweekFixtureRate = 0.25,
     this.bookLatentAwareness = 0.7,
+    this.publishTips = false,
   });
 
   /// The scoreline engine.
@@ -60,17 +64,10 @@ class SeasonRunner {
   /// truth in between is a book that is mostly right and occasionally behind
   /// the news, which is what real books are.
   ///
-  /// Measured over 80 seasons per setting (random / skilled / oracle ROI):
-  ///   1.00  -4.12%  -4.54%  +22.80%   nothing to know
-  ///   0.90  -4.17%  -2.15%  +22.70%   edge too thin to clear the vig
-  ///   0.80  -4.16%  +0.44%  +22.78%   skill just beats the margin
-  ///   0.70  -4.07%  +3.21%  +23.03%   comfortable
-  ///   0.50  -3.69%  +9.47%  +24.86%   too soft
-  /// 0.7 is chosen on the PER-SEASON mean, not the pooled figure. Kelly
-  /// staking compounds, so a winning season stakes up to 4.6x a losing one and
-  /// pooled ROI silently overweights the good ones: at 0.8 the pooled figure
-  /// read +0.79% while the median season was -2.1%. The mean of per-season
-  /// ROIs is the honest statistic and the one the gate asserts.
+  /// The measured table of settings, and why 0.7 is chosen on the PER-SEASON
+  /// mean rather than the pooled figure, live in `DOCS-acceptance-gate.md`.
+  /// The short version: Kelly staking compounds, so pooled ROI silently
+  /// overweights the seasons that went well.
   ///
   /// The random bettor stays near -4.76% at every setting, which is the check
   /// that the house edge survives whatever this is tuned to.
@@ -85,6 +82,15 @@ class SeasonRunner {
   /// rounds are what create congestion asymmetry in a real season, and they
   /// are what makes studying the fixture list worth anything.
   final double midweekFixtureRate;
+
+  /// Whether the season's fixtures come with a page of tipster opinion.
+  ///
+  /// Off by default, and that default is load-bearing twice over. Tips draw
+  /// from their own sub-seed, so they cannot move a price or a scoreline --
+  /// but generating twelve of them per fixture is real work the existing
+  /// strategies would pay for and never read. Only the bettors that consume
+  /// the feed turn it on.
+  final bool publishTips;
 
   /// Runs one season and returns what [bettor] made of it.
   SeasonResult run({
@@ -105,6 +111,10 @@ class SeasonRunner {
       bookLatentAwareness: bookLatentAwareness,
     );
     const clv = ClvCalculator();
+    const desk = TipsterDesk();
+    final tipsters = publishTips
+        ? generateTipsters(masterSeed)
+        : const <Tipster>[];
 
     final states = <int, LatentState>{
       for (final t in league.teams) t.id: const LatentState(),
@@ -152,6 +162,14 @@ class SeasonRunner {
             observedAwayFatigue: _observe(awayState.fatigue, betRng),
             observedHomeForm: _observeSigned(homeState.form, betRng),
             observedAwayForm: _observeSigned(awayState.form, betRng),
+            tips: publishTips
+                ? desk.tipsFor(
+                    ctx: ctx,
+                    path: path,
+                    tipsters: tipsters,
+                    market: markets.opening,
+                  )
+                : const <Tip>[],
           ),
           purse,
           betRng,

@@ -1,5 +1,6 @@
 import 'package:league_engine/src/book/odds.dart';
 import 'package:league_engine/src/book/pricing.dart';
+import 'package:league_engine/src/media/tip.dart';
 import 'package:league_engine/src/rng/source.dart';
 import 'package:league_engine/src/scoreline/protocol.dart';
 
@@ -18,6 +19,7 @@ class BettingView {
     this.observedAwayFatigue,
     this.observedHomeForm,
     this.observedAwayForm,
+    this.tips = const <Tip>[],
   });
 
   /// The prices on offer.
@@ -48,6 +50,14 @@ class BettingView {
 
   /// What the player believes about the away side's recent form.
   final double? observedAwayForm;
+
+  /// What the internet is saying about this fixture.
+  ///
+  /// Empty unless the season was run with `publishTips`. Reading it is the
+  /// same kind of work as reading the fixture list: the opinions are public,
+  /// and some of the people holding them know more than the book does. Which
+  /// ones is not marked, and cannot be -- that is the entire mechanic.
+  final List<Tip> tips;
 }
 
 /// A bet placed at a price.

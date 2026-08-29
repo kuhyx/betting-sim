@@ -7,7 +7,7 @@ void main() {
     // unit test into the full gate run.
     final report = runAcceptance(seasons: 6, masterSeed: 4242);
 
-    test('reports every strategy plus the perfect-book control', () {
+    test('reports every strategy plus the two controls', () {
       expect(
         report.strategies.map((s) => s.name),
         containsAll(<String>[
@@ -15,13 +15,32 @@ void main() {
           'random',
           'oracle',
           'random-vs-perfect',
+          'crowd',
+          'insider',
         ]),
       );
     });
 
-    test('runs all four gates', () {
-      expect(report.gates, hasLength(4));
+    test('runs every gate', () {
+      expect(report.gates, hasLength(6));
       expect(report.passed, report.gates.every((g) => g.passed));
+    });
+
+    test('the feed cannot move a price or a scoreline', () {
+      // Tips draw from their own sub-seed, so switching the feed on must
+      // leave the strategies that never read it byte-identical. If this ever
+      // fails, a new draw has been inserted into an existing stream.
+      final quiet = const SeasonRunner().run(
+        masterSeed: 4242,
+        bettor: const SkilledBettor(),
+      );
+      final loud = const SeasonRunner(publishTips: true).run(
+        masterSeed: 4242,
+        bettor: const SkilledBettor(),
+      );
+      expect(loud.profit, quiet.profit);
+      expect(loud.staked, quiet.staked);
+      expect(loud.bets.length, quiet.bets.length);
     });
 
     test('is deterministic for a given seed', () {

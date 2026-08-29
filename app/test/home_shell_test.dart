@@ -27,15 +27,20 @@ void main() {
       await _mount(tester, MemorySaveStore());
 
       expect(find.text('matchday 1 of 38'), findsOneWidget);
-      for (final tab in <String>['feed', 'friends', 'life']) {
-        await tester.tap(find.text(tab));
+
+      await tester.tap(find.byIcon(Icons.forum));
+      await tester.pumpAndSettle();
+      expect(find.text('your records'), findsOneWidget);
+
+      for (final icon in <IconData>[Icons.people, Icons.home]) {
+        await tester.tap(find.byIcon(icon));
         await tester.pumpAndSettle();
         expect(find.text('not built yet'), findsOneWidget);
       }
       // The life tab reads the calendar the season is actually on.
       expect(find.textContaining('Sat wk1'), findsOneWidget);
 
-      await tester.tap(find.text('matches'));
+      await tester.tap(find.byIcon(Icons.sports_soccer));
       await tester.pumpAndSettle();
       expect(find.text('matchday 1 of 38'), findsOneWidget);
     });

@@ -1,5 +1,8 @@
 import 'package:league_engine/src/acceptance/gate.dart';
+import 'package:league_engine/src/acceptance/gate_media.dart';
 import 'package:league_engine/src/acceptance/metrics.dart';
+import 'package:league_engine/src/bettors/crowd_bettor.dart';
+import 'package:league_engine/src/bettors/insider_bettor.dart';
 import 'package:league_engine/src/bettors/oracle_bettor.dart';
 import 'package:league_engine/src/bettors/protocol.dart';
 import 'package:league_engine/src/bettors/random_bettor.dart';
@@ -9,6 +12,7 @@ import 'package:league_engine/src/book/opening.dart';
 import 'package:league_engine/src/book/pricing.dart';
 import 'package:league_engine/src/engine/results.dart';
 import 'package:league_engine/src/engine/season_runner.dart';
+import 'package:league_engine/src/media/tipster.dart';
 
 /// The outcome of an acceptance run.
 class AcceptanceReport {
@@ -94,20 +98,55 @@ AcceptanceReport runAcceptance({
 
   final skilled = metrics.firstWhere((m) => m.name == 'skilled');
   final random = metrics.firstWhere((m) => m.name == 'random');
+  final oracle = metrics.firstWhere((m) => m.name == 'oracle');
+
+  // The feed is off for every strategy above: tips draw from their own
+  // sub-seed so they cannot move a price, but generating twelve opinions a
+  // fixture is work those strategies would pay for and never read.
+  final withTips = SeasonRunner(
+    bookmaker: Bookmaker(marginMethod: ProportionalMargin(margin)),
+    publishTips: true,
+  );
+  final crowd = summarise('crowd', <SeasonResult>[
+    for (var i = 0; i < seasons; i++)
+      withTips.run(masterSeed: masterSeed + i, bettor: const CrowdBettor()),
+  ]);
+  final insider = summarise('insider', <SeasonResult>[
+    for (var i = 0; i < seasons; i++)
+      withTips.run(
+        masterSeed: masterSeed + i,
+        // Told who the sharp one is, exactly as the oracle is told the true
+        // probabilities. A player is told neither.
+        bettor: InsiderBettor(tipsterId: _sharpestOn(masterSeed + i)),
+      ),
+  ]);
 
   return AcceptanceReport(
-    strategies: [...metrics, randomVsPerfect],
-    gates: runGates(
-      skilled: skilled,
-      random: random,
-      randomVsPerfectBook: randomVsPerfect,
-      margin: margin,
-    ),
+    strategies: [...metrics, randomVsPerfect, crowd, insider],
+    gates: <GateResult>[
+      ...runGates(
+        skilled: skilled,
+        random: random,
+        randomVsPerfectBook: randomVsPerfect,
+        margin: margin,
+      ),
+      gateTheCrowdIsNotAnEdge(crowd),
+      gateTheFeedIsWorthReading(insider, crowd, oracle),
+    ],
     margin: margin,
     masterSeed: masterSeed,
     seasons: seasons,
   );
 }
+
+/// Which tipster on [masterSeed]'s panel actually knows the most.
+///
+/// A control's cheat, and deliberately the only place awareness is read: the
+/// value is never carried on a `Tip`, so no strategy a player could write has
+/// access to it.
+int _sharpestOn(int masterSeed) => generateTipsters(
+  masterSeed,
+).reduce((a, b) => a.awareness > b.awareness ? a : b).id;
 
 /// Renders [report] as the text the gate script prints.
 String formatReport(AcceptanceReport report, Duration elapsed) {

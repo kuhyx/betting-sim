@@ -1,7 +1,7 @@
 import 'package:league_engine/src/book/flow.dart';
 import 'package:league_engine/src/book/opening.dart';
+import 'package:league_engine/src/book/opinion.dart';
 import 'package:league_engine/src/book/pricing.dart';
-import 'package:league_engine/src/latent/state.dart';
 import 'package:league_engine/src/league/entities.dart';
 import 'package:league_engine/src/rng/seeds.dart';
 import 'package:league_engine/src/rng/source.dart';
@@ -66,18 +66,8 @@ class MarketMaker {
     // -- measured, the skilled bettor's correction then made its estimate
     // WORSE than the book's (4.81pp mean error against 3.84pp) because it was
     // double-counting state the book had already priced.
-    final unaware = model.outcomeProbabilities(
-      MatchContext(
-        home: home,
-        away: away,
-        homeModifiers: const MatchModifiers(),
-        awayModifiers: const MatchModifiers(),
-        seedPath: path,
-        weather: ctx.weather,
-        refereeBias: ctx.refereeBias,
-      ),
-    );
-    final blind = _blend(truth, unaware, bookLatentAwareness);
+    final unaware = model.outcomeProbabilities(ctx.latentBlind);
+    final blind = blendOpinions(truth, unaware, bookLatentAwareness);
 
     final deviation = home.rating.deviation + away.rating.deviation;
     var opinion = openingLine.estimate(blind, deviation, rng);
@@ -86,40 +76,11 @@ class MarketMaker {
     // The public backs the favourite, whichever side that is. Always choosing
     // home made the drift one-directional and handed every bettor free CLV on
     // that side -- 1.02pp of it, which a random bettor collected too.
-    final favourite = _favourite(opinion);
+    final favourite = favouriteOf(opinion);
     for (var round = 0; round < 3; round++) {
       opinion = flow.step(opinion, blind, favourite, rng);
     }
 
     return MatchMarkets(opening: opening, closing: bookmaker.price(opinion));
-  }
-
-  /// Mixes the fully-informed and latent-blind views by [awareness].
-  static OutcomeProbs _blend(
-    OutcomeProbs informed,
-    OutcomeProbs unaware,
-    double awareness,
-  ) {
-    final mixed = <double>[
-      for (var i = 0; i < 3; i++)
-        awareness * informed.asList[i] + (1 - awareness) * unaware.asList[i],
-    ];
-    final total = mixed.reduce((a, b) => a + b);
-    return OutcomeProbs(
-      home: mixed[0] / total,
-      draw: mixed[1] / total,
-      away: mixed[2] / total,
-    );
-  }
-
-  /// The shortest-priced selection: what the public piles onto.
-  static Selection _favourite(OutcomeProbs probs) {
-    var best = Selection.home;
-    for (final s in Selection.values) {
-      if (probs.asList[s.index] > probs.asList[best.index]) {
-        best = s;
-      }
-    }
-    return best;
   }
 }

@@ -71,7 +71,10 @@ below.
 | 2 | the bookmaker |
 | 3 | the bettor |
 | 4-17 | the match narrator (`NarrationSlot`) |
-| 20+ | reserved: media, social, life |
+| 20 | the panel of tipsters a save is stuck with |
+| 21 | what they say about one fixture |
+| 30-39 | reserved: friends |
+| 40-49 | reserved: the life sim |
 
 The narrator takes fourteen of them -- one per stat per side -- rather than
 one. That is not extravagance: sub-seeds are hashes of a path, so a slot is

@@ -38,6 +38,28 @@ cd packages/league_engine
 dart run bin/watch.dart 20260828 3 2     # seed, matchday, fixture
 ```
 
+## The internet
+
+Twelve people post about every fixture, with names, standing biases and a
+tone. Two of them genuinely know more than the price. The rest are reading the
+odds back to you, and three are worse than useless.
+
+Nothing marks which is which. How loudly somebody states an opinion is drawn
+independently of whether they are right, so the feed cannot be read at a
+glance -- the only way to find the two worth following is to write down what
+they said and check later, which the app does for you under "your records".
+It ranks by what a flat stake would have RETURNED, not by how often they were
+right: a tipster who only ever backs odds-on favourites is right most weeks
+and still loses you money.
+
+All of it is invented and generated from the seed tree. There is no network
+call anywhere in the app.
+
+```sh
+cd packages/league_engine
+dart run bin/feed.dart 20260828 4 0     # seed, matchday, fixture
+```
+
 ## Acceptance gate
 
 The engine is not finished until a headless batch prints three numbers:

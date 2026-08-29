@@ -13,6 +13,8 @@ class DayBuilder {
     required this.runner,
     required this.maker,
     required this.masterSeed,
+    required this.tipsters,
+    this.desk = const TipsterDesk(),
   });
 
   /// Builds match contexts and plays them.
@@ -23,6 +25,12 @@ class DayBuilder {
 
   /// The save's root seed, the top of every seed path below.
   final int masterSeed;
+
+  /// The people posting about this league, fixed for the save.
+  final List<Tipster> tipsters;
+
+  /// Turns a fixture into a page of opinion about it.
+  final TipsterDesk desk;
 
   /// The cards for matchday [day] of [league], given each club's hidden
   /// [states].
@@ -78,6 +86,12 @@ class DayBuilder {
       closing: markets.closing,
       context: ctx,
       index: index,
+      tips: desk.tipsFor(
+        ctx: ctx,
+        path: path,
+        tipsters: tipsters,
+        market: markets.opening,
+      ),
     );
   }
 }

@@ -65,6 +65,27 @@ class MatchContext {
 
   /// The referee's leaning, as a multiplier on the home scoring rate.
   final double refereeBias;
+
+  /// The same fixture read as though both clubs were fresh, neutral and fully
+  /// fit -- no fatigue, no morale, no form, nobody injured.
+  ///
+  /// The latent-BLIND view, constructed explicitly rather than approximated as
+  /// "the truth plus noise", because truth-plus-noise already embeds fatigue
+  /// and form perfectly and so leaves nothing to know. Both the bookmaker and
+  /// the tipsters are built by blending this against the informed view, which
+  /// is what makes partial knowledge modellable at all.
+  ///
+  /// Weather and the referee carry over: they are PUBLISHED, so nobody is
+  /// blind to them.
+  MatchContext get latentBlind => MatchContext(
+    home: home,
+    away: away,
+    homeModifiers: const MatchModifiers(),
+    awayModifiers: const MatchModifiers(),
+    seedPath: seedPath,
+    weather: weather,
+    refereeBias: refereeBias,
+  );
 }
 
 /// The outcome of one played match.

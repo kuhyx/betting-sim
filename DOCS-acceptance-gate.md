@@ -55,6 +55,32 @@ the same fallibility that makes a studious player's edge possible at all.
 Demanding the exact identity here would demand an infallible book, and an
 infallible book makes the game unwinnable by construction.
 
+**Gate 4a — the crowd is not an edge.** Backing whatever the feed is loudest
+about must LOSE, at roughly the rate a random bettor loses.
+
+This one has already caught a build. Tipsters were first given independent
+errors, and averaging twelve opinions cancelled the noise and left the truth:
+following the consensus returned **+12.8% a season**. The feed had stopped
+being a thing to get good at and become free money. Two changes fixed it --
+every tipster is now anchored on the PUBLISHED PRICE rather than on a clean
+model evaluation, so awareness means "how far they move off the odds toward
+the truth" and zero awareness cannot beat the market by construction; and the
+whole panel shares one error per fixture, because correlated error does not
+average away. Real pundits all read the same stories and arrive at the same
+wrong idea together.
+
+**Gate 4b — the feed is worth reading.** Following the single sharpest tipster
+must beat both zero and the crowd, and must stay under 60% of what the oracle
+makes.
+
+Both halves are needed. If nobody on the panel can beat the market, keeping
+records is busywork and the feed is decoration; if reading one account rivalled
+perfect knowledge, nobody would ever study a fixture list again. `InsiderBettor`
+is a control in exactly the sense the oracle is: it is TOLD which tipster is
+sharp. A player is told nothing -- confidence is drawn independently of skill,
+so the only way to find the two people worth following is to write down what
+they said and check later.
+
 ## The oracle is a control, not a subject
 
 `OracleBettor` reads the true probabilities and so cheats by construction. It
