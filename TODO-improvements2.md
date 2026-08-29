@@ -38,12 +38,28 @@ The game is lacklustre. It misses:
 
 ## Phases
 
-- [ ] **0 — shell**: navigation, calendar, local save
-- [ ] **1 — the match happens**: timeline, stats, players, on possession 4.
-      Acceptance numbers must stay BIT-IDENTICAL.
+- [x] **0 — shell**: navigation, calendar, local save
+- [x] **1 — the match happens**: timeline, stats, players, on slots 4-17.
+      Acceptance numbers stayed bit-identical; dixon_coles.dart and
+      poisson_params.dart have an empty diff.
 - [ ] **2 — the internet**: tipsters and forum posts, possession 5.
       Acceptance numbers legitimately move here.
 - [ ] **3 — friends**: proposals, accept/reject/counter, gate 4, possession 6
 - [ ] **4 — life sim**: needs, hours, job, rent, items, possession 7
+
+## Deferred, deliberately
+
+Two changes belong together in one re-baselining commit, because each moves
+the acceptance numbers and doing them separately makes the movement
+unattributable:
+
+- `poisson_params.scoringRates` multiplies the home rate by `refereeBias`,
+  which contradicts "referee bias reaches fouls and cards only".
+- `LatentShocks.rollInjury` / `recoverInjuries` are still called from nowhere,
+  so `injuredCount` never changes during a season.
+
+Both alter the sampled score. Land them together, rerun
+`scripts/check_acceptance.sh 200 9000`, and re-baseline the numbers in
+`DOCS-acceptance-gate.md` as a deliberate, visible edit.
 
 Full plan: `~/.claude/plans/sport-betting-simultoar-delegated-nova.md`

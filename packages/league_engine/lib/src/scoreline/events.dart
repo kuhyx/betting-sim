@@ -49,6 +49,25 @@ class InjuryEvent extends MatchEvent {
   String toString() => "Injury(${homeSide ? 'H' : 'A'} $minute')";
 }
 
+/// A player was booked.
+class YellowCardEvent extends MatchEvent {
+  /// Creates a booking.
+  const YellowCardEvent({
+    required int minute,
+    required this.homeSide,
+    required this.playerId,
+  }) : super(minute);
+
+  /// Whether the booked player belongs to the home side.
+  final bool homeSide;
+
+  /// Who was booked.
+  final int playerId;
+
+  @override
+  String toString() => "Yellow(${homeSide ? 'H' : 'A'} $minute')";
+}
+
 /// A player was sent off.
 class RedCardEvent extends MatchEvent {
   /// Creates a dismissal.

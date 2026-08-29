@@ -69,6 +69,21 @@ class LatentState {
 ///
 /// The scoreline model consumes only this, never [LatentState] itself, so the
 /// latent values cannot leak into scoring by accident.
+///
+/// Two groups of fields, and the split is load-bearing:
+///
+///  * [attackMultiplier], [defenceMultiplier], [varianceMultiplier] and
+///    [lateMatchDecay] feed the SCORELINE. They deliberately MIX the latent
+///    factors together -- `attackMultiplier` alone carries fatigue, injuries,
+///    form and weather, and no observer can take it apart.
+///  * [formShift], [moraleSpread] and [missingCount] feed the NARRATOR, which
+///    elaborates an already-sampled result into match detail. Each isolates
+///    exactly one factor, because one-stat-one-factor is impossible if the
+///    generator can only see the blend.
+///
+/// The scoreline must never read the second group. `dixon_coles.dart` and
+/// `poisson_params.dart` are unchanged by the commit that added them, and
+/// that empty diff is the proof.
 class MatchModifiers {
   /// Creates modifiers.
   const MatchModifiers({
@@ -76,6 +91,9 @@ class MatchModifiers {
     this.defenceMultiplier = 1,
     this.varianceMultiplier = 1,
     this.lateMatchDecay = 0,
+    this.formShift = 0,
+    this.moraleSpread = 0,
+    this.missingCount = 0,
   });
 
   /// Scales the club's scoring rate.
@@ -95,6 +113,26 @@ class MatchModifiers {
   /// Fatigue's fingerprint. Visible only in when goals are scored, never in
   /// the final score alone -- so reading it requires match detail.
   final double lateMatchDecay;
+
+  /// Form on its own, roughly -0.1..0.1. Narrator input only.
+  ///
+  /// Drives shot CONVERSION and nothing else: a side in form puts the same
+  /// number of chances away more often. Already inside [attackMultiplier] as
+  /// part of the blend; repeated here so the narrator can see it alone.
+  final double formShift;
+
+  /// Morale on its own, roughly -0.35..0.35. Narrator input only.
+  ///
+  /// Drives the SPREAD of possession and nothing else, scaling a mean-zero
+  /// term so the mean cannot move. That is morale's whole fingerprint: a
+  /// fragile side is unpredictable, not worse.
+  final double moraleSpread;
+
+  /// How many first-choice players are unavailable. Narrator input only.
+  ///
+  /// Drives the team sheet, which is the one place injuries are directly
+  /// READABLE rather than merely inferable from a step down in scoring.
+  final int missingCount;
 
   @override
   String toString() =>

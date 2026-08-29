@@ -2,6 +2,7 @@ import 'package:betting_sim/state/cards.dart';
 import 'package:betting_sim/state/day_builder.dart';
 import 'package:betting_sim/state/performance.dart';
 import 'package:betting_sim/state/save.dart';
+import 'package:betting_sim/state/settler.dart';
 import 'package:betting_sim/state/tuning.dart';
 import 'package:flutter/foundation.dart';
 import 'package:league_engine/league_engine.dart';
@@ -53,8 +54,6 @@ class GameState extends ChangeNotifier {
   /// The player's running ROI and CLV.
   final Performance performance = Performance();
 
-  static const _clv = ClvCalculator();
-
   late final League _league;
   late Map<int, LatentState> _states;
 
@@ -89,6 +88,7 @@ class GameState extends ChangeNotifier {
   final List<PlayerBet> _history = <PlayerBet>[];
   final Map<int, ({Selection selection, double stake})> _slip =
       <int, ({Selection selection, double stake})>{};
+  List<PlayedMatch> _played = <PlayedMatch>[];
 
   /// Which matchday is showing.
   int get day => _day;
@@ -113,6 +113,13 @@ class GameState extends ChangeNotifier {
   Map<int, ({Selection selection, double stake})> get slip =>
       Map.unmodifiable(_slip);
 
+  /// The matches from the last matchday played, for watching back.
+  ///
+  /// Watching cannot change any of them -- they are already decided by the
+  /// time this list exists, which is the whole point of the narrator running
+  /// after the scoreline.
+  List<PlayedMatch> get played => List.unmodifiable(_played);
+
   /// Whether the season has finished.
   bool get seasonOver => _day >= _league.matchdays;
 
@@ -135,8 +142,17 @@ class GameState extends ChangeNotifier {
       return;
     }
 
+    final played = <PlayedMatch>[];
     for (final card in _fixtures) {
       final result = _runner.run(card.context);
+      played.add(
+        PlayedMatch(
+          home: card.home,
+          away: card.away,
+          context: card.context,
+          result: result,
+        ),
+      );
       final staked = _slip[card.index];
 
       if (staked != null) {
@@ -157,6 +173,7 @@ class GameState extends ChangeNotifier {
       _states[team.id] = _decay.rest(_states[team.id]!);
     }
 
+    _played = played;
     _slip.clear();
     _day++;
     if (!seasonOver) {
@@ -172,28 +189,12 @@ class GameState extends ChangeNotifier {
     ({Selection selection, double stake}) staked,
     MatchResult result,
   ) {
-    final bet = Bet(
-      selection: staked.selection,
-      stake: staked.stake,
-      taken: card.market.priceOf(staked.selection),
-    );
-    final profit = settle(bet, result);
-    final clv = _clv.forBet(
-      selection: bet.selection,
-      taken: bet.taken,
-      closing: card.closing,
-    );
-    _bankroll += profit;
-    performance.record(stake: staked.stake, profit: profit, clv: clv);
-    _history.add(
-      PlayerBet(
-        fixture: '${card.home.name} v ${card.away.name}',
+    _replay(
+      settleCard(
+        card: card,
         selection: staked.selection,
         stake: staked.stake,
-        taken: bet.taken,
-        profit: profit,
-        result: '${result.homeScore}-${result.awayScore}',
-        closingLineValue: clv,
+        result: result,
       ),
     );
   }

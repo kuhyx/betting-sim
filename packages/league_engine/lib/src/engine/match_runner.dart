@@ -5,7 +5,10 @@ import 'package:league_engine/src/latent/state.dart';
 import 'package:league_engine/src/league/entities.dart';
 import 'package:league_engine/src/rng/seeds.dart';
 import 'package:league_engine/src/rng/source.dart';
+import 'package:league_engine/src/scoreline/narration_config.dart';
+import 'package:league_engine/src/scoreline/narrator.dart';
 import 'package:league_engine/src/scoreline/protocol.dart';
+import 'package:league_engine/src/scoreline/timeline.dart';
 
 /// Runs one match end to end, from its address in the seed tree.
 ///
@@ -17,6 +20,7 @@ class MatchRunner {
   const MatchRunner({
     required this.model,
     this.latentConfig = const LatentConfig(),
+    this.narrationConfig = const NarrationConfig(),
   });
 
   /// The scoreline engine. Swappable: any [ScorelineModel] works.
@@ -24,6 +28,9 @@ class MatchRunner {
 
   /// Latent-layer tunables.
   final LatentConfig latentConfig;
+
+  /// Rates for the match report.
+  final NarrationConfig narrationConfig;
 
   /// Builds the context for a match without playing it.
   ///
@@ -66,4 +73,15 @@ class MatchRunner {
     final rng = Mix32Source(deriveSeed(ctx.seedPath.child(possession: 1)));
     return model.simulate(ctx, rng);
   }
+
+  /// Elaborates [result] into a watchable match report.
+  ///
+  /// OPT-IN, and separate from [run] on purpose. Narration draws from
+  /// its own `NarrationSlot` sub-seeds (4-17), so it cannot disturb the score
+  /// -- but it is also
+  /// pure cost on the acceptance gate's 200-season batch, which never looks
+  /// at a match report. `SeasonRunner` therefore does not call this; the app
+  /// does, for the one match the player is actually watching.
+  MatchTimeline narrate(MatchContext ctx, MatchResult result) =>
+      MatchNarrator(narrationConfig).narrate(ctx, result);
 }

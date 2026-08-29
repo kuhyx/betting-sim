@@ -12,6 +12,10 @@ import 'package:league_engine/src/latent/state.dart';
 ///  * morale  -> variance only, mean unchanged (visible in result spread)
 ///  * form    -> a small mean shift that decays (visible as streakiness)
 ///  * injuries-> a step change in scoring (visible against team news)
+///
+/// The last three fields it fills ([MatchModifiers.formShift],
+/// [MatchModifiers.moraleSpread], [MatchModifiers.missingCount]) exist for the
+/// narrator rather than the scoreline: see [MatchModifiers].
 class LatentModifiers {
   /// Creates a projection.
   const LatentModifiers([this.config = const LatentConfig()]);
@@ -50,6 +54,12 @@ class LatentModifiers {
       defenceMultiplier: _atLeastZero(fatiguePenalty * injuryPenalty),
       varianceMultiplier: _atLeastZero(moraleVariance * weatherVariance),
       lateMatchDecay: state.fatigue.clamp(0.0, 1.0),
+      // The narrator's three unblended channels. Same inputs as above, kept
+      // separable so each observable stat can be driven by exactly one of
+      // them. Nothing on the scoreline path reads these.
+      formShift: config.formAttackBonus * state.form,
+      moraleSpread: config.moraleVarianceSpread * state.morale,
+      missingCount: state.injuredCount,
     );
   }
 

@@ -94,6 +94,12 @@ run_gates() {
     echo "== engine: format =="
     (cd "$ENGINE" && dart format --output=none --set-exit-if-changed .)
     echo "== engine: test + coverage =="
+    # Wipe first. format_coverage merges every JSON it finds, so a stale file
+    # from a test that has since been renamed or deleted still contributes
+    # its line table -- which both invents uncovered lines that no longer
+    # exist AND can mark a genuinely uncovered new line as hit. Coverage that
+    # depends on what was in the directory beforehand is not a gate.
+    rm -rf "$ENGINE/coverage"
     (cd "$ENGINE" && dart test --coverage=coverage --branch-coverage >/dev/null)
     (cd "$ENGINE" \
         && dart pub global run coverage:format_coverage --lcov --in=coverage \

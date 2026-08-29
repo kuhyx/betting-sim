@@ -5,6 +5,7 @@ import 'package:betting_sim/state/tuning.dart';
 import 'package:betting_sim/ui/action_bar.dart';
 import 'package:betting_sim/ui/debug_panel.dart';
 import 'package:betting_sim/ui/fixture_tile.dart';
+import 'package:betting_sim/ui/last_matchday_screen.dart';
 import 'package:betting_sim/ui/results_sheet.dart';
 import 'package:betting_sim/ui/tokens.dart';
 import 'package:flutter/material.dart';
@@ -89,6 +90,16 @@ class _MatchdayScreenState extends State<MatchdayScreen> {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         actions: <Widget>[
+          if (_game.played.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.slow_motion_video, color: Tokens.accent),
+              tooltip: 'watch the last matchday',
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => LastMatchdayScreen(matches: _game.played),
+                ),
+              ),
+            ),
           TextButton(
             onPressed: _cycleFormat,
             child: Text(

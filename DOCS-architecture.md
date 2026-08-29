@@ -53,10 +53,22 @@ same way, no amount of study could separate them:
 
 | factor | fingerprint |
 | ------ | ----------- |
-| fatigue | lower scoring **and** goals arriving earlier |
-| morale | wider spread of results, mean unchanged |
-| form | a small mean shift that decays |
-| injuries | a step change in scoring, against team news |
+| fatigue | lower scoring, goals earlier, **attempts drying up after the break** |
+| morale | wider spread of results, mean unchanged, **wider possession spread** |
+| form | a small mean shift that decays, **and shot conversion** |
+| injuries | a step change in scoring, **and names missing from the team sheet** |
+| referee bias | **fouls and cards, and nothing else** |
+
+Corners answer to no hidden factor at all -- public strength only. That is
+deliberate: texture without a fifth thing to regress out.
+
+One coupling is legitimate and is named so it is not mistaken for a leak. A
+tired side takes fewer shots, so it also puts fewer *on target*. Fatigue moves
+the count through shot volume; form moves the **rate**. Form's readable number
+is therefore conversion, not the raw total. For the same reason goals are filed
+into the half they were scored in: counting them all as first-half attempts
+would make a side that scored late look more tired, and how much a side scores
+carries every latent factor at once.
 
 Morale's attack multiplier is exactly 1.0000 at every level; only its variance
 multiplier moves. Tests assert this directly.
@@ -75,6 +87,32 @@ without simulating anything before it. A test simulates a whole 380-match
 season, rebuilds one match from its seed path, and asserts `simulate` was
 called exactly once — the difference between "replay works" and "replay
 secretly re-runs the universe".
+
+## Watching a match cannot change it
+
+The engine simulates every fixture on every matchday -- the table and the
+latent decay depend on it. `MatchNarrator` then takes an **already-sampled**
+`MatchResult` and elaborates it into a timeline: shots, corners, cards,
+possession, a team sheet and a name against every goal. Following a match
+selects which already-generated timeline you *see*. Time spent watching buys
+information, never a different outcome.
+
+The ordering is what makes that true. Generating stats inside
+`DixonColesModel.simulate` would consume draws from the match's own stream and
+shift every value after them; the narrator opens its own sub-seeds instead, so
+`dixon_coles.dart` and `poisson_params.dart` are untouched and the goal
+marginal cannot move. That empty diff is the proof, not a re-measured gate
+number.
+
+It has one consequence to leave alone: a red card drawn after the fact cannot
+have influenced the score, so a side will occasionally go down to ten men and
+still win 3-0. Feeding cards back into scoring would make `simulate` disagree
+with the prices the book quoted and would leak referee bias into goals.
+
+Each observable also gets its **own** sub-seed (`NarrationSlot`, one per stat
+per side). Sharing one stream would mean that moving a hidden factor shifted
+every stat drawn after it, so one-stat-one-factor could only be asserted to a
+tolerance. With a slot each it is asserted by **equality**.
 
 Pricing and playing draw from disjoint sub-seeds (`possession: 0` for
 pre-match weather and referee, `1` for the match, `2` for the book, `3` for the

@@ -58,6 +58,32 @@ leading `-` and does not show its bits. Use `hex32`. (The 64-bit prototype's
 first reference value printed as `-1ddf57c684e23251` rather than
 `e220a8397b1dcdaf` for exactly this reason.)
 
+## The slot map
+
+`possession` is the leaf level, and it is **append-only**. Renumbering a slot
+changes every draw beneath it, which voids saved games and the frozen literals
+below.
+
+| slot | owner |
+| ---- | ----- |
+| 0 | pre-match: weather, referee bias |
+| 1 | the match itself |
+| 2 | the bookmaker |
+| 3 | the bettor |
+| 4-17 | the match narrator (`NarrationSlot`) |
+| 20+ | reserved: media, social, life |
+
+The narrator takes fourteen of them -- one per stat per side -- rather than
+one. That is not extravagance: sub-seeds are hashes of a path, so a slot is
+free, and sharing a stream between two stats would mean that changing a hidden
+factor shifted the draws of every stat after it. One-stat-one-factor would then
+only be assertable to a tolerance, and a smuggled dependency could hide in the
+noise. With a slot each, "morale does not touch corners" is an assertion of
+**equality**.
+
+The rule that follows: **a new stat family takes a new slot.** Draw order
+*inside* a slot may only be appended to.
+
 ## What is frozen
 
 - `mix32Next`'s sequence from seed 0 (`test/rng/mix32_test.dart`).

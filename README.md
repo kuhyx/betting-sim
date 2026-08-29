@@ -13,6 +13,31 @@ probability exists but is hidden; the book prices its own estimate and adds a
 margin; a player wins by estimating better than the book on some subset of
 matches, and by betting only when the edge exceeds that margin.
 
+## Watching the games
+
+A match is not a number appearing any more. Once a round is played you can
+watch any of it back: a running clock, goals with the scorer named, bookings,
+dismissals, injuries, and a full box score at the whistle -- shots, how many
+came after the break, shots on target, corners, fouls, cards and possession.
+
+Every one of those numbers answers to **exactly one** hidden factor, so they
+can be read apart rather than admired. Fatigue dries up a side's attempts
+after the hour; form moves how many attempts are on target; morale widens the
+possession spread without moving its mean; injuries put names on the missing
+list; the referee decides fouls and cards and touches nothing else. Corners
+answer to nothing hidden at all.
+
+Watching cannot change what happened -- the round was decided when you played
+it, and the report is regenerated from the same seed. See
+`DOCS-architecture.md` for why that ordering is load-bearing.
+
+Headless, for one match:
+
+```sh
+cd packages/league_engine
+dart run bin/watch.dart 20260828 3 2     # seed, matchday, fixture
+```
+
 ## Acceptance gate
 
 The engine is not finished until a headless batch prints three numbers:

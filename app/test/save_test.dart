@@ -103,6 +103,19 @@ void main() {
       expect(restored.history, isEmpty);
     });
 
+    test('can still watch the round it left off on', () {
+      // Nothing about the matches is stored: replaying the save re-plays the
+      // last matchday, so the reports are there to open again.
+      final original = _played(3);
+      final restored = GameState.fromSave(original.toSave());
+
+      expect(restored.played, hasLength(original.played.length));
+      for (var i = 0; i < original.played.length; i++) {
+        expect(restored.played[i].scoreline, original.played[i].scoreline);
+        expect(restored.played[i].home.name, original.played[i].home.name);
+      }
+    });
+
     test('carries the calendar with it', () {
       final game = _played(2);
       expect(game.date.weekday, Weekday.saturday);
