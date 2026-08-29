@@ -1,10 +1,8 @@
+import 'package:league_engine/src/bettors/estimate.dart';
 import 'package:league_engine/src/bettors/protocol.dart';
 import 'package:league_engine/src/book/pricing.dart';
-import 'package:league_engine/src/latent/modifiers.dart';
-import 'package:league_engine/src/latent/state.dart';
 import 'package:league_engine/src/rng/source.dart';
 import 'package:league_engine/src/scoreline/dixon_coles.dart';
-import 'package:league_engine/src/scoreline/protocol.dart';
 
 /// A disciplined player who studies fixture congestion.
 ///
@@ -48,7 +46,7 @@ class SkilledBettor implements Bettor {
 
   @override
   List<Bet> betsFor(BettingView view, double bankroll, RandomSource rng) {
-    final estimate = _estimate(view);
+    final estimate = studiedEstimate(view, model);
     final bets = <Bet>[];
 
     for (final selection in Selection.values) {
@@ -69,60 +67,6 @@ class SkilledBettor implements Bettor {
       }
     }
     return bets;
-  }
-
-  /// The player's own probabilities: the book's de-vigged opinion, adjusted
-  /// for whatever fatigue they have managed to observe.
-  List<double> _estimate(BettingView view) {
-    final bookOpinion = view.market.fairProbabilities;
-    final homeFatigue = view.observedHomeFatigue;
-    final awayFatigue = view.observedAwayFatigue;
-    final homeForm = view.observedHomeForm;
-    final awayForm = view.observedAwayForm;
-
-    if (homeFatigue == null &&
-        awayFatigue == null &&
-        homeForm == null &&
-        awayForm == null) {
-      return bookOpinion;
-    }
-
-    // Re-price the match twice through the SAME model: once as the book sees
-    // it (no fatigue) and once with the fatigue the player believes in. The
-    // ratio between those is the correction to apply to the book's opinion,
-    // so the player is never handed the truth -- only a delta the book missed.
-    const modifiers = LatentModifiers();
-    final neutral = model.outcomeProbabilities(
-      MatchContext(
-        home: view.context.home,
-        away: view.context.away,
-        homeModifiers: const MatchModifiers(),
-        awayModifiers: const MatchModifiers(),
-        seedPath: view.context.seedPath,
-        weather: view.context.weather,
-      ),
-    );
-    final adjusted = model.outcomeProbabilities(
-      MatchContext(
-        home: view.context.home,
-        away: view.context.away,
-        homeModifiers: modifiers.project(
-          LatentState(fatigue: homeFatigue ?? 0),
-        ),
-        awayModifiers: modifiers.project(
-          LatentState(fatigue: awayFatigue ?? 0),
-        ),
-        seedPath: view.context.seedPath,
-        weather: view.context.weather,
-      ),
-    );
-
-    final corrected = <double>[
-      for (var i = 0; i < 3; i++)
-        bookOpinion[i] * (adjusted.asList[i] / neutral.asList[i]),
-    ];
-    final total = corrected.reduce((a, b) => a + b);
-    return <double>[for (final p in corrected) p / total];
   }
 
   static double _cap(double stake, double limit) =>

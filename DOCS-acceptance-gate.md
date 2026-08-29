@@ -81,6 +81,32 @@ sharp. A player is told nothing -- confidence is drawn independently of skill,
 so the only way to find the two people worth following is to write down what
 they said and check later.
 
+**Gate 5a — friends charge less than the book, and more than nothing.**
+Saying yes to every bet your mates offer must lose, and must lose LESS than
+`−v/(1+v)`.
+
+A friend asks a price that is fair by their own lights, with no margin in it,
+so peer betting has to be a better deal than the bookmaker or the whole tab is
+just a worse book wearing a friendlier hat. It is not a FREE deal, and the
+reason is worth stating rather than tuning away: friends price off the
+published line, so they inherit the book's blind spots, and an indiscriminate
+layer ends up taking the wrong side of exactly the errors a studious player is
+trying to back. Measured at about half what the book charges.
+
+**Gate 5b — choosing beats accepting.** A reviewer that reads the fixture must
+beat one that says yes to everything, must clear zero, and must stay under 60%
+of the oracle's return.
+
+Peer betting is a second table, not a way around the bookmaker. Note also what
+the friends layer is measured with: peer bets carry no vig, so they cannot be
+compared against gates 1-3 at all and get their own runner
+(`SocialSeasonRunner`) and their own two numbers.
+
+One implementation note that the gate does not check but which cost a rebuild:
+a friend's noise is applied in LOG-ODDS, not in probability. Adding 0.06 to a
+0.50 chance is a nudge and to a 0.08 chance nearly a doubling, and the layer's
+money is concentrated exactly on the long prices.
+
 ## The oracle is a control, not a subject
 
 `OracleBettor` reads the true probabilities and so cheats by construction. It

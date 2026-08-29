@@ -11,6 +11,7 @@ class FixtureCard {
     required this.context,
     required this.index,
     this.tips = const <Tip>[],
+    this.proposals = const <ProposalTerms>[],
   });
 
   /// The home club.
@@ -42,6 +43,12 @@ class FixtureCard {
   /// clubs and the money are invented, so the people arguing about them are
   /// too. There is no network call anywhere in this app.
   final List<Tip> tips;
+
+  /// What your friends want on it, and the walk-away price you cannot see.
+  ///
+  /// The terms rather than the bare proposals: `ProposalTerms.floorOdds` is
+  /// how the game knows whether a haggle lands, and it is never shown.
+  final List<ProposalTerms> proposals;
 }
 
 /// A bet the player has struck, once settled.

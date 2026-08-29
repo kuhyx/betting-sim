@@ -60,6 +60,23 @@ cd packages/league_engine
 dart run bin/feed.dart 20260828 4 0     # seed, matchday, fixture
 ```
 
+## Your friends
+
+Six people you know, each with a standing idea about football -- one chases
+favourites, one only wants the big price, one backs their club until they die,
+one thinks everything is a 1-1. Every save has at least one of each, so no
+circle is quietly unplayable.
+
+They offer you bets. THEY back something, you lay it: if their pick comes in
+you owe them, and if it does not you keep their stake. There is no margin in
+the price, because a friend is not a smaller bookmaker -- which is why the
+only reason to take one is that you think they are wrong.
+
+Three things you can do: take it, leave it, or haggle. Haggling is a real
+decision rather than a free reroll, because a stubborn friend simply walks and
+the bet is gone. What you cannot see is how far each of them will move, and
+the only way to learn it is to try.
+
 ## Acceptance gate
 
 The engine is not finished until a headless batch prints three numbers:

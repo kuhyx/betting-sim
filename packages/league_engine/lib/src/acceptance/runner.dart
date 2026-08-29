@@ -1,5 +1,6 @@
 import 'package:league_engine/src/acceptance/gate.dart';
 import 'package:league_engine/src/acceptance/gate_media.dart';
+import 'package:league_engine/src/acceptance/gate_social.dart';
 import 'package:league_engine/src/acceptance/metrics.dart';
 import 'package:league_engine/src/bettors/crowd_bettor.dart';
 import 'package:league_engine/src/bettors/insider_bettor.dart';
@@ -13,6 +14,9 @@ import 'package:league_engine/src/book/pricing.dart';
 import 'package:league_engine/src/engine/results.dart';
 import 'package:league_engine/src/engine/season_runner.dart';
 import 'package:league_engine/src/media/tipster.dart';
+import 'package:league_engine/src/social/proposal.dart';
+import 'package:league_engine/src/social/reviewers.dart';
+import 'package:league_engine/src/social/social_runner.dart';
 
 /// The outcome of an acceptance run.
 class AcceptanceReport {
@@ -121,8 +125,28 @@ AcceptanceReport runAcceptance({
       ),
   ]);
 
+  // Peer bets carry no vig, so they cannot be measured against the book's
+  // numbers and get their own runner and their own two gates.
+  final social = SocialSeasonRunner(
+    bookmaker: Bookmaker(marginMethod: ProportionalMargin(margin)),
+  );
+  StrategyMetrics amongFriends(ProposalReviewer reviewer) =>
+      summarise(reviewer.name, <SeasonResult>[
+        for (var i = 0; i < seasons; i++)
+          social.run(masterSeed: masterSeed + i, reviewer: reviewer),
+      ]);
+  final acceptAll = amongFriends(const AcceptAllReviewer());
+  final shrewd = amongFriends(const ShrewdReviewer());
+
   return AcceptanceReport(
-    strategies: [...metrics, randomVsPerfect, crowd, insider],
+    strategies: [
+      ...metrics,
+      randomVsPerfect,
+      crowd,
+      insider,
+      acceptAll,
+      shrewd,
+    ],
     gates: <GateResult>[
       ...runGates(
         skilled: skilled,
@@ -132,6 +156,8 @@ AcceptanceReport runAcceptance({
       ),
       gateTheCrowdIsNotAnEdge(crowd),
       gateTheFeedIsWorthReading(insider, crowd, oracle),
+      gateFriendsAreCheaperThanTheBook(acceptAll, margin),
+      gateChoosingBeatsAccepting(shrewd, acceptAll, oracle),
     ],
     margin: margin,
     masterSeed: masterSeed,

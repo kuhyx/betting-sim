@@ -32,11 +32,13 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('your records'), findsOneWidget);
 
-      for (final icon in <IconData>[Icons.people, Icons.home]) {
-        await tester.tap(find.byIcon(icon));
-        await tester.pumpAndSettle();
-        expect(find.text('not built yet'), findsOneWidget);
-      }
+      await tester.tap(find.byIcon(Icons.people));
+      await tester.pumpAndSettle();
+      expect(find.text('who owes who'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.home));
+      await tester.pumpAndSettle();
+      expect(find.text('not built yet'), findsOneWidget);
       // The life tab reads the calendar the season is actually on.
       expect(find.textContaining('Sat wk1'), findsOneWidget);
 

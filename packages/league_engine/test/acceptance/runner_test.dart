@@ -17,12 +17,14 @@ void main() {
           'random-vs-perfect',
           'crowd',
           'insider',
+          'accept-all',
+          'shrewd',
         ]),
       );
     });
 
     test('runs every gate', () {
-      expect(report.gates, hasLength(6));
+      expect(report.gates, hasLength(8));
       expect(report.passed, report.gates.every((g) => g.passed));
     });
 

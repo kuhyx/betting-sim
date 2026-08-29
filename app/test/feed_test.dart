@@ -91,9 +91,9 @@ void main() {
       }
       final restored = GameState.fromSave(original.toSave());
 
-      expect(restored.ledger.standings, hasLength(12));
-      for (final row in original.ledger.standings) {
-        final same = restored.ledger.recordFor(row.tipsterId);
+      expect(restored.records.ledger.standings, hasLength(12));
+      for (final row in original.records.ledger.standings) {
+        final same = restored.records.ledger.recordFor(row.tipsterId);
         expect(same.tips, row.record.tips);
         expect(same.hits, row.record.hits);
         expect(same.profit, row.record.profit);

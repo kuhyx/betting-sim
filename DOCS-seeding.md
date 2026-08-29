@@ -73,7 +73,8 @@ below.
 | 4-17 | the match narrator (`NarrationSlot`) |
 | 20 | the panel of tipsters a save is stuck with |
 | 21 | what they say about one fixture |
-| 30-39 | reserved: friends |
+| 30 | the circle of friends a save is stuck with |
+| 31 | what they want on one fixture |
 | 40-49 | reserved: the life sim |
 
 The narrator takes fourteen of them -- one per stat per side -- rather than

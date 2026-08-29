@@ -16,6 +16,14 @@ class PlayedMatch {
     required this.result,
   });
 
+  /// The match [card] turned into, once [result] is known.
+  factory PlayedMatch.of(FixtureCard card, MatchResult result) => PlayedMatch(
+    home: card.home,
+    away: card.away,
+    context: card.context,
+    result: result,
+  );
+
   /// The home club.
   final Team home;
 

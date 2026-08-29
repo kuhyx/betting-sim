@@ -45,8 +45,8 @@ class _FeedScreenState extends State<FeedScreen> {
       ),
       body: _showRecords
           ? TipsterStandings(
-              ledger: widget.game.ledger,
-              tipsters: widget.game.tipsters,
+              ledger: widget.game.records.ledger,
+              tipsters: widget.game.records.tipsters,
             )
           : _Posts(fixtures: fixtures),
     );

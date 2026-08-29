@@ -1,4 +1,5 @@
 import 'package:betting_sim/state/cards.dart';
+import 'package:betting_sim/state/friends.dart';
 import 'package:betting_sim/state/game.dart';
 import 'package:betting_sim/state/save.dart';
 
@@ -18,5 +19,6 @@ extension GameSave on GameState {
     // `history` is newest-first for the results list; a save is a log, so it
     // goes back the other way.
     bets: List<PlayerBet>.of(history.reversed),
+    peerBets: List<PeerBet>.of(peerHistory.reversed),
   );
 }

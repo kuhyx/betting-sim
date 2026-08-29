@@ -14,7 +14,9 @@ class DayBuilder {
     required this.maker,
     required this.masterSeed,
     required this.tipsters,
+    required this.friends,
     this.desk = const TipsterDesk(),
+    this.circle = const FriendCircle(),
   });
 
   /// Builds match contexts and plays them.
@@ -29,8 +31,14 @@ class DayBuilder {
   /// The people posting about this league, fixed for the save.
   final List<Tipster> tipsters;
 
+  /// The people you know who want a bet, fixed for the save.
+  final List<Friend> friends;
+
   /// Turns a fixture into a page of opinion about it.
   final TipsterDesk desk;
+
+  /// Turns a fixture into whatever your friends fancy.
+  final FriendCircle circle;
 
   /// The cards for matchday [day] of [league], given each club's hidden
   /// [states].
@@ -90,6 +98,12 @@ class DayBuilder {
         ctx: ctx,
         path: path,
         tipsters: tipsters,
+        market: markets.opening,
+      ),
+      proposals: circle.proposalsFor(
+        ctx: ctx,
+        path: path,
+        friends: friends,
         market: markets.opening,
       ),
     );

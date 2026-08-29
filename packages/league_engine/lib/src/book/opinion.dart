@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:league_engine/src/book/pricing.dart';
+import 'package:league_engine/src/rng/source.dart';
 import 'package:league_engine/src/scoreline/protocol.dart';
 
 /// Mixes a fully-informed view of a match with a latent-blind one.
@@ -58,3 +61,29 @@ OutcomeProbs normaliseOpinion(List<double> weights, {double floor = 0.01}) {
     away: floored[2] / total,
   );
 }
+
+/// Perturbs [base] by [sigma] in LOG-ODDS space.
+///
+/// Not additive noise on the probabilities, and the difference is not
+/// cosmetic. Adding 0.06 to a 0.50 chance is a nudge; adding it to a 0.08
+/// chance nearly doubles it. That asymmetry matters enormously when somebody
+/// is LAYING the result rather than backing it, because a long price is where
+/// the layer has the most money at risk -- measured, additive noise made
+/// accepting every friend's bet a 2.7% bleed for that reason alone, which is
+/// not a house edge so much as a modelling artifact.
+///
+/// Log-odds noise is scale-free: it moves a 0.08 chance and a 0.5 chance by
+/// the same proportional amount. One draw per outcome, then renormalise.
+OutcomeProbs perturbLogOdds(
+  OutcomeProbs base,
+  double sigma,
+  RandomSource rng,
+) {
+  final moved = <double>[
+    for (final p in base.asList)
+      _sigmoid(math.log(p / (1 - p)) + rng.normal(0, sigma)),
+  ];
+  return normaliseOpinion(moved);
+}
+
+double _sigmoid(double x) => 1 / (1 + math.exp(-x));

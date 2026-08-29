@@ -1,7 +1,8 @@
 import 'package:betting_sim/state/cards.dart';
 import 'package:betting_sim/state/day_builder.dart';
-import 'package:betting_sim/state/ledger.dart';
+import 'package:betting_sim/state/friends.dart';
 import 'package:betting_sim/state/performance.dart';
+import 'package:betting_sim/state/records.dart';
 import 'package:betting_sim/state/save.dart';
 import 'package:betting_sim/state/settler.dart';
 import 'package:betting_sim/state/tuning.dart';
@@ -36,6 +37,7 @@ class GameState extends ChangeNotifier {
       game.advanceDay();
     }
     save.bets.forEach(game._replay);
+    save.peerBets.forEach(game._replayPeer);
     return game;
   }
 
@@ -76,19 +78,15 @@ class GameState extends ChangeNotifier {
     runner: _runner,
     maker: _maker,
     masterSeed: masterSeed,
-    tipsters: tipsters,
+    tipsters: records.tipsters,
+    friends: records.friends,
   );
 
-  /// The people posting about this league. Fixed for the save, and never
-  /// labelled: which two of them are worth reading is the thing to find out.
-  late final List<Tipster> tipsters = generateTipsters(masterSeed);
-
-  /// What you have written down about them.
-  ///
-  /// Rebuilt by replaying, never stored: `fromSave` re-plays every matchday,
-  /// and every matchday folds its tips back in. A save carries no notebook
-  /// because it does not need one.
-  final TipsterLedger ledger = TipsterLedger();
+  /// The tipsters, the friends, and the notebooks you keep on both.
+  late final Records records = Records(
+    masterSeed: masterSeed,
+    clubIds: <int>[for (final t in _league.teams) t.id],
+  );
 
   /// Which calendar day each matchday falls on.
   late final SeasonCalendar calendar = SeasonCalendar(
@@ -102,6 +100,7 @@ class GameState extends ChangeNotifier {
   final Map<int, ({Selection selection, double stake})> _slip =
       <int, ({Selection selection, double stake})>{};
   List<PlayedMatch> _played = <PlayedMatch>[];
+  final List<PeerBet> _peerHistory = <PeerBet>[];
 
   /// Which matchday is showing.
   int get day => _day;
@@ -121,6 +120,9 @@ class GameState extends ChangeNotifier {
 
   /// Every settled bet, most recent first.
   List<PlayerBet> get history => List.unmodifiable(_history.reversed);
+
+  /// Every settled friend bet, most recent first.
+  List<PeerBet> get peerHistory => List.unmodifiable(_peerHistory.reversed);
 
   /// The bets staked but not yet settled.
   Map<int, ({Selection selection, double stake})> get slip =>
@@ -158,15 +160,11 @@ class GameState extends ChangeNotifier {
     final played = <PlayedMatch>[];
     for (final card in _fixtures) {
       final result = _runner.run(card.context);
-      played.add(
-        PlayedMatch(
-          home: card.home,
-          away: card.away,
-          context: card.context,
-          result: result,
-        ),
-      );
-      ledger.record(card.tips, result, card.market);
+      played.add(PlayedMatch.of(card, result));
+      for (final peer in records.settle(card, result)) {
+        _bankroll += peer.profit;
+        _peerHistory.add(peer);
+      }
       final staked = _slip[card.index];
 
       if (staked != null) {
@@ -189,6 +187,7 @@ class GameState extends ChangeNotifier {
 
     _played = played;
     _slip.clear();
+    records.nextDay();
     _day++;
     if (!seasonOver) {
       _openDay();
@@ -225,6 +224,13 @@ class GameState extends ChangeNotifier {
       clv: bet.closingLineValue,
     );
     _history.add(bet);
+  }
+
+  /// Re-applies an already-settled friend bet from a save.
+  void _replayPeer(PeerBet bet) {
+    _bankroll += bet.profit;
+    records.friendBook.add(bet);
+    _peerHistory.add(bet);
   }
 
   void _openDay() {

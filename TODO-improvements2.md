@@ -45,7 +45,8 @@ The game is lacklustre. It misses:
 - [x] **2 — the internet**: tipsters and forum posts, slots 20-21, plus
       gate 4. Gates 1-3 stayed bit-identical after all: the feed draws from
       its own slots, and no existing bettor reads it.
-- [ ] **3 — friends**: proposals, accept/reject/counter, gate 4, possession 6
+- [x] **3 — friends**: proposals, take/leave/haggle, gate 5, slots 30-31.
+      Gates 1-4 unmoved: peer bets have no vig, so they get their own runner.
 - [ ] **4 — life sim**: needs, hours, job, rent, items, possession 7
 
 ## Deferred, deliberately
