@@ -8,7 +8,7 @@ import 'package:league_engine/league_engine.dart';
 /// without re-reading which side is which.
 class OddsButton extends StatelessWidget {
   /// Creates a price button.
-  const OddsButton({
+  const new({
     required this.label,
     required this.odds,
     required this.format,

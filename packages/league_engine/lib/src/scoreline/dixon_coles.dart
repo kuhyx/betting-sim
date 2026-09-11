@@ -14,7 +14,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// mass across those four scores (Dixon & Coles, 1997).
 class DixonColesModel implements ScorelineModel {
   /// Creates a model.
-  const DixonColesModel([this.config = const ScoringConfig()]);
+  const new([this.config = const ScoringConfig()]);
 
   /// Scoring-rate tunables.
   final ScoringConfig config;

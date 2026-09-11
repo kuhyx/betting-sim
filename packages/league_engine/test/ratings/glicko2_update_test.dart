@@ -84,10 +84,7 @@ void main() {
     test('playing reduces uncertainty', () {
       const unknown = Rating(deviation: 300);
       final after = updater.update(unknown, [
-        const RatingResult(
-          opponent: Rating(deviation: 30),
-          score: 1,
-        ),
+        const RatingResult(opponent: Rating(deviation: 30), score: 1),
       ]);
       expect(after.deviation, lessThan(300));
     });
@@ -95,10 +92,7 @@ void main() {
     test('a draw against an equal team barely moves the rating', () {
       const even = Rating(deviation: 80);
       final after = updater.update(even, [
-        const RatingResult(
-          opponent: Rating(deviation: 80),
-          score: 0.5,
-        ),
+        const RatingResult(opponent: Rating(deviation: 80), score: 0.5),
       ]);
       expect(after.rating, closeTo(1500, 0.5));
     });

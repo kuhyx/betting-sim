@@ -21,7 +21,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// Plays a whole season, pricing every match and letting a bettor bet it.
 class SeasonRunner {
   /// Creates a season runner.
-  const SeasonRunner({
+  const new({
     this.model = const DixonColesModel(),
     this.bookmaker = const Bookmaker(),
     this.openingLine = const OpeningLine(),

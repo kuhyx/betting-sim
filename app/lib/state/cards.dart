@@ -3,7 +3,7 @@ import 'package:league_engine/league_engine.dart';
 /// A fixture as the player sees it: the two clubs and the prices on offer.
 class FixtureCard {
   /// Creates a fixture card.
-  const FixtureCard({
+  const new({
     required this.home,
     required this.away,
     required this.market,
@@ -54,7 +54,7 @@ class FixtureCard {
 /// A bet the player has struck, once settled.
 class PlayerBet {
   /// Creates a settled player bet.
-  const PlayerBet({
+  const new({
     required this.fixture,
     required this.selection,
     required this.stake,

@@ -12,10 +12,7 @@ void main() {
     });
 
     test('different seeds diverge', () {
-      expect(
-        Mix32Source(1).uniform01(),
-        isNot(Mix32Source(2).uniform01()),
-      );
+      expect(Mix32Source(1).uniform01(), isNot(Mix32Source(2).uniform01()));
     });
 
     test('uniform01 stays in [0, 1)', () {

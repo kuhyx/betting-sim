@@ -28,10 +28,7 @@ void main() {
     test('takes attempts out of the second half, and touches nothing else', () {
       var fresherHadMoreShots = 0;
       for (var seed = 0; seed < 200; seed++) {
-        final fresh = _narrator.narrate(
-          context(seed: seed),
-          played,
-        );
+        final fresh = _narrator.narrate(context(seed: seed), played);
         final spent = _narrator.narrate(
           context(home: const MatchModifiers(lateMatchDecay: 1), seed: seed),
           played,

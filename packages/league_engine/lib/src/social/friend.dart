@@ -34,7 +34,7 @@ enum FriendBias {
 /// the entire game. Gate 5 asserts both halves.
 class Friend {
   /// Creates a friend.
-  const Friend({
+  const new({
     required this.id,
     required this.name,
     required this.awareness,
@@ -91,7 +91,7 @@ class Friend {
 /// How many friends a save has, and how varied they are.
 class FriendCircleConfig {
   /// Creates a circle shape.
-  const FriendCircleConfig({
+  const new({
     this.count = 6,
     this.awareness = (low: -0.06, high: 0.04),
     this.noise = (low: 0.18, high: 0.55),

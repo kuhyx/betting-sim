@@ -7,11 +7,7 @@ import 'package:league_engine/src/scoreline/events.dart';
 /// Win/draw/loss probabilities for a match. Always sums to 1.
 class OutcomeProbs {
   /// Creates a probability triple.
-  const OutcomeProbs({
-    required this.home,
-    required this.draw,
-    required this.away,
-  });
+  const new({required this.home, required this.draw, required this.away});
 
   /// Probability the home side wins.
   final double home;
@@ -34,7 +30,7 @@ class OutcomeProbs {
 /// Everything a scoreline model needs to play one match.
 class MatchContext {
   /// Creates a context.
-  const MatchContext({
+  const new({
     required this.home,
     required this.away,
     required this.homeModifiers,
@@ -91,7 +87,7 @@ class MatchContext {
 /// The outcome of one played match.
 class MatchResult {
   /// Creates a result.
-  const MatchResult({
+  const new({
     required this.homeScore,
     required this.awayScore,
     required this.events,

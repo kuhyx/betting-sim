@@ -14,7 +14,7 @@ import 'package:league_engine/src/rng/source.dart';
 /// to assert it stays a trap.
 class CrowdBettor implements Bettor {
   /// Creates a crowd-follower staking [stake] a match.
-  const CrowdBettor({this.stake = 10});
+  const new({this.stake = 10});
 
   /// Flat stake. Flat, not Kelly, so the number this produces is a clean
   /// read on the tips rather than on a staking plan.

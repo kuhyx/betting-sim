@@ -14,7 +14,7 @@ import 'package:league_engine/league_engine.dart';
 /// every matchday folds its results back in.
 class Records {
   /// Creates the cast for [masterSeed], loyal to clubs from [clubIds].
-  Records({required this.masterSeed, required List<int> clubIds})
+  new({required this.masterSeed, required List<int> clubIds})
     : tipsters = generateTipsters(masterSeed),
       friends = generateFriends(masterSeed, clubIds);
 

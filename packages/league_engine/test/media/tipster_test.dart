@@ -61,9 +61,7 @@ void main() {
       var firstTwo = 0;
       for (var seed = 0; seed < 60; seed++) {
         final people = generateTipsters(seed);
-        final best = people.reduce(
-          (a, b) => a.awareness > b.awareness ? a : b,
-        );
+        final best = people.reduce((a, b) => a.awareness > b.awareness ? a : b);
         if (best.id < 2) {
           firstTwo++;
         }

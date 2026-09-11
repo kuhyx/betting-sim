@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 ///
 /// Used to prove the replay path does not secretly re-simulate the season.
 class _CountingModel implements ScorelineModel {
-  _CountingModel(this._inner);
+  new(this._inner);
 
   final ScorelineModel _inner;
   int simulateCalls = 0;
@@ -26,12 +26,8 @@ void main() {
   final league = generateLeague(masterSeed);
   const runner = MatchRunner(model: DixonColesModel());
 
-  SeedPath pathFor(int season, int day, int match) => SeedPath(
-    master: masterSeed,
-    season: season,
-    day: day,
-    match: match,
-  );
+  SeedPath pathFor(int season, int day, int match) =>
+      SeedPath(master: masterSeed, season: season, day: day, match: match);
 
   MatchResult playOne(int season, int day, int matchIndex) {
     final fixture = league.fixturesOn(day)[matchIndex];
@@ -127,10 +123,7 @@ void main() {
         isNot('${seasonZero.homeScore}-${seasonZero.awayScore}-x'),
       );
       // The point is only that the address differs, so the stream differs.
-      expect(
-        deriveSeed(pathFor(0, 3, 1)),
-        isNot(deriveSeed(pathFor(1, 3, 1))),
-      );
+      expect(deriveSeed(pathFor(0, 3, 1)), isNot(deriveSeed(pathFor(1, 3, 1))));
     });
   });
 

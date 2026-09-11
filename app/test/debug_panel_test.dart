@@ -82,9 +82,7 @@ void main() {
 
     testWidgets('dragging a slider reports the new tuning', (tester) async {
       Tuning? got;
-      await tester.pumpWidget(
-        _panel(enabled: true, onChanged: (t) => got = t),
-      );
+      await tester.pumpWidget(_panel(enabled: true, onChanged: (t) => got = t));
 
       await tester.drag(find.byType(Slider).first, const Offset(-200, 0));
       await tester.pump();

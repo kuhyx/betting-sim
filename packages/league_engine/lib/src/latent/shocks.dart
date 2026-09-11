@@ -8,7 +8,7 @@ import 'package:league_engine/src/rng/source.dart';
 /// injury without also having to supply every unrelated draw.
 class LatentShocks {
   /// Creates a shock model.
-  const LatentShocks([this.config = const LatentConfig()]);
+  const new([this.config = const LatentConfig()]);
 
   /// Rates and thresholds.
   final LatentConfig config;

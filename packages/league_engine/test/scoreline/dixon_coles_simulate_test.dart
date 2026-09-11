@@ -68,10 +68,7 @@ void main() {
         final r = model.simulate(ctx, rng);
         final goals = r.events.whereType<GoalEvent>();
         expect(goals, hasLength(r.homeScore + r.awayScore));
-        expect(
-          goals.where((g) => g.byHome),
-          hasLength(r.homeScore),
-        );
+        expect(goals.where((g) => g.byHome), hasLength(r.homeScore));
       }
     });
 

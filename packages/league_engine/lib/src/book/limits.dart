@@ -10,7 +10,7 @@
 ///    the reason grinding a known edge forever is not the game.
 class LimitPolicy {
   /// Creates a limit policy.
-  const LimitPolicy({
+  const new({
     this.openingLimit = 50,
     this.closingLimit = 500,
     this.restrictionThreshold = 0.02,

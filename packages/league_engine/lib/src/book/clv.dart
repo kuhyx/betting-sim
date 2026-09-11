@@ -13,7 +13,7 @@ import 'package:league_engine/src/book/pricing.dart';
 /// and a beat-rate near 50% means no edge at all.
 class ClvCalculator {
   /// Creates a calculator.
-  const ClvCalculator();
+  const new();
 
   /// CLV for a single bet, as a fraction.
   ///

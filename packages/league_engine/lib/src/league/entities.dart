@@ -7,7 +7,7 @@ import 'package:league_engine/src/ratings/glicko2_types.dart';
 /// the same way OOTP shows a scout's assessment rather than the real rating.
 class Player {
   /// Creates a player.
-  const Player({
+  const new({
     required this.id,
     required this.name,
     required this.attack,
@@ -41,7 +41,7 @@ class Player {
 /// A club: a squad, a home town, and a rating.
 class Team {
   /// Creates a team.
-  const Team({
+  const new({
     required this.id,
     required this.name,
     required this.town,
@@ -96,11 +96,7 @@ class Team {
 /// A scheduled match between two clubs on a given matchday.
 class Fixture {
   /// Creates a fixture.
-  const Fixture({
-    required this.day,
-    required this.homeId,
-    required this.awayId,
-  });
+  const new({required this.day, required this.homeId, required this.awayId});
 
   /// Matchday index within the season.
   final int day;
@@ -118,7 +114,7 @@ class Fixture {
 /// A whole league: its clubs and its fixture list.
 class League {
   /// Creates a league.
-  const League({required this.teams, required this.fixtures});
+  const new({required this.teams, required this.fixtures});
 
   /// Every club, in a stable order.
   final List<Team> teams;

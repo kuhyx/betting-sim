@@ -21,7 +21,7 @@ const debugPanelTitle = 'BALANCE TUNING (debug only)';
 /// states; the single real `kDebugMode` read is in `main.dart`.
 class DebugTuningPanel extends StatelessWidget {
   /// Creates the panel.
-  const DebugTuningPanel({
+  const new({
     required this.tuning,
     required this.performance,
     required this.onChanged,
@@ -75,11 +75,8 @@ class DebugTuningPanel extends StatelessWidget {
             min: 0,
             max: 1,
             digits: 2,
-            onChanged: (v) => onChanged(
-              tuning.copyWith(
-                bookLatentAwareness: v,
-              ),
-            ),
+            onChanged: (v) =>
+                onChanged(tuning.copyWith(bookLatentAwareness: v)),
           ),
           _Knob(
             label: 'margin',
@@ -103,11 +100,8 @@ class DebugTuningPanel extends StatelessWidget {
             min: 0,
             max: 0.5,
             digits: 2,
-            onChanged: (v) => onChanged(
-              tuning.copyWith(
-                fatigueAttackPenalty: v,
-              ),
-            ),
+            onChanged: (v) =>
+                onChanged(tuning.copyWith(fatigueAttackPenalty: v)),
           ),
         ],
       ),
@@ -116,7 +110,7 @@ class DebugTuningPanel extends StatelessWidget {
 }
 
 class _Knob extends StatelessWidget {
-  const _Knob({
+  const new({
     required this.label,
     required this.value,
     required this.min,

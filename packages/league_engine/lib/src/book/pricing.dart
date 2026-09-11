@@ -17,11 +17,7 @@ enum Selection {
 /// A priced market on one match.
 class Market {
   /// Creates a market.
-  const Market({
-    required this.prices,
-    required this.limit,
-    required this.margin,
-  });
+  const new({required this.prices, required this.limit, required this.margin});
 
   /// Prices in [Selection] order.
   final List<Odds> prices;
@@ -56,7 +52,7 @@ class Market {
 /// Turns probabilities into a priced market.
 class Bookmaker {
   /// Creates a bookmaker.
-  const Bookmaker({
+  const new({
     this.marginMethod = const ProportionalMargin(0.05),
     this.openingLimit = 50,
   });

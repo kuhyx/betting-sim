@@ -155,9 +155,6 @@ DisciplineDraw drawDiscipline({
 }
 
 /// Whether a side picked up an injury during play. Exactly one draw, always.
-bool drawInjury({
-  required NarrationConfig config,
-  required RandomSource rng,
-}) {
+bool drawInjury({required NarrationConfig config, required RandomSource rng}) {
   return rng.uniform01() < config.injuryRatePerMatch;
 }

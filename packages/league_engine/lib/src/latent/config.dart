@@ -7,7 +7,7 @@
 /// stubbing and no seed search.
 class LatentConfig {
   /// Creates a config.
-  const LatentConfig({
+  const new({
     this.fatiguePerMatch = 0.18,
     this.fatigueRecoveryPerDay = 0.12,
     this.injuryBaseRate = 0.04,

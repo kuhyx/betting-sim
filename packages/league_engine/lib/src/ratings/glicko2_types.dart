@@ -18,7 +18,7 @@ const double glicko2Center = 1500;
 /// rating stays responsive instead of being averaged into the middle.
 class Rating {
   /// Creates a rating on the display scale.
-  const Rating({
+  const new({
     this.rating = glicko2Center,
     this.deviation = 350.0,
     this.volatility = 0.06,
@@ -44,10 +44,8 @@ class Rating {
   ///
   /// This is what a scouting screen shows instead of a single number: a team
   /// with RD 350 is genuinely unknown, and the UI should say so.
-  ({double low, double high}) get interval => (
-    low: rating - 2 * deviation,
-    high: rating + 2 * deviation,
-  );
+  ({double low, double high}) get interval =>
+      (low: rating - 2 * deviation, high: rating + 2 * deviation);
 
   /// Returns a copy with the given fields replaced.
   Rating copyWith({double? rating, double? deviation, double? volatility}) {
@@ -69,7 +67,7 @@ class Rating {
 /// Tunables for the rating system.
 class RatingConfig {
   /// Creates a config. Defaults follow Glickman's recommendations.
-  const RatingConfig({
+  const new({
     this.tau = 0.5,
     this.convergence = 0.000001,
     this.maxIterations = 100,

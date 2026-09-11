@@ -5,7 +5,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// Tunables for turning club strength into scoring rates.
 class ScoringConfig {
   /// Creates a config.
-  const ScoringConfig({
+  const new({
     this.baseRate = 1.15,
     this.homeAdvantage = 1.25,
     this.strengthScale = 0.006,
@@ -46,7 +46,7 @@ class ScoringConfig {
 /// The scoring rates for one match.
 class ScoringRates {
   /// Creates a rate pair.
-  const ScoringRates({required this.home, required this.away});
+  const new({required this.home, required this.away});
 
   /// The home side's expected goals.
   final double home;
@@ -86,10 +86,7 @@ ScoringRates scoringRates(MatchContext ctx, ScoringConfig config) {
       ctx.homeModifiers.defenceMultiplier;
 
   // A rate of zero would make the match unplayable; clamp just above it.
-  return ScoringRates(
-    home: math.max(home, 0.01),
-    away: math.max(away, 0.01),
-  );
+  return ScoringRates(home: math.max(home, 0.01), away: math.max(away, 0.01));
 }
 
 /// The Dixon-Coles tau correction for a specific low scoreline.

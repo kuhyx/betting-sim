@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 /// else. Nothing here talks to another person or another machine.
 class FriendsScreen extends StatefulWidget {
   /// Creates the screen over [game].
-  const FriendsScreen({required this.game, super.key});
+  const new({required this.game, super.key});
 
   /// The game being played.
   final GameState game;
@@ -98,7 +98,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
 }
 
 class _Offers extends StatelessWidget {
-  const _Offers({required this.offers, required this.atRisk});
+  const new({required this.offers, required this.atRisk});
 
   final List<Widget> offers;
   final double atRisk;

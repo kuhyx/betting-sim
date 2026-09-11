@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// The shared design tokens, from ~/utils/unified-design-system.
+/// The shared design tokens, from ~/src/utils/unified-design-system.
 ///
 /// Values are copied rather than invented: one palette across every app.
 abstract final class Tokens {

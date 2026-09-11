@@ -10,7 +10,7 @@ import 'package:league_engine/src/scoreline/match_stats.dart';
 /// the same game while the match report gains detail.
 class MatchTimeline {
   /// Creates a timeline.
-  const MatchTimeline({
+  const new({
     required this.events,
     required this.home,
     required this.away,

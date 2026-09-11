@@ -3,7 +3,7 @@ import 'package:league_engine/src/bettors/protocol.dart';
 /// What one bet did, once the match was played.
 class SettledBet {
   /// Creates a settled bet.
-  const SettledBet({
+  const new({
     required this.bet,
     required this.profit,
     required this.closingLineValue,
@@ -22,7 +22,7 @@ class SettledBet {
 /// One matchday's betting.
 class MatchdayResult {
   /// Creates a matchday result.
-  const MatchdayResult({required this.day, required this.bets});
+  const new({required this.day, required this.bets});
 
   /// Which matchday.
   final int day;
@@ -47,7 +47,7 @@ class MatchdayResult {
 /// A whole season's betting.
 class SeasonResult {
   /// Creates a season result.
-  const SeasonResult({required this.matchdays, required this.bettorName});
+  const new({required this.matchdays, required this.bettorName});
 
   /// Every matchday, in order.
   final List<MatchdayResult> matchdays;

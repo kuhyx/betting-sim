@@ -44,10 +44,9 @@ void main(List<String> args) {
     observedAwayForm: 0,
   );
 
-  final friends = generateFriends(
-    seed,
-    <int>[for (final t in league.teams) t.id],
-  );
+  final friends = generateFriends(seed, <int>[
+    for (final t in league.teams) t.id,
+  ]);
   final terms = const FriendCircle().proposalsFor(
     ctx: ctx,
     path: path,

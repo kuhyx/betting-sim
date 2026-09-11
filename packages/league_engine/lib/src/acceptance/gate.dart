@@ -3,11 +3,7 @@ import 'package:league_engine/src/acceptance/metrics.dart';
 /// One gate's verdict.
 class GateResult {
   /// Creates a verdict.
-  const GateResult({
-    required this.name,
-    required this.passed,
-    required this.detail,
-  });
+  const new({required this.name, required this.passed, required this.detail});
 
   /// Which gate.
   final String name;
@@ -25,7 +21,7 @@ class GateResult {
 /// Thresholds for the acceptance gates.
 class GateConfig {
   /// Creates a config.
-  const GateConfig({
+  const new({
     this.minLosingNightFraction = 0.45,
     this.maxLosingNightFraction = 0.55,
     this.randomRoiTolerance = 0.015,

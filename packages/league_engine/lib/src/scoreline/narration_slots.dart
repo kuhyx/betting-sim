@@ -59,7 +59,7 @@ enum NarrationSlot {
   awayInjury(17);
 
   /// Binds this slot to its `possession` index in the seed tree.
-  const NarrationSlot(this.possession);
+  new(this.possession);
 
   /// The `SeedPath.possession` value this slot draws from.
   final int possession;

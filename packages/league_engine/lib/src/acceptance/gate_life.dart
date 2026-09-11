@@ -6,7 +6,7 @@ import 'package:league_engine/src/life/needs.dart';
 /// Thresholds for the life gate.
 class LifeGateConfig {
   /// Creates a config.
-  const LifeGateConfig({this.minRentToEdgeRatio = 10});
+  const new({this.minRentToEdgeRatio = 10});
 
   /// How many times a season's rent must exceed a season's best betting
   /// return, on the money you start with.

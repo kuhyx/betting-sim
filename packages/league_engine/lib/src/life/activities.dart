@@ -29,7 +29,7 @@ enum Activity {
 /// What an hour of something does to you.
 class HourEffect {
   /// Creates an effect.
-  const HourEffect({
+  const new({
     this.energy = 0,
     this.fullness = 0,
     this.stress = 0,
@@ -92,7 +92,7 @@ HourEffect effectOf(Activity activity, LifeConfig config) => switch (activity) {
 /// whether you had already eaten that day.
 class DayOutcome {
   /// Creates an outcome.
-  const DayOutcome({required this.needs, required this.money});
+  const new({required this.needs, required this.money});
 
   /// How you ended up.
   final Needs needs;
@@ -109,11 +109,7 @@ class DayOutcome {
 /// Hour by hour rather than in one step, because the order matters twice
 /// over: going hungry costs energy, and running out of energy costs you the
 /// shift you were in the middle of.
-DayOutcome liveDay(
-  Needs start,
-  List<Activity> hours,
-  LifeConfig config,
-) {
+DayOutcome liveDay(Needs start, List<Activity> hours, LifeConfig config) {
   var needs = start;
   var money = 0.0;
 

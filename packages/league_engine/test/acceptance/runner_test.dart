@@ -36,10 +36,8 @@ void main() {
         masterSeed: 4242,
         bettor: const SkilledBettor(),
       );
-      final loud = const SeasonRunner(publishTips: true).run(
-        masterSeed: 4242,
-        bettor: const SkilledBettor(),
-      );
+      final loud = const SeasonRunner(publishTips: true)
+          .run(masterSeed: 4242, bettor: const SkilledBettor());
       expect(loud.profit, quiet.profit);
       expect(loud.staked, quiet.staked);
       expect(loud.bets.length, quiet.bets.length);

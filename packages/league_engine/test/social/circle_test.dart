@@ -110,10 +110,7 @@ void main() {
 
       expect(wants(_friend(bias: FriendBias.cagey)), Selection.draw);
       expect(wants(_friend(bias: FriendBias.chalk)), favourite);
-      expect(
-        wants(_friend(bias: FriendBias.longshot)),
-        isNot(favourite),
-      );
+      expect(wants(_friend(bias: FriendBias.longshot)), isNot(favourite));
       expect(wants(_friend(bias: FriendBias.loyal)), Selection.home);
       expect(
         wants(_friend(bias: FriendBias.loyal, loyalClubId: 2)),

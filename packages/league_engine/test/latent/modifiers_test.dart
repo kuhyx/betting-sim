@@ -90,9 +90,8 @@ void main() {
         injuryAttackPenalty: 5,
         moraleVarianceSpread: 5,
       );
-      final m = const LatentModifiers(dire).project(
-        const LatentState(fatigue: 1, injuredCount: 11, morale: 1),
-      );
+      final m = const LatentModifiers(dire)
+          .project(const LatentState(fatigue: 1, injuredCount: 11, morale: 1));
       expect(m.attackMultiplier, greaterThanOrEqualTo(0));
       expect(m.defenceMultiplier, greaterThanOrEqualTo(0));
       expect(m.varianceMultiplier, greaterThanOrEqualTo(0));

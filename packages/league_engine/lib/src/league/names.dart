@@ -11,16 +11,14 @@ import 'package:league_engine/src/rng/source.dart';
 /// fake-stock-market simulator, not a licensed league.
 class MarkovNamer {
   /// Builds a namer from [corpus].
-  MarkovNamer(List<String> corpus)
+  new(List<String> corpus)
     : _corpus = corpus.map((s) => s.toLowerCase()).toSet() {
     for (final raw in corpus) {
       final word = '^^${raw.toLowerCase()}\$';
       for (var i = 0; i + 2 < word.length; i++) {
         _chain
             .putIfAbsent(word.substring(i, i + 2), () => <String>[])
-            .add(
-              word[i + 2],
-            );
+            .add(word[i + 2]);
       }
     }
   }

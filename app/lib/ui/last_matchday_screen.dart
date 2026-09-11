@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 /// The matches from the round just played, each one openable.
 class LastMatchdayScreen extends StatelessWidget {
   /// Creates the list for [matches].
-  const LastMatchdayScreen({required this.matches, super.key});
+  const new({required this.matches, super.key});
 
   /// What was played.
   final List<PlayedMatch> matches;
@@ -37,7 +37,7 @@ class LastMatchdayScreen extends StatelessWidget {
 }
 
 class _MatchRow extends StatelessWidget {
-  const _MatchRow({required this.match});
+  const new({required this.match});
 
   final PlayedMatch match;
 

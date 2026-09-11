@@ -7,7 +7,7 @@
 /// you do it.
 class Needs {
   /// Creates a state of being.
-  const Needs({this.energy = 1, this.fullness = 1, this.stress = 0});
+  const new({this.energy = 1, this.fullness = 1, this.stress = 0});
 
   /// How much you have left in you. At zero you can do nothing but sleep.
   final double energy;
@@ -46,7 +46,7 @@ class Needs {
 class LifeConfig {
   /// Creates a config. The defaults describe a life that is affordable if you
   /// work, and not if you do not.
-  const LifeConfig({
+  const new({
     this.hoursPerDay = 24,
     this.wagePerHour = 11,
     this.shiftHours = 8,

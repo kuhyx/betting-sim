@@ -3,12 +3,7 @@ import 'package:league_engine/league_engine.dart';
 /// What one tipster has actually done, as far as you have bothered to check.
 class TipsterRecord {
   /// Creates a record.
-  const TipsterRecord({
-    this.tips = 0,
-    this.hits = 0,
-    this.profit = 0,
-    this.staked = 0,
-  });
+  const new({this.tips = 0, this.hits = 0, this.profit = 0, this.staked = 0});
 
   /// How many calls of theirs you have seen settle.
   final int tips;
@@ -54,7 +49,7 @@ class TipsterRecord {
 /// this does on your behalf.
 class TipsterLedger {
   /// An empty notebook.
-  TipsterLedger();
+  new();
 
   final Map<int, TipsterRecord> _records = <int, TipsterRecord>{};
 
@@ -92,11 +87,8 @@ class TipsterLedger {
         taken: market.priceOf(tip.selection),
       );
       final profit = settle(bet, result);
-      _records[tip.tipsterId] = recordFor(tip.tipsterId).plus(
-        won: profit > 0,
-        stake: stake,
-        returned: stake + profit,
-      );
+      _records[tip.tipsterId] = recordFor(tip.tipsterId)
+          .plus(won: profit > 0, stake: stake, returned: stake + profit);
     }
   }
 }

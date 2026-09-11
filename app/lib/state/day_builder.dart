@@ -9,7 +9,7 @@ import 'package:league_engine/league_engine.dart';
 /// after a replay produce byte-identical prices.
 class DayBuilder {
   /// Creates a builder over an already-configured engine.
-  const DayBuilder({
+  const new({
     required this.runner,
     required this.maker,
     required this.masterSeed,

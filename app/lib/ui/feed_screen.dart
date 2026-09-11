@@ -12,7 +12,7 @@ import 'package:league_engine/league_engine.dart';
 /// too. Nothing here makes a network call.
 class FeedScreen extends StatefulWidget {
   /// Creates the feed over [game].
-  const FeedScreen({required this.game, super.key});
+  const new({required this.game, super.key});
 
   /// The game being played.
   final GameState game;
@@ -54,7 +54,7 @@ class _FeedScreenState extends State<FeedScreen> {
 }
 
 class _Posts extends StatelessWidget {
-  const _Posts({required this.fixtures});
+  const new({required this.fixtures});
 
   final List<FixtureCard> fixtures;
 
@@ -79,7 +79,7 @@ class _Posts extends StatelessWidget {
 }
 
 class _FixtureThread extends StatelessWidget {
-  const _FixtureThread({required this.card});
+  const new({required this.card});
 
   final FixtureCard card;
 
@@ -104,7 +104,7 @@ class _FixtureThread extends StatelessWidget {
 }
 
 class _Post extends StatelessWidget {
-  const _Post({required this.tip});
+  const new({required this.tip});
 
   final Tip tip;
 

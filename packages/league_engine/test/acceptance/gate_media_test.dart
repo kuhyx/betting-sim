@@ -8,11 +8,7 @@ SeasonResult _season(double roi) => SeasonResult(
       day: 0,
       bets: <SettledBet>[
         SettledBet(
-          bet: const Bet(
-            selection: Selection.home,
-            stake: 100,
-            taken: Odds(2),
-          ),
+          bet: const Bet(selection: Selection.home, stake: 100, taken: Odds(2)),
           profit: roi * 100,
           closingLineValue: 0,
         ),

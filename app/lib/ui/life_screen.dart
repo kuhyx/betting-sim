@@ -14,7 +14,7 @@ import 'package:league_engine/league_engine.dart';
 /// hours you were not paid for.
 class LifeScreen extends StatefulWidget {
   /// Creates the screen over [game].
-  const LifeScreen({required this.game, super.key});
+  const new({required this.game, super.key});
 
   /// The game being played.
   final GameState game;
@@ -103,7 +103,7 @@ class _LifeScreenState extends State<LifeScreen> {
 }
 
 class _Money extends StatelessWidget {
-  const _Money({required this.game});
+  const new({required this.game});
 
   final GameState game;
 
@@ -119,10 +119,7 @@ class _Money extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            game.bankroll.toStringAsFixed(2),
-            style: text.headlineSmall,
-          ),
+          Text(game.bankroll.toStringAsFixed(2), style: text.headlineSmall),
           const SizedBox(height: Tokens.space1),
           Text(
             behind
@@ -141,7 +138,7 @@ class _Money extends StatelessWidget {
 }
 
 class _Over extends StatelessWidget {
-  const _Over({required this.life});
+  const new({required this.life});
 
   final LifeState life;
 

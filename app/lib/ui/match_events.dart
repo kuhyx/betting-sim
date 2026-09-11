@@ -6,7 +6,7 @@ import 'package:league_engine/league_engine.dart';
 /// One line of a match report.
 class MatchEventRow extends StatelessWidget {
   /// Creates a row for [event] in [match].
-  const MatchEventRow({required this.event, required this.match, super.key});
+  const new({required this.event, required this.match, super.key});
 
   /// What happened.
   final MatchEvent event;

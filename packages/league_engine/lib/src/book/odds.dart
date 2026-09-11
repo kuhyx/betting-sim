@@ -16,10 +16,10 @@ enum OddsFormat {
 /// seeing the same price three ways is half the lesson.
 class Odds {
   /// Creates a price from decimal odds.
-  const Odds(this.decimal) : assert(decimal > 1, 'decimal odds must exceed 1');
+  const new(this.decimal) : assert(decimal > 1, 'decimal odds must exceed 1');
 
   /// Creates a price from an implied probability.
-  factory Odds.fromProbability(double p) {
+  factory fromProbability(double p) {
     if (p <= 0 || p >= 1) {
       throw ArgumentError('probability must be in (0, 1), got $p');
     }

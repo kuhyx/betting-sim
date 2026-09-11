@@ -44,7 +44,7 @@ enum TipsterAngle {
 /// records.
 class Tipster {
   /// Creates a tipster.
-  const Tipster({
+  const new({
     required this.id,
     required this.handle,
     required this.awareness,
@@ -82,7 +82,7 @@ class Tipster {
 /// How many of each sort of tipster a save has.
 class TipsterPanelConfig {
   /// Creates a panel shape.
-  const TipsterPanelConfig({
+  const new({
     this.count = 12,
     this.sharpCount = 2,
     this.poorCount = 3,

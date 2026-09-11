@@ -24,7 +24,7 @@ abstract interface class RandomSource {
 /// The production [RandomSource], driven by the in-repo 32-bit mixer.
 class Mix32Source implements RandomSource {
   /// Creates a source positioned at [seed].
-  Mix32Source(this._state);
+  new(this._state);
 
   int _state;
 

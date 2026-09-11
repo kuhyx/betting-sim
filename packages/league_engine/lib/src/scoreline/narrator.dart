@@ -34,7 +34,7 @@ import 'package:league_engine/src/scoreline/timeline.dart';
 /// a bug to fix.
 class MatchNarrator {
   /// Creates a narrator.
-  const MatchNarrator([this.config = const NarrationConfig()]);
+  const new([this.config = const NarrationConfig()]);
 
   /// Rates and thresholds.
   final NarrationConfig config;
@@ -200,20 +200,13 @@ class MatchNarrator {
   static int _afterTheBreak(List<GoalEvent> goals, {required bool byHome}) =>
       goals.where((g) => g.byHome == byHome && g.minute > 45).length;
 
-  RandomSource _rng(MatchContext ctx, NarrationSlot slot) => Mix32Source(
-    deriveSeed(ctx.seedPath.child(possession: slot.possession)),
-  );
+  RandomSource _rng(MatchContext ctx, NarrationSlot slot) =>
+      Mix32Source(deriveSeed(ctx.seedPath.child(possession: slot.possession)));
 }
 
 /// One side's draws, before the shared possession split is known.
 class _SideStats {
-  const _SideStats(
-    this.goals,
-    this.shots,
-    this.onTarget,
-    this.corners,
-    this.cards,
-  );
+  const new(this.goals, this.shots, this.onTarget, this.corners, this.cards);
 
   final int goals;
   final ShotSplit shots;

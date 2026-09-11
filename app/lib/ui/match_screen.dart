@@ -15,7 +15,7 @@ import 'package:league_engine/league_engine.dart';
 /// player scrub, skip, and watch it twice.
 class MatchScreen extends StatefulWidget {
   /// Creates the screen for [match].
-  const MatchScreen({required this.match, super.key});
+  const new({required this.match, super.key});
 
   /// The match being watched.
   final PlayedMatch match;
@@ -158,10 +158,8 @@ class _MatchScreenState extends State<MatchScreen> {
                   )
                 : ListView.builder(
                     itemCount: shown.length,
-                    itemBuilder: (_, i) => MatchEventRow(
-                      event: shown[i],
-                      match: widget.match,
-                    ),
+                    itemBuilder: (_, i) =>
+                        MatchEventRow(event: shown[i], match: widget.match),
                   ),
           ),
           MatchStatsPanel(

@@ -66,9 +66,7 @@ void main() {
       // If the median night wins, the edge is visible nightly and the game has
       // no variance to survive -- the opposite of the intended feel.
       expect(
-        gateOneNightIsACoinFlip(
-          _metrics(medianMatchdayRoi: 0.02),
-        ).passed,
+        gateOneNightIsACoinFlip(_metrics(medianMatchdayRoi: 0.02)).passed,
         isFalse,
       );
     });

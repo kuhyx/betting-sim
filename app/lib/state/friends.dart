@@ -4,7 +4,7 @@ import 'package:league_engine/league_engine.dart';
 /// A friend bet you struck, once it has settled.
 class PeerBet {
   /// Creates a settled peer bet.
-  const PeerBet({
+  const new({
     required this.friendId,
     required this.name,
     required this.fixture,
@@ -50,7 +50,7 @@ class PeerBet {
 /// Where each friendship stands, in money.
 class FriendBook {
   /// An empty book.
-  FriendBook();
+  new();
 
   final Map<int, double> _balances = <int, double>{};
   final Map<int, int> _counts = <int, int>{};
@@ -86,7 +86,7 @@ class FriendBook {
 /// moves to the book.
 class PeerSlip {
   /// An empty table.
-  PeerSlip();
+  new();
 
   /// How much of a friend's asking price a haggle tries to take off.
   ///

@@ -28,10 +28,7 @@ void main() {
       expect(house.arrears, 1);
 
       final owed = _config.rentPerWeek * 2;
-      final caughtUp = payRent(
-        house.copyWith(bankroll: owed),
-        _config,
-      );
+      final caughtUp = payRent(house.copyWith(bankroll: owed), _config);
       expect(caughtUp.bankroll, 0);
       expect(caughtUp.arrears, 0);
     });

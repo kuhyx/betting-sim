@@ -5,7 +5,7 @@ import 'package:league_engine/league_engine.dart';
 /// How you are holding up.
 class NeedsBars extends StatelessWidget {
   /// Creates the bars.
-  const NeedsBars({required this.needs, super.key});
+  const new({required this.needs, super.key});
 
   /// The three things that run down.
   final Needs needs;
@@ -23,11 +23,7 @@ class NeedsBars extends StatelessWidget {
 }
 
 class _Bar extends StatelessWidget {
-  const _Bar({
-    required this.label,
-    required this.value,
-    required this.goodHigh,
-  });
+  const new({required this.label, required this.value, required this.goodHigh});
 
   final String label;
   final double value;

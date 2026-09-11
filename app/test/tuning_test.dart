@@ -57,10 +57,7 @@ void main() {
         const Tuning(margin: 0.08).bookmaker.price(probs).margin,
         closeTo(0.08, 1e-9),
       );
-      expect(
-        const Tuning().bookmaker.price(probs).margin,
-        closeTo(0.05, 1e-9),
-      );
+      expect(const Tuning().bookmaker.price(probs).margin, closeTo(0.05, 1e-9));
     });
 
     test('equality and hashCode cover every field', () {

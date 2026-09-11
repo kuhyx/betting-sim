@@ -14,7 +14,7 @@
 /// | [corners] | public strength only |
 class TeamMatchStats {
   /// Creates a box score.
-  const TeamMatchStats({
+  const new({
     required this.goals,
     required this.shots,
     required this.secondHalfShots,

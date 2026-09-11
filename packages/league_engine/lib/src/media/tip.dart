@@ -8,7 +8,7 @@ import 'package:league_engine/src/book/pricing.dart';
 /// it by writing down what they said and checking later.
 class Tip {
   /// Creates a tip.
-  const Tip({
+  const new({
     required this.tipsterId,
     required this.handle,
     required this.selection,

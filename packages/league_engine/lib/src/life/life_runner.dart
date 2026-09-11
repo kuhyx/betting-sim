@@ -15,7 +15,7 @@ abstract interface class DayPlanner {
 /// How a life went.
 class LifeResult {
   /// Creates a result.
-  const LifeResult({
+  const new({
     required this.plannerName,
     required this.household,
     required this.needs,
@@ -50,10 +50,7 @@ class LifeResult {
 /// evicted by a dice roll.
 class LifeRunner {
   /// Creates a runner.
-  const LifeRunner({
-    this.config = const LifeConfig(),
-    this.rentDay = Weekday.friday,
-  });
+  const new({this.config = const LifeConfig(), this.rentDay = Weekday.friday});
 
   /// Rates and prices.
   final LifeConfig config;
@@ -80,9 +77,7 @@ class LifeRunner {
       final day = liveDay(needs, planner.planFor(date, needs), config);
       needs = day.needs;
       starved = starved || needs.starving;
-      household = household.copyWith(
-        bankroll: household.bankroll + day.money,
-      );
+      household = household.copyWith(bankroll: household.bankroll + day.money);
       if (date.weekday == rentDay) {
         household = payRent(household, config);
       }
@@ -108,7 +103,7 @@ class LifeRunner {
 /// of clever betting would fix it.
 class Grafter implements DayPlanner {
   /// Creates a grafter who spends [footballHours] a day on football.
-  const Grafter({this.footballHours = 2, this.config = const LifeConfig()});
+  const new({this.footballHours = 2, this.config = const LifeConfig()});
 
   /// Hours a day given over to reading and watching.
   final int footballHours;
@@ -140,7 +135,7 @@ class Grafter implements DayPlanner {
 /// somebody who decides the betting will cover it.
 class Idler implements DayPlanner {
   /// Creates an idler.
-  const Idler();
+  const new();
 
   @override
   String get name => 'idler';

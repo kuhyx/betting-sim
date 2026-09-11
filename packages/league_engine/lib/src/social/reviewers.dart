@@ -12,7 +12,7 @@ import 'package:league_engine/src/social/proposal.dart';
 /// everything printed money, choosing would not be a skill.
 class AcceptAllReviewer implements ProposalReviewer {
   /// Creates an indiscriminate reviewer.
-  const AcceptAllReviewer();
+  const new();
 
   @override
   String get name => 'accept-all';
@@ -31,7 +31,7 @@ class AcceptAllReviewer implements ProposalReviewer {
 /// value per unit staked is `1 - p * odds`, and it FALLS as the price rises.
 class ShrewdReviewer implements ProposalReviewer {
   /// Creates a shrewd reviewer.
-  const ShrewdReviewer({
+  const new({
     this.edgeThreshold = 0.02,
     this.counterAtEdge = 0.06,
     this.model = const DixonColesModel(),

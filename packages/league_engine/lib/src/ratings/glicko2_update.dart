@@ -6,7 +6,7 @@ import 'package:league_engine/src/ratings/glicko2_volatility.dart';
 /// One result against one opponent, from the rated team's point of view.
 class RatingResult {
   /// Creates a result. [score] is 1 for a win, 0.5 for a draw, 0 for a loss.
-  const RatingResult({required this.opponent, required this.score});
+  const new({required this.opponent, required this.score});
 
   /// The opponent's rating as it stood at the start of the rating period.
   final Rating opponent;
@@ -18,7 +18,7 @@ class RatingResult {
 /// Applies Glicko-2 over one rating period.
 class Glicko2Updater {
   /// Creates an updater with the given [config].
-  const Glicko2Updater([this.config = const RatingConfig()]);
+  const new([this.config = const RatingConfig()]);
 
   /// Tunables shared with the volatility solver.
   final RatingConfig config;
@@ -61,17 +61,11 @@ class Glicko2Updater {
     final delta = v * deltaSum;
 
     // Step 5: the new volatility.
-    final sigmaPrime = VolatilitySolver(config).solve(
-      phi: self.phi,
-      sigma: rating.volatility,
-      delta: delta,
-      v: v,
-    );
+    final sigmaPrime = VolatilitySolver(config)
+        .solve(phi: self.phi, sigma: rating.volatility, delta: delta, v: v);
 
     // Step 6-7: pre-period RD, then the new RD and rating.
-    final phiStar = math.sqrt(
-      self.phi * self.phi + sigmaPrime * sigmaPrime,
-    );
+    final phiStar = math.sqrt(self.phi * self.phi + sigmaPrime * sigmaPrime);
     final phiPrime = 1.0 / math.sqrt(1.0 / (phiStar * phiStar) + 1.0 / v);
     final muPrime = self.mu + phiPrime * phiPrime * deltaSum;
 

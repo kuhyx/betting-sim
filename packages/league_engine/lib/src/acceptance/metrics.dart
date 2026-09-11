@@ -5,7 +5,7 @@ import 'package:league_engine/src/engine/results.dart';
 /// Summary statistics for one strategy across many seasons.
 class StrategyMetrics {
   /// Creates metrics.
-  const StrategyMetrics({
+  const new({
     required this.name,
     required this.seasons,
     required this.meanSeasonRoi,

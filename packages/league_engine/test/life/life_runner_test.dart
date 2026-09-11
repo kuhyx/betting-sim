@@ -88,14 +88,8 @@ void main() {
 
     test('stops the moment the tenancy does', () {
       // No point living out a season you have already been evicted from.
-      final short =
-          const LifeRunner(
-            config: LifeConfig(missedRentAllowance: 0),
-          ).run(
-            calendar: _calendar,
-            planner: const Idler(),
-            bankroll: 0,
-          );
+      final short = const LifeRunner(config: LifeConfig(missedRentAllowance: 0))
+          .run(calendar: _calendar, planner: const Idler(), bankroll: 0);
       expect(short.daysLived, lessThan(10));
     });
 

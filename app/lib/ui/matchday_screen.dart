@@ -23,7 +23,7 @@ class MatchdayScreen extends StatefulWidget {
   /// panel cannot be reached in a release build, and tests can drive both
   /// states without one. Defaulting it here would also const-fold to `true`
   /// under `flutter test` and trip avoid_redundant_argument_values.
-  const MatchdayScreen({
+  const new({
     required this.game,
     required this.showDebugTuning,
     required this.onRetune,
@@ -157,7 +157,7 @@ class _MatchdayScreenState extends State<MatchdayScreen> {
 }
 
 class _BankrollBar extends StatelessWidget {
-  const _BankrollBar({required this.bankroll, required this.staked});
+  const new({required this.bankroll, required this.staked});
 
   final double bankroll;
   final double staked;
@@ -194,7 +194,7 @@ class _BankrollBar extends StatelessWidget {
 }
 
 class _SeasonOver extends StatelessWidget {
-  const _SeasonOver();
+  const new();
 
   @override
   Widget build(BuildContext context) {

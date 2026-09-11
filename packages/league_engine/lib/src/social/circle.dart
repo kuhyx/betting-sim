@@ -12,7 +12,7 @@ import 'package:league_engine/src/social/proposal.dart';
 /// How friends size and price what they offer.
 class ProposalConfig {
   /// Creates the tuning for how proposals are formed.
-  const ProposalConfig({this.stake = (low: 5, high: 40)});
+  const new({this.stake = (low: 5, high: 40)});
 
   /// What they are willing to put up.
   final ({double low, double high}) stake;
@@ -28,7 +28,7 @@ class ProposalConfig {
 /// comes only from knowing the fixture better than they do.
 class FriendCircle {
   /// Creates a circle.
-  const FriendCircle({
+  const new({
     this.model = const DixonColesModel(),
     this.config = const ProposalConfig(),
   });
@@ -102,11 +102,7 @@ class FriendCircle {
     return perturbLogOdds(opinion, friend.noise, rng);
   }
 
-  Selection _wants(
-    Friend friend,
-    MatchContext ctx,
-    OutcomeProbs published,
-  ) {
+  Selection _wants(Friend friend, MatchContext ctx, OutcomeProbs published) {
     switch (friend.bias) {
       case FriendBias.cagey:
         return Selection.draw;

@@ -21,7 +21,7 @@ import 'package:league_engine/src/scoreline/dixon_coles.dart';
 /// margin, the player loses; the gate is a genuine question either way.
 class SkilledBettor implements Bettor {
   /// Creates a skilled bettor.
-  const SkilledBettor({
+  const new({
     this.edgeThreshold = 0.03,
     this.kelly = 0.25,
     this.model = const DixonColesModel(),

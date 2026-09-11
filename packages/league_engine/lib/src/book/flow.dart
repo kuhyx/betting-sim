@@ -14,7 +14,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// pattern the player can learn to read.
 class MoneyFlow {
   /// Creates a flow model.
-  const MoneyFlow({
+  const new({
     this.sharpWeight = 0.55,
     this.publicWeight = 0.3,
     this.publicBiasStrength = 0.06,

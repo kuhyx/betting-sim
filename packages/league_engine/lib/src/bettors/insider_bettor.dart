@@ -10,7 +10,7 @@ import 'package:league_engine/src/rng/source.dart';
 /// margin, then keeping records is busywork and the feed is decoration.
 class InsiderBettor implements Bettor {
   /// Creates a follower of tipster [tipsterId].
-  const InsiderBettor({
+  const new({
     required this.tipsterId,
     this.edgeThreshold = 0.03,
     this.kelly = 0.25,
@@ -51,9 +51,7 @@ class InsiderBettor implements Bettor {
         return const <Bet>[];
       }
       final capped = stake > view.market.limit ? view.market.limit : stake;
-      return <Bet>[
-        Bet(selection: tip.selection, stake: capped, taken: odds),
-      ];
+      return <Bet>[Bet(selection: tip.selection, stake: capped, taken: odds)];
     }
     return const <Bet>[];
   }

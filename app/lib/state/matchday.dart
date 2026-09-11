@@ -7,11 +7,7 @@ import 'package:league_engine/league_engine.dart';
 /// What a matchday did.
 class MatchdayOutcome {
   /// Creates an outcome.
-  const MatchdayOutcome({
-    required this.played,
-    required this.bets,
-    required this.peerBets,
-  });
+  const new({required this.played, required this.bets, required this.peerBets});
 
   /// The matches, for watching back.
   final List<PlayedMatch> played;

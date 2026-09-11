@@ -10,7 +10,7 @@ import 'package:betting_sim/state/performance.dart';
 /// quietly disagree about how much you have.
 class Purse {
   /// Creates a purse holding [opening].
-  Purse({this.opening = 1000}) : _bankroll = opening;
+  new({this.opening = 1000}) : _bankroll = opening;
 
   /// What every game starts with.
   final double opening;

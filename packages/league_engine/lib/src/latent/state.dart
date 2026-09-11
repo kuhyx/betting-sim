@@ -23,7 +23,7 @@ enum Weather {
 /// That separation is what makes the game learnable instead of a slot machine.
 class LatentState {
   /// Creates a latent state.
-  const LatentState({
+  const new({
     this.fatigue = 0,
     this.morale = 0,
     this.form = 0,
@@ -86,7 +86,7 @@ class LatentState {
 /// that empty diff is the proof.
 class MatchModifiers {
   /// Creates modifiers.
-  const MatchModifiers({
+  const new({
     this.attackMultiplier = 1,
     this.defenceMultiplier = 1,
     this.varianceMultiplier = 1,

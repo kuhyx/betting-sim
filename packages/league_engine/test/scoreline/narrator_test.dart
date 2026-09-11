@@ -158,10 +158,7 @@ void main() {
       final timeline = _narrator.narrate(context(), played);
       expect(timeline.upTo(0), isEmpty);
       expect(timeline.upTo(90), hasLength(timeline.events.length));
-      expect(
-        timeline.upTo(45).every((e) => e.minute <= 45),
-        isTrue,
-      );
+      expect(timeline.upTo(45).every((e) => e.minute <= 45), isTrue);
     });
   });
 

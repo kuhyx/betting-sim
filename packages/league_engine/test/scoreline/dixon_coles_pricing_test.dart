@@ -92,9 +92,7 @@ void main() {
       final sorted = List<Team>.of(league.teams)
         ..sort((a, b) => a.attackStrength.compareTo(b.attackStrength));
       const modifiers = LatentModifiers();
-      final clear = model.outcomeProbabilities(
-        _ctx(sorted.last, sorted.first),
-      );
+      final clear = model.outcomeProbabilities(_ctx(sorted.last, sorted.first));
       final storm = model.outcomeProbabilities(
         _ctx(
           sorted.last,

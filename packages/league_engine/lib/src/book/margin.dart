@@ -27,8 +27,7 @@ abstract interface class MarginMethod {
 /// this same interface later, and none of them has a clean closed form.
 class ProportionalMargin implements MarginMethod {
   /// Creates a proportional margin of [margin], e.g. 0.05 for 5%.
-  const ProportionalMargin(this.margin)
-    : assert(margin >= 0, 'margin cannot be negative');
+  const new(this.margin) : assert(margin >= 0, 'margin cannot be negative');
 
   @override
   final double margin;
@@ -55,8 +54,7 @@ class ProportionalMargin implements MarginMethod {
 /// It puts the player's edge in a different part of the market.
 class AdditiveMargin implements MarginMethod {
   /// Creates an additive margin.
-  const AdditiveMargin(this.margin)
-    : assert(margin >= 0, 'margin cannot be negative');
+  const new(this.margin) : assert(margin >= 0, 'margin cannot be negative');
 
   @override
   final double margin;
@@ -64,9 +62,7 @@ class AdditiveMargin implements MarginMethod {
   @override
   List<double> apply(List<double> trueProbs) {
     final share = margin / trueProbs.length;
-    return <double>[
-      for (final p in trueProbs) _cap(p + share),
-    ];
+    return <double>[for (final p in trueProbs) _cap(p + share)];
   }
 
   static double _cap(double p) => p >= 0.999 ? 0.999 : p;

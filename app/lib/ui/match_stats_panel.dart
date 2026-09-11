@@ -10,7 +10,7 @@ import 'package:league_engine/league_engine.dart';
 /// timeline is that nothing on screen is fabricated.
 class MatchStatsPanel extends StatelessWidget {
   /// Creates the panel.
-  const MatchStatsPanel({
+  const new({
     required this.home,
     required this.away,
     required this.revealed,

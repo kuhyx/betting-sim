@@ -1,4 +1,4 @@
-# Local gates only: each delegates to the shared implementation in ~/utils, so
+# Local gates only: each delegates to the shared implementation in ~/src/utils, so
 # every repo enforces one set of rules rather than a drifting copy.
 repos:
   - repo: local

@@ -14,7 +14,7 @@ import 'package:league_engine/league_engine.dart';
 /// care which you picked.
 class HourPlanner extends StatelessWidget {
   /// Creates the planner.
-  const HourPlanner({
+  const new({
     required this.life,
     required this.plan,
     required this.onAdd,
@@ -86,7 +86,7 @@ String labelOf(Activity activity) => switch (activity) {
 };
 
 class _Row extends StatelessWidget {
-  const _Row({required this.activity, required this.hours, this.onAdd});
+  const new({required this.activity, required this.hours, this.onAdd});
 
   final Activity activity;
   final int hours;

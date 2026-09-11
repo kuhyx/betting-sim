@@ -5,7 +5,7 @@ import 'package:league_engine/league_engine.dart';
 /// One friend's offer, and the three things you can do about it.
 class ProposalCard extends StatelessWidget {
   /// Creates the card.
-  const ProposalCard({
+  const new({
     required this.terms,
     required this.fixture,
     required this.outcome,

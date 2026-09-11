@@ -12,7 +12,7 @@ import 'package:league_engine/src/scoreline/dixon_coles.dart';
 /// this strategy reach it".
 class OracleBettor implements Bettor {
   /// Creates an oracle.
-  const OracleBettor({
+  const new({
     this.model = const DixonColesModel(),
     this.edgeThreshold = 0.02,
     this.kelly = 0.25,

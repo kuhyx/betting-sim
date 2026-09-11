@@ -7,10 +7,15 @@ void main() {
       expect(Weekday.values, hasLength(daysPerWeek));
       expect(Weekday.monday.index, 0);
       expect(Weekday.saturday.index, 5);
-      expect(
-        Weekday.values.map((d) => d.label),
-        <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      );
+      expect(Weekday.values.map((d) => d.label), <String>[
+        'Mon',
+        'Tue',
+        'Wed',
+        'Thu',
+        'Fri',
+        'Sat',
+        'Sun',
+      ]);
     });
   });
 

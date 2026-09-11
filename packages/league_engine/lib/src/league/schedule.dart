@@ -53,11 +53,7 @@ List<Fixture> buildSchedule(List<int> teamIds) {
   final firstHalf = List<Fixture>.of(fixtures);
   for (final f in firstHalf) {
     fixtures.add(
-      Fixture(
-        day: f.day + roundCount,
-        homeId: f.awayId,
-        awayId: f.homeId,
-      ),
+      Fixture(day: f.day + roundCount, homeId: f.awayId, awayId: f.homeId),
     );
   }
 

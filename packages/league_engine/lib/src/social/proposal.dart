@@ -14,7 +14,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// only reason to take one is that you think they are wrong.
 class FriendProposal {
   /// Creates a proposal.
-  const FriendProposal({
+  const new({
     required this.friendId,
     required this.name,
     required this.selection,
@@ -69,7 +69,7 @@ class FriendProposal {
 /// [floorOdds] would make gate 5 measure nothing.
 class ProposalTerms {
   /// Creates terms.
-  const ProposalTerms({required this.proposal, required this.floorOdds});
+  const new({required this.proposal, required this.floorOdds});
 
   /// What was offered.
   final FriendProposal proposal;
@@ -107,13 +107,13 @@ enum ProposalOutcome {
 /// the action shape is not.
 class ProposalDecision {
   /// Take it as offered.
-  const ProposalDecision.accept() : counter = null, accepted = true;
+  const new accept() : counter = null, accepted = true;
 
   /// Turn it down.
-  const ProposalDecision.reject() : counter = null, accepted = false;
+  const new reject() : counter = null, accepted = false;
 
   /// Offer them [counter] instead. They may walk.
-  const ProposalDecision.counterAt(Odds this.counter) : accepted = false;
+  const new counterAt(Odds this.counter) : accepted = false;
 
   /// Whether the offer was taken as it stood.
   final bool accepted;

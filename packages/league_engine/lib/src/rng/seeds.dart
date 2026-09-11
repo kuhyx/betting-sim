@@ -5,7 +5,7 @@ import 'package:league_engine/src/rng/mix32.dart';
 /// Levels are filled from the left; a null level means "not that deep".
 class SeedPath {
   /// Creates a path. [master] is the only required level.
-  const SeedPath({
+  const new({
     required this.master,
     this.season,
     this.day,

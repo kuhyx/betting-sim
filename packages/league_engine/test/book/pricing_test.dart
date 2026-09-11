@@ -50,12 +50,10 @@ void main() {
     });
 
     test('a bigger margin means worse prices for the player', () {
-      final tight = const Bookmaker(
-        marginMethod: ProportionalMargin(0.02),
-      ).price(truth);
-      final greedy = const Bookmaker(
-        marginMethod: ProportionalMargin(0.10),
-      ).price(truth);
+      final tight = const Bookmaker(marginMethod: ProportionalMargin(0.02))
+          .price(truth);
+      final greedy = const Bookmaker(marginMethod: ProportionalMargin(0.10))
+          .price(truth);
       expect(
         greedy.priceOf(Selection.home).decimal,
         lessThan(tight.priceOf(Selection.home).decimal),

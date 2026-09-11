@@ -9,7 +9,7 @@ import 'package:league_engine/src/rng/source.dart';
 /// Shape of a generated league.
 class LeagueConfig {
   /// Creates a config.
-  const LeagueConfig({
+  const new({
     this.teamCount = 20,
     this.squadSize = 18,
     this.meanAbility = 50,

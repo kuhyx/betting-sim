@@ -50,10 +50,7 @@ void main() {
   group('kellyFraction', () {
     test('stakes nothing without an edge', () {
       // The single most important discipline the game teaches.
-      expect(
-        kellyFraction(probability: 0.4, odds: const Odds(2)),
-        0,
-      );
+      expect(kellyFraction(probability: 0.4, odds: const Odds(2)), 0);
       expect(
         kellyFraction(probability: 0.5, odds: const Odds(2)),
         0,
@@ -158,9 +155,8 @@ void main() {
       // gap rather than around better arithmetic.
       for (final margin in <double>[0.05, 0.01, 0.001]) {
         expect(
-          const OracleBettor(
-            edgeThreshold: 0,
-          ).betsFor(_view(margin: margin), 1000, Mix32Source(1)),
+          const OracleBettor(edgeThreshold: 0)
+              .betsFor(_view(margin: margin), 1000, Mix32Source(1)),
           isEmpty,
           reason: 'margin $margin',
         );
@@ -192,20 +188,15 @@ void main() {
     });
 
     test('disagrees with the book once it observes fatigue', () {
-      final bets = const SkilledBettor(edgeThreshold: 0).betsFor(
-        _view(margin: 0.001, homeFatigue: 0.9),
-        1000,
-        Mix32Source(1),
-      );
+      final bets = const SkilledBettor(
+        edgeThreshold: 0,
+      ).betsFor(_view(margin: 0.001, homeFatigue: 0.9), 1000, Mix32Source(1));
       expect(bets, isNotEmpty);
     });
 
     test('declines thin edges', () {
-      final bets = const SkilledBettor(edgeThreshold: 0.9).betsFor(
-        _view(homeFatigue: 0.9),
-        1000,
-        Mix32Source(1),
-      );
+      final bets = const SkilledBettor(edgeThreshold: 0.9)
+          .betsFor(_view(homeFatigue: 0.9), 1000, Mix32Source(1));
       expect(bets, isEmpty);
     });
 

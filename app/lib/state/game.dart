@@ -19,7 +19,7 @@ import 'package:league_engine/league_engine.dart';
 /// engine the acceptance gate measures.
 class GameState extends ChangeNotifier {
   /// Starts a new game from [masterSeed], priced by [tuning].
-  GameState({this.masterSeed = 20260828, this.tuning = const Tuning()}) {
+  new({this.masterSeed = 20260828, this.tuning = const Tuning()}) {
     _league = generateLeague(masterSeed);
     _states = <int, LatentState>{
       for (final t in _league.teams) t.id: const LatentState(),
@@ -32,7 +32,7 @@ class GameState extends ChangeNotifier {
   /// A save carries no league, no hidden state and no scorelines: the only way
   /// back to matchday N is to play 0 to N-1 again from the same seed. If
   /// replay ever diverged, this is what would notice.
-  factory GameState.fromSave(SaveData save) {
+  factory fromSave(SaveData save) {
     final game = GameState(masterSeed: save.masterSeed, tuning: save.tuning);
     // Rounds only, never the days: the league replays from the seed, and how
     // somebody spent a Tuesday does not.

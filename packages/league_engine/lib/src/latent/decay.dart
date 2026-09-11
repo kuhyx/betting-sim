@@ -20,7 +20,7 @@ enum MatchOutcome {
 /// randomness at all.
 class LatentDecay {
   /// Creates a decay model.
-  const LatentDecay([this.config = const LatentConfig()]);
+  const new([this.config = const LatentConfig()]);
 
   /// Rates and thresholds.
   final LatentConfig config;

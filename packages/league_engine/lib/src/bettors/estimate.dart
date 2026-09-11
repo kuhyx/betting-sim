@@ -49,12 +49,8 @@ List<double> studiedEstimate(BettingView view, DixonColesModel model) {
     MatchContext(
       home: view.context.home,
       away: view.context.away,
-      homeModifiers: modifiers.project(
-        LatentState(fatigue: homeFatigue ?? 0),
-      ),
-      awayModifiers: modifiers.project(
-        LatentState(fatigue: awayFatigue ?? 0),
-      ),
+      homeModifiers: modifiers.project(LatentState(fatigue: homeFatigue ?? 0)),
+      awayModifiers: modifiers.project(LatentState(fatigue: awayFatigue ?? 0)),
       seedPath: view.context.seedPath,
       weather: view.context.weather,
     ),

@@ -9,7 +9,7 @@ import 'package:league_engine/league_engine.dart';
 /// carry a box score.
 class PlayedMatch {
   /// Creates a played match.
-  const PlayedMatch({
+  const new({
     required this.home,
     required this.away,
     required this.context,
@@ -17,7 +17,7 @@ class PlayedMatch {
   });
 
   /// The match [card] turned into, once [result] is known.
-  factory PlayedMatch.of(FixtureCard card, MatchResult result) => PlayedMatch(
+  factory of(FixtureCard card, MatchResult result) => PlayedMatch(
     home: card.home,
     away: card.away,
     context: card.context,

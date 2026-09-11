@@ -11,7 +11,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// markets are the softest.
 class OpeningLine {
   /// Creates an opening-line model.
-  const OpeningLine({this.baseNoise = 0.02, this.uncertaintyWeight = 0.00005});
+  const new({this.baseNoise = 0.02, this.uncertaintyWeight = 0.00005});
 
   /// Baseline error in the book's probability estimate.
   final double baseNoise;

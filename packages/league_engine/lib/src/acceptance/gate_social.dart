@@ -4,7 +4,7 @@ import 'package:league_engine/src/acceptance/metrics.dart';
 /// Thresholds for the friends gate.
 class SocialGateConfig {
   /// Creates a config.
-  const SocialGateConfig({this.maxShrewdShare = 0.6});
+  const new({this.maxShrewdShare = 0.6});
 
   /// The most of the oracle's edge that beating your friends may capture.
   ///

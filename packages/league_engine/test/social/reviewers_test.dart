@@ -184,7 +184,7 @@ void main() {
 }
 
 class _NeverReviewer implements ProposalReviewer {
-  const _NeverReviewer();
+  const new();
 
   @override
   String get name => 'never';
@@ -195,7 +195,7 @@ class _NeverReviewer implements ProposalReviewer {
 }
 
 class _CounterReviewer implements ProposalReviewer {
-  const _CounterReviewer(this.at);
+  const new(this.at);
 
   final Odds at;
 

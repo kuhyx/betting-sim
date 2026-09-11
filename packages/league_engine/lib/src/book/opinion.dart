@@ -74,11 +74,7 @@ OutcomeProbs normaliseOpinion(List<double> weights, {double floor = 0.01}) {
 ///
 /// Log-odds noise is scale-free: it moves a 0.08 chance and a 0.5 chance by
 /// the same proportional amount. One draw per outcome, then renormalise.
-OutcomeProbs perturbLogOdds(
-  OutcomeProbs base,
-  double sigma,
-  RandomSource rng,
-) {
+OutcomeProbs perturbLogOdds(OutcomeProbs base, double sigma, RandomSource rng) {
   final moved = <double>[
     for (final p in base.asList)
       _sigmoid(math.log(p / (1 - p)) + rng.normal(0, sigma)),

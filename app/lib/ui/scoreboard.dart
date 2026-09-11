@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// readable far sooner.
 class Scoreboard extends StatelessWidget {
   /// Creates a scoreboard.
-  const Scoreboard({required this.performance, super.key});
+  const new({required this.performance, super.key});
 
   /// The player's running scoreboard.
   final Performance performance;
@@ -60,7 +60,7 @@ class Scoreboard extends StatelessWidget {
 }
 
 class _Stat extends StatelessWidget {
-  const _Stat({required this.label, required this.value, required this.tone});
+  const new({required this.label, required this.value, required this.tone});
 
   final String label;
   final String value;

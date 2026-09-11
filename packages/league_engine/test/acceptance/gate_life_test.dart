@@ -93,10 +93,7 @@ void main() {
     test('fails if a bankroll could ever be an income', () {
       // If the oracle's season were worth a year of rent, the floor under the
       // bankroll would stop being a floor.
-      expect(
-        gateBettingIsNotALiving(_oracle(20), idler).passed,
-        isFalse,
-      );
+      expect(gateBettingIsNotALiving(_oracle(20), idler).passed, isFalse);
     });
 
     test('fails if somebody can stop working and get away with it', () {

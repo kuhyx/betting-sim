@@ -10,7 +10,7 @@ import 'package:league_engine/src/rng/source.dart';
 /// anywhere else, the bookmaker is miscalibrated.
 class RandomBettor implements Bettor {
   /// Creates a random bettor staking [stake] per match.
-  const RandomBettor({this.stake = 10});
+  const new({this.stake = 10});
 
   /// The flat stake.
   final double stake;

@@ -5,7 +5,7 @@
 /// small enough to sync between the phone and the desktop.
 sealed class MatchEvent {
   /// Creates an event at [minute].
-  const MatchEvent(this.minute);
+  const new(this.minute);
 
   /// The minute it happened, 1..90.
   final int minute;
@@ -14,11 +14,8 @@ sealed class MatchEvent {
 /// A goal.
 class GoalEvent extends MatchEvent {
   /// Creates a goal.
-  const GoalEvent({
-    required int minute,
-    required this.byHome,
-    required this.playerId,
-  }) : super(minute);
+  const new({required int minute, required this.byHome, required this.playerId})
+    : super(minute);
 
   /// Whether the home side scored.
   final bool byHome;
@@ -33,7 +30,7 @@ class GoalEvent extends MatchEvent {
 /// A player picked up an injury during play.
 class InjuryEvent extends MatchEvent {
   /// Creates an injury.
-  const InjuryEvent({
+  const new({
     required int minute,
     required this.homeSide,
     required this.playerId,
@@ -52,7 +49,7 @@ class InjuryEvent extends MatchEvent {
 /// A player was booked.
 class YellowCardEvent extends MatchEvent {
   /// Creates a booking.
-  const YellowCardEvent({
+  const new({
     required int minute,
     required this.homeSide,
     required this.playerId,
@@ -71,7 +68,7 @@ class YellowCardEvent extends MatchEvent {
 /// A player was sent off.
 class RedCardEvent extends MatchEvent {
   /// Creates a dismissal.
-  const RedCardEvent({
+  const new({
     required int minute,
     required this.homeSide,
     required this.playerId,

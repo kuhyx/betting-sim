@@ -7,7 +7,7 @@ import 'package:league_engine/league_engine.dart';
 /// does not, any more than which of your friends' bets you took.
 class LifeSnapshot {
   /// Creates a snapshot.
-  const LifeSnapshot({
+  const new({
     required this.dayOfSeason,
     required this.lifeMoney,
     required this.arrears,
@@ -43,7 +43,7 @@ class LifeSnapshot {
 /// spend on work, or on football, and never on both.
 class LifeState {
   /// Creates a life at the start of a season.
-  LifeState({this.config = const LifeConfig()});
+  new({this.config = const LifeConfig()});
 
   /// Rates and prices.
   final LifeConfig config;

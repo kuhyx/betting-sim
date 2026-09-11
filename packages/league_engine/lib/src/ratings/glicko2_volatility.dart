@@ -13,7 +13,7 @@ import 'package:league_engine/src/ratings/glicko2_types.dart';
 /// Follows Glickman's "Example of the Glicko-2 system" (2013), step 5.
 class VolatilitySolver {
   /// Creates a solver with the given [config].
-  const VolatilitySolver(this.config);
+  const new(this.config);
 
   /// Tunables, notably [RatingConfig.tau] and the iteration cap.
   final RatingConfig config;

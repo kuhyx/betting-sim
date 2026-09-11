@@ -24,7 +24,7 @@ const int saveVersion = 3;
 /// down a derivable number is exactly how two copies of it come to disagree.
 class SaveData {
   /// Creates a save.
-  const SaveData({
+  const new({
     required this.masterSeed,
     required this.tuning,
     required this.day,

@@ -48,10 +48,7 @@ void main() {
       // Technique (a): the scripted source reaches the branch
       // deterministically, with no seed search.
       final rng = ScriptedRandomSource(uniforms: [0.001]);
-      expect(
-        const LatentShocks().rollInjury(const LatentState(), rng),
-        isTrue,
-      );
+      expect(const LatentShocks().rollInjury(const LatentState(), rng), isTrue);
       expect(rng.uniform01, throwsStateError);
     });
   });
@@ -133,19 +130,13 @@ void main() {
 
     test('a zero spread removes the effect entirely', () {
       const flat = LatentConfig(refereeBiasSpread: 0);
-      expect(
-        const LatentShocks(flat).rollRefereeBias(Mix32Source(1)),
-        1,
-      );
+      expect(const LatentShocks(flat).rollRefereeBias(Mix32Source(1)), 1);
     });
   });
 
   group('recoverInjuries', () {
     test('a fit squad stays fit', () {
-      expect(
-        const LatentShocks().recoverInjuries(const LatentState(), 100),
-        0,
-      );
+      expect(const LatentShocks().recoverInjuries(const LatentState(), 100), 0);
     });
 
     test('a player returns once the lay-off has elapsed', () {

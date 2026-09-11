@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// The stake picker and the settle button.
 class ActionBar extends StatelessWidget {
   /// Creates the action bar.
-  const ActionBar({
+  const new({
     required this.stakeSize,
     required this.onStakeChanged,
     required this.onSettle,
@@ -55,11 +55,7 @@ class ActionBar extends StatelessWidget {
 }
 
 class _StakeChip extends StatelessWidget {
-  const _StakeChip({
-    required this.size,
-    required this.selected,
-    required this.onTap,
-  });
+  const new({required this.size, required this.selected, required this.onTap});
 
   final double size;
   final bool selected;
@@ -78,9 +74,7 @@ class _StakeChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? Tokens.accent : Tokens.inkRaised2,
           borderRadius: BorderRadius.circular(Tokens.radiusSmall),
-          border: Border.all(
-            color: selected ? Tokens.accent : Tokens.lineDark,
-          ),
+          border: Border.all(color: selected ? Tokens.accent : Tokens.lineDark),
         ),
         child: Text(
           size.toStringAsFixed(0),

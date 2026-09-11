@@ -7,7 +7,7 @@ import 'package:league_engine/league_engine.dart';
 /// One fixture: the two clubs, three prices, and the player's stake.
 class FixtureTile extends StatelessWidget {
   /// Creates a fixture tile.
-  const FixtureTile({
+  const new({
     required this.card,
     required this.format,
     required this.staked,

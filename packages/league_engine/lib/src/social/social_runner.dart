@@ -31,7 +31,7 @@ import 'package:league_engine/src/social/proposal.dart';
 /// the same as everywhere else.
 class SocialSeasonRunner {
   /// Creates a runner.
-  const SocialSeasonRunner({
+  const new({
     this.model = const DixonColesModel(),
     this.bookmaker = const Bookmaker(),
     this.openingLine = const OpeningLine(),
@@ -92,11 +92,9 @@ class SocialSeasonRunner {
       flow: flow,
       bookLatentAwareness: bookLatentAwareness,
     );
-    final friends = generateFriends(
-      masterSeed,
-      <int>[for (final t in league.teams) t.id],
-      circleConfig,
-    );
+    final friends = generateFriends(masterSeed, <int>[
+      for (final t in league.teams) t.id,
+    ], circleConfig);
 
     final states = <int, LatentState>{
       for (final t in league.teams) t.id: const LatentState(),

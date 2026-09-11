@@ -11,7 +11,7 @@ import 'package:league_engine/src/rng/source.dart';
 /// roll without also having to supply every unrelated uniform draw.
 class ScriptedRandomSource implements RandomSource {
   /// Creates a source that replays the given queues in order.
-  ScriptedRandomSource({
+  new({
     List<double>? uniforms,
     List<int>? ints,
     List<double>? normals,

@@ -15,7 +15,7 @@ import 'package:league_engine/league_engine.dart';
 @immutable
 class Tuning {
   /// Creates a tuning set.
-  const Tuning({
+  const new({
     this.bookLatentAwareness = 0.7,
     this.strengthScale = 0.006,
     this.fatigueAttackPenalty = 0.22,

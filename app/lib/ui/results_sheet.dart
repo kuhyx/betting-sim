@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// learns a club is tired, and hiding the detail would remove the game.
 class ResultsSheet extends StatelessWidget {
   /// Creates a results sheet.
-  const ResultsSheet({required this.bets, super.key});
+  const new({required this.bets, super.key});
 
   /// The bets settled this matchday.
   final List<PlayerBet> bets;
@@ -69,7 +69,7 @@ class ResultsSheet extends StatelessWidget {
 }
 
 class _ResultRow extends StatelessWidget {
-  const _ResultRow({required this.bet});
+  const new({required this.bet});
 
   final PlayerBet bet;
 

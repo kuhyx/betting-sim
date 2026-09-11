@@ -11,7 +11,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// The opening and closing markets on one fixture.
 class MatchMarkets {
   /// Creates a market pair.
-  const MatchMarkets({required this.opening, required this.closing});
+  const new({required this.opening, required this.closing});
 
   /// The price the player may bet into.
   final Market opening;
@@ -27,7 +27,7 @@ class MatchMarkets {
 /// that fallibility is the player's whole opportunity.
 class MarketMaker {
   /// Creates a market maker.
-  const MarketMaker({
+  const new({
     required this.model,
     required this.bookmaker,
     required this.openingLine,

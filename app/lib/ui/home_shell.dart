@@ -21,7 +21,7 @@ class HomeShell extends StatefulWidget {
   ///
   /// [store] is injectable so widget tests can run without a platform
   /// channel; it defaults to real on-device storage.
-  const HomeShell({required this.showDebugTuning, this.store, super.key});
+  const new({required this.showDebugTuning, this.store, super.key});
 
   /// Whether the debug tuning surface may be shown.
   final bool showDebugTuning;

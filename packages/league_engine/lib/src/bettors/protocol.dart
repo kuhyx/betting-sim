@@ -12,7 +12,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// market, and whatever public information the player has managed to gather.
 class BettingView {
   /// Creates a view.
-  const BettingView({
+  const new({
     required this.market,
     required this.context,
     this.observedHomeFatigue,
@@ -63,7 +63,7 @@ class BettingView {
 /// A bet placed at a price.
 class Bet {
   /// Creates a bet.
-  const Bet({
+  const new({
     required this.selection,
     required this.stake,
     required this.taken,

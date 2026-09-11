@@ -44,12 +44,7 @@ void main() {
 
     test('converges for a range of small deltas', () {
       for (final delta in <double>[0, 0.001, 0.05, 0.2]) {
-        final sigma = solver.solve(
-          phi: 0.4,
-          sigma: 0.06,
-          delta: delta,
-          v: 1.8,
-        );
+        final sigma = solver.solve(phi: 0.4, sigma: 0.06, delta: delta, v: 1.8);
         expect(sigma, greaterThan(0), reason: 'delta=$delta');
       }
     });

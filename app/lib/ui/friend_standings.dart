@@ -6,11 +6,7 @@ import 'package:league_engine/league_engine.dart';
 /// Where each friendship stands, in money.
 class FriendStandings extends StatelessWidget {
   /// Creates the table.
-  const FriendStandings({
-    required this.book,
-    required this.friends,
-    super.key,
-  });
+  const new({required this.book, required this.friends, super.key});
 
   /// The running totals.
   final FriendBook book;

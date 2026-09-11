@@ -26,7 +26,7 @@ enum Weekday {
   sunday('Sun');
 
   /// Creates a weekday displayed as [label].
-  const Weekday(this.label);
+  new(this.label);
 
   /// Three-letter label, for display.
   final String label;
@@ -61,10 +61,7 @@ extension type const GameDate(int dayOfSeason) {
 /// change what the gate measures, and a save would no longer replay.
 class SeasonCalendar {
   /// Creates a calendar for a season of [matchdays] rounds.
-  const SeasonCalendar({
-    required this.matchdays,
-    this.matchWeekday = Weekday.saturday,
-  });
+  const new({required this.matchdays, this.matchWeekday = Weekday.saturday});
 
   /// How many rounds the season has.
   final int matchdays;

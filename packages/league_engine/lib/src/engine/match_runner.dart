@@ -17,7 +17,7 @@ import 'package:league_engine/src/scoreline/timeline.dart';
 /// with no need to simulate the season around it.
 class MatchRunner {
   /// Creates a runner.
-  const MatchRunner({
+  const new({
     required this.model,
     this.latentConfig = const LatentConfig(),
     this.narrationConfig = const NarrationConfig(),

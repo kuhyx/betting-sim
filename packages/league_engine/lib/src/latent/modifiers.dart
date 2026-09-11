@@ -18,7 +18,7 @@ import 'package:league_engine/src/latent/state.dart';
 /// narrator rather than the scoreline: see [MatchModifiers].
 class LatentModifiers {
   /// Creates a projection.
-  const LatentModifiers([this.config = const LatentConfig()]);
+  const new([this.config = const LatentConfig()]);
 
   /// Rates and thresholds.
   final LatentConfig config;

@@ -10,7 +10,7 @@ void main() {
 /// The app shell.
 class BettingSimApp extends StatelessWidget {
   /// Creates the app.
-  const BettingSimApp({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

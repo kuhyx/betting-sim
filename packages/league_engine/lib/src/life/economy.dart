@@ -15,7 +15,7 @@ enum RunEnding {
 /// Where you live, and whether you still do.
 class Household {
   /// Creates a household.
-  const Household({
+  const new({
     required this.bankroll,
     this.arrears = 0,
     this.ending = RunEnding.running,
@@ -55,10 +55,7 @@ Household payRent(Household household, LifeConfig config) {
 
   final owed = config.rentPerWeek * (household.arrears + 1);
   if (household.bankroll >= owed) {
-    return household.copyWith(
-      bankroll: household.bankroll - owed,
-      arrears: 0,
-    );
+    return household.copyWith(bankroll: household.bankroll - owed, arrears: 0);
   }
 
   final behind = household.arrears + 1;
@@ -78,7 +75,7 @@ Household payRent(Household household, LifeConfig config) {
 /// feed with.
 class Purchase {
   /// Creates an item.
-  const Purchase({
+  const new({
     required this.id,
     required this.name,
     required this.cost,

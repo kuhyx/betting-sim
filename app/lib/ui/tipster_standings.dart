@@ -11,11 +11,7 @@ import 'package:league_engine/league_engine.dart';
 /// check later. This is that notebook, kept for you.
 class TipsterStandings extends StatelessWidget {
   /// Creates the table.
-  const TipsterStandings({
-    required this.ledger,
-    required this.tipsters,
-    super.key,
-  });
+  const new({required this.ledger, required this.tipsters, super.key});
 
   /// What has settled so far.
   final TipsterLedger ledger;
@@ -65,7 +61,7 @@ class TipsterStandings extends StatelessWidget {
 }
 
 class _StandingRow extends StatelessWidget {
-  const _StandingRow({required this.handle, required this.record});
+  const new({required this.handle, required this.record});
 
   final String handle;
   final TipsterRecord record;

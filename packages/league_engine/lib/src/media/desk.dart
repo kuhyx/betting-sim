@@ -13,7 +13,7 @@ import 'package:league_engine/src/scoreline/protocol.dart';
 /// How hard a tipster's standing lean pulls their opinion.
 class TipConfig {
   /// Creates the tuning for how tips are formed.
-  const TipConfig({this.lean = 0.18, this.panelNoise = 0.022});
+  const new({this.lean = 0.18, this.panelNoise = 0.022});
 
   /// The multiplicative tilt a [TipsterAngle] applies.
   ///
@@ -41,7 +41,7 @@ class TipConfig {
 /// invented.
 class TipsterDesk {
   /// Creates a desk.
-  const TipsterDesk({
+  const new({
     this.model = const DixonColesModel(),
     this.config = const TipConfig(),
   });

@@ -79,11 +79,7 @@ void main() {
 
   group('liveDay', () {
     test('a shift pays a shift', () {
-      final day = liveDay(
-        const Needs(),
-        _hours(Activity.work, 8),
-        _config,
-      );
+      final day = liveDay(const Needs(), _hours(Activity.work, 8), _config);
       expect(day.money, closeTo(8 * _config.wagePerHour, 1e-9));
     });
 
@@ -91,11 +87,10 @@ void main() {
       // A day you do not plan is a day you spend badly, which is the honest
       // version of "nothing happened".
       final short = liveDay(const Needs(), _hours(Activity.work, 8), _config);
-      final full = liveDay(
-        const Needs(),
-        <Activity>[..._hours(Activity.work, 8), ..._hours(Activity.idle, 16)],
-        _config,
-      );
+      final full = liveDay(const Needs(), <Activity>[
+        ..._hours(Activity.work, 8),
+        ..._hours(Activity.idle, 16),
+      ], _config);
       expect(short.needs.energy, closeTo(full.needs.energy, 1e-9));
       expect(short.money, closeTo(full.money, 1e-9));
     });
@@ -147,11 +142,10 @@ void main() {
     });
 
     test('eating settles it and costs money', () {
-      final day = liveDay(
-        const Needs(fullness: 0.1),
-        <Activity>[Activity.eat, Activity.eat],
-        _config,
-      );
+      final day = liveDay(const Needs(fullness: 0.1), <Activity>[
+        Activity.eat,
+        Activity.eat,
+      ], _config);
       expect(day.needs.fullness, greaterThan(0.1));
       expect(day.money, closeTo(-2 * _config.mealCost, 1e-9));
     });

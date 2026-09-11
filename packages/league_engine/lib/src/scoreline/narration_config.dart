@@ -7,7 +7,7 @@
 /// the empty-loop path. Config-forcing beats seed-hunting.
 class NarrationConfig {
   /// Creates a config. Every default is a plausible league average.
-  const NarrationConfig({
+  const new({
     this.shotsBase = 10,
     this.shotsPerStrength = 0.08,
     this.maxShots = 40,

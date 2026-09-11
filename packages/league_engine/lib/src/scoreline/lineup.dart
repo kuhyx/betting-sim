@@ -9,7 +9,7 @@ import 'package:league_engine/src/scoreline/narration_config.dart';
 /// what makes team news worth reading.
 class TeamSheet {
   /// Creates a sheet.
-  const TeamSheet({required this.starting, required this.missing});
+  const new({required this.starting, required this.missing});
 
   /// The players who started.
   final List<Player> starting;

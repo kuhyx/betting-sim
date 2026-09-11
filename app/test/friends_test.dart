@@ -81,10 +81,7 @@ void main() {
       // One of the two, never neither: a haggle always resolves.
       final landed = find.textContaining('talked them down');
       final walked = find.text('they walked');
-      expect(
-        landed.evaluate().length + walked.evaluate().length,
-        1,
-      );
+      expect(landed.evaluate().length + walked.evaluate().length, 1);
     });
 
     testWidgets('nothing is owed until something settles', (tester) async {

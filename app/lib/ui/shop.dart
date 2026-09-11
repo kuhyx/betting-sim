@@ -10,7 +10,7 @@ import 'package:league_engine/league_engine.dart';
 /// hours, and hours are what you read the feed with.
 class Shop extends StatelessWidget {
   /// Creates the shop over [game].
-  const Shop({required this.game, super.key});
+  const new({required this.game, super.key});
 
   /// The game being played.
   final GameState game;
@@ -39,7 +39,7 @@ class Shop extends StatelessWidget {
 }
 
 class _Item extends StatelessWidget {
-  const _Item({
+  const new({
     required this.item,
     required this.owned,
     required this.affordable,

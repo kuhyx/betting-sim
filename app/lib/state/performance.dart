@@ -11,7 +11,7 @@
 /// the debug panel reads it on every rebuild.
 class Performance {
   /// An empty scoreboard.
-  Performance();
+  new();
 
   double _staked = 0;
   double _profit = 0;

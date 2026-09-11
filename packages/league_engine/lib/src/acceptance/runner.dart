@@ -24,7 +24,7 @@ import 'package:league_engine/src/social/social_runner.dart';
 /// The outcome of an acceptance run.
 class AcceptanceReport {
   /// Creates a report.
-  const AcceptanceReport({
+  const new({
     required this.strategies,
     required this.gates,
     required this.margin,
@@ -92,16 +92,10 @@ AcceptanceReport runAcceptance({
     bookLatentAwareness: 1,
     openingLine: const OpeningLine(baseNoise: 0, uncertaintyWeight: 0),
   );
-  final randomVsPerfect = summarise(
-    'random-vs-perfect',
-    <SeasonResult>[
-      for (var i = 0; i < seasons; i++)
-        perfectBook.run(
-          masterSeed: masterSeed + i,
-          bettor: const RandomBettor(),
-        ),
-    ],
-  );
+  final randomVsPerfect = summarise('random-vs-perfect', <SeasonResult>[
+    for (var i = 0; i < seasons; i++)
+      perfectBook.run(masterSeed: masterSeed + i, bettor: const RandomBettor()),
+  ]);
 
   final skilled = metrics.firstWhere((m) => m.name == 'skilled');
   final random = metrics.firstWhere((m) => m.name == 'random');
@@ -182,9 +176,10 @@ AcceptanceReport runAcceptance({
 /// A control's cheat, and deliberately the only place awareness is read: the
 /// value is never carried on a `Tip`, so no strategy a player could write has
 /// access to it.
-int _sharpestOn(int masterSeed) => generateTipsters(
-  masterSeed,
-).reduce((a, b) => a.awareness > b.awareness ? a : b).id;
+int _sharpestOn(int masterSeed) =>
+    generateTipsters(masterSeed)
+        .reduce((a, b) => a.awareness > b.awareness ? a : b)
+        .id;
 
 /// Renders [report] as the text the gate script prints.
 String formatReport(AcceptanceReport report, Duration elapsed) {

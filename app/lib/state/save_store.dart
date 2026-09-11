@@ -20,7 +20,7 @@ abstract interface class SaveStore {
 /// on the Chrome-wrapped web build and a real file on Android.
 class PrefsSaveStore implements SaveStore {
   /// Creates a store, optionally over an existing [preferences] instance.
-  PrefsSaveStore({SharedPreferencesAsync? preferences})
+  new({SharedPreferencesAsync? preferences})
     : _prefs = preferences ?? SharedPreferencesAsync();
 
   /// The key the save is written under.
@@ -42,7 +42,7 @@ class PrefsSaveStore implements SaveStore {
 /// restarts the season constantly and must not scribble over a real save.
 class MemorySaveStore implements SaveStore {
   /// Creates an empty store, or one already holding [raw].
-  MemorySaveStore([this._raw]);
+  new([this._raw]);
 
   String? _raw;
 
