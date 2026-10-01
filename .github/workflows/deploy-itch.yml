@@ -37,6 +37,8 @@ jobs:
   deploy:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
+    # A healthy deploy takes ~5 min; a stalled one must not hold the queue.
+    timeout-minutes: 25
     steps:
       - name: Every check on this commit green?
         id: gate
@@ -93,15 +95,12 @@ jobs:
         with:
           channel: stable
 
-      # publish_itch.sh runs the smoke test through uv; Chromium's system
-      # libraries are installed here because the script itself skips --with-deps.
-      # setup-uv publishes no floating major tag; pin the release.
+      # publish_itch.sh runs the smoke test through uv and fetches Chromium
+      # itself. No `--with-deps`: the runner image already ships Chrome's
+      # system libraries, and the apt mirror once stalled that step for 15
+      # minutes. setup-uv publishes no floating major tag; pin the release.
       - uses: astral-sh/setup-uv@v10.2.0
         if: steps.gate.outputs.go == 'true' && steps.changed.outputs.deploy == 'true'
-
-      - name: Install Chromium for the boot test
-        if: steps.gate.outputs.go == 'true' && steps.changed.outputs.deploy == 'true'
-        run: uv run --with playwright python -m playwright install --with-deps chromium
 
       - name: Export, boot-test, push
         if: steps.gate.outputs.go == 'true' && steps.changed.outputs.deploy == 'true'
