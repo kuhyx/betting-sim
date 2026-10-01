@@ -106,6 +106,16 @@ jobs:
       - name: Build web
         run: flutter build web --release
 
+      # The itch.io build (bundled CanvasKit, relative <base href>) must boot
+      # and render, not merely compile -- this is what players actually load.
+      - name: Itch build boots in headless Chromium
+        run: |
+          bash ../scripts/export_web.sh "$RUNNER_TEMP/itch-web"
+          python3 -m pip install playwright==1.63.0
+          python3 -m playwright install --with-deps chromium
+          python3 ../scripts/web_smoke.py "$RUNNER_TEMP/itch-web" \
+            --shot "$RUNNER_TEMP/web_smoke.png"
+
       # The balance knobs let a player rewrite the game's difficulty, so the
       # debug tuning surface must not ship. Asserted on the built artifact
       # rather than trusted to kDebugMode's const-folding -- and asserted BOTH

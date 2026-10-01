@@ -123,6 +123,10 @@ what the four gate numbers mean.
 
 ## Running
 
+Play it in the browser: https://kuhyx.itch.io/betting-sim. To publish a new
+build there, run `tools/publish_itch.sh` (build, headless boot check, butler
+push; `--dry-run` stops before the push).
+
 Everything, in one command:
 
 ```sh
