@@ -47,8 +47,8 @@ main() {
         exit 1
     fi
     "$REPO/scripts/export_web.sh" "$OUT"
-    uv run --with playwright python -m playwright install chromium >/dev/null
-    uv run --with playwright python "$REPO/scripts/web_smoke.py" "$OUT" \
+    uv run --no-project --with playwright python -m playwright install chromium >/dev/null
+    uv run --no-project --with playwright python "$REPO/scripts/web_smoke.py" "$OUT" \
         --shot "$OUT/../web_smoke.png"
     local version
     version="$(git -C "$REPO" rev-parse --short HEAD)"
