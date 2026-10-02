@@ -16,7 +16,7 @@ readonly REPO
 readonly TARGET="kuhyx/betting-sim:html5"
 readonly BUTLER_URL="https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default"
 readonly BIN_DIR="$HOME/.local/bin"
-readonly OUT="$REPO/../betting-sim_binaries/web"
+readonly OUT="$HOME/data/betting-sim_binaries/web"
 DRY_RUN=0
 
 ensure_butler() {

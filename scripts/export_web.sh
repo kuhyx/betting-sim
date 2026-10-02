@@ -2,7 +2,7 @@
 
 # ============================================================================
 # Build the release web bundle that itch.io serves.
-#   scripts/export_web.sh [out_dir]   (default: ../betting-sim_binaries/web)
+#   scripts/export_web.sh [out_dir]   (default: ~/data/betting-sim_binaries/web)
 #
 # Two differences from a plain `flutter build web`, both because itch serves
 # the game from a sub-path inside an iframe on a different origin:
@@ -18,7 +18,7 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly REPO
-readonly OUT="${1:-$REPO/../betting-sim_binaries/web}"
+readonly OUT="${1:-$HOME/data/betting-sim_binaries/web}"
 
 main() {
     (cd "$REPO/app" && flutter pub get >/dev/null \
