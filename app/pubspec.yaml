@@ -7,13 +7,19 @@ environment:
   sdk: ^3.13.0
 
 dependencies:
+  # One shared component layer; FitGrid keeps the main screens on one page.
+  design_system:
+    git:
+      url: https://github.com/kuhyx/utils
+      ref: design_system-v0.3.0
+      path: design_system
   flutter:
     sdk: flutter
   league_engine:
     path: ../packages/league_engine
   # Exact pin, no caret: the freshness gate compares a pinned version against
   # the newest stable, and a range gives it nothing to compare.
-  shared_preferences: 2.5.5
+  shared_preferences: 2.5.6
 
 dev_dependencies:
   flutter_launcher_icons: 0.14.4

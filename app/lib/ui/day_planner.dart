@@ -64,12 +64,36 @@ class HourPlanner extends StatelessWidget {
           ],
         ),
         const SizedBox(height: Tokens.space2),
-        for (final activity in Activity.values)
-          _Row(
-            activity: activity,
-            hours: plan[activity] ?? 0,
-            onAdd: spare > 0 ? () => onAdd(activity) : null,
+        // Two rows of three, stretched to the room left: the whole day is
+        // visible at once and never needs a scroll.
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              for (var row = 0; row < Activity.values.length; row += 3) ...[
+                if (row > 0) const SizedBox(height: Tokens.space2),
+                Expanded(
+                  child: Row(
+                    children: <Widget>[
+                      for (final activity in Activity.values.skip(row).take(3))
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Tokens.space1,
+                            ),
+                            child: _Tile(
+                              activity: activity,
+                              hours: plan[activity] ?? 0,
+                              onAdd: spare > 0 ? () => onAdd(activity) : null,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
           ),
+        ),
       ],
     );
   }
@@ -85,7 +109,16 @@ String labelOf(Activity activity) => switch (activity) {
   Activity.idle => 'do nothing much',
 };
 
-class _Row extends StatelessWidget {
+IconData _iconOf(Activity activity) => switch (activity) {
+  Activity.work => Icons.work,
+  Activity.sleep => Icons.bedtime,
+  Activity.eat => Icons.restaurant,
+  Activity.study => Icons.menu_book,
+  Activity.watch => Icons.live_tv,
+  Activity.idle => Icons.weekend,
+};
+
+class _Tile extends StatelessWidget {
   const new({required this.activity, required this.hours, this.onAdd});
 
   final Activity activity;
@@ -95,28 +128,48 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: Tokens.space2),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width: 32,
-            child: Text(
-              hours == 0 ? '--' : '${hours}h',
-              style: text.bodyMedium?.copyWith(
-                color: hours == 0 ? Tokens.mutedOnDark : Tokens.accent,
+    final live = onAdd != null;
+    return Tooltip(
+      message: 'an hour of ${labelOf(activity)}',
+      child: InkWell(
+        onTap: onAdd,
+        borderRadius: BorderRadius.circular(Tokens.radius),
+        child: Container(
+          padding: const EdgeInsets.all(Tokens.space2),
+          decoration: BoxDecoration(
+            color: Tokens.inkRaised1,
+            borderRadius: BorderRadius.circular(Tokens.radius),
+            border: Border.all(color: live ? Tokens.accent : Tokens.lineDark),
+          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: SizedBox(
+              width: 96,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(
+                    _iconOf(activity),
+                    color: live ? Tokens.accent : Tokens.lineDark,
+                  ),
+                  Text(
+                    labelOf(activity),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: text.bodySmall,
+                  ),
+                  Text(
+                    hours == 0 ? '--' : '${hours}h',
+                    style: text.bodyMedium?.copyWith(
+                      color: hours == 0 ? Tokens.mutedOnDark : Tokens.accent,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          Expanded(child: Text(labelOf(activity), style: text.bodyMedium)),
-          IconButton(
-            onPressed: onAdd,
-            icon: const Icon(Icons.add, size: 18),
-            color: Tokens.accent,
-            disabledColor: Tokens.lineDark,
-            tooltip: 'an hour of ${labelOf(activity)}',
-          ),
-        ],
+        ),
       ),
     );
   }

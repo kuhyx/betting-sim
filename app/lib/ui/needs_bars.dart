@@ -2,7 +2,7 @@ import 'package:betting_sim/ui/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:league_engine/league_engine.dart';
 
-/// How you are holding up.
+/// How you are holding up: three bars side by side in one short strip.
 class NeedsBars extends StatelessWidget {
   /// Creates the bars.
   const new({required this.needs, super.key});
@@ -12,11 +12,19 @@ class NeedsBars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       children: <Widget>[
-        _Bar(label: 'energy', value: needs.energy, goodHigh: true),
-        _Bar(label: 'fed', value: needs.fullness, goodHigh: true),
-        _Bar(label: 'stress', value: needs.stress, goodHigh: false),
+        Expanded(
+          child: _Bar(label: 'energy', value: needs.energy, goodHigh: true),
+        ),
+        const SizedBox(width: Tokens.space3),
+        Expanded(
+          child: _Bar(label: 'fed', value: needs.fullness, goodHigh: true),
+        ),
+        const SizedBox(width: Tokens.space3),
+        Expanded(
+          child: _Bar(label: 'stress', value: needs.stress, goodHigh: false),
+        ),
       ],
     );
   }
@@ -33,34 +41,28 @@ class _Bar extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     final healthy = goodHigh ? value > 0.3 : value < 0.7;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: Tokens.space2),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width: 56,
-            child: Text(
-              label,
-              style: text.bodySmall?.copyWith(color: Tokens.mutedOnDark),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                style: text.bodySmall?.copyWith(color: Tokens.mutedOnDark),
+              ),
             ),
-          ),
-          Expanded(
-            child: LinearProgressIndicator(
-              value: value,
-              backgroundColor: Tokens.lineDark,
-              color: healthy ? Tokens.success : Tokens.danger,
-            ),
-          ),
-          SizedBox(
-            width: 44,
-            child: Text(
-              '${(value * 100).round()}%',
-              textAlign: TextAlign.right,
-              style: text.bodySmall,
-            ),
-          ),
-        ],
-      ),
+            Text('${(value * 100).round()}%', style: text.bodySmall),
+          ],
+        ),
+        const SizedBox(height: Tokens.space1),
+        LinearProgressIndicator(
+          value: value,
+          backgroundColor: Tokens.lineDark,
+          color: healthy ? Tokens.success : Tokens.danger,
+        ),
+      ],
     );
   }
 }

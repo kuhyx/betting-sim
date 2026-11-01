@@ -4,8 +4,9 @@ import 'package:league_engine/league_engine.dart';
 
 /// A tappable price for one outcome.
 ///
-/// Shows the label above the price so the eye can scan a column of markets
-/// without re-reading which side is which.
+/// Label on the left, price on the right, filling the box it is given: a
+/// fixture tile stacks three of them, so a column of markets scans down the
+/// price edge without re-reading which side is which.
 class OddsButton extends StatelessWidget {
   /// Creates a price button.
   const new({
@@ -34,52 +35,47 @@ class OddsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Semantics(
-        button: true,
-        selected: selected,
-        label: '$label at ${odds.format(format)}',
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(Tokens.radiusSmall),
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: Tokens.space2,
-              horizontal: Tokens.space1,
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '$label at ${odds.format(format)}',
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(Tokens.radiusSmall),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: Tokens.space2),
+          decoration: BoxDecoration(
+            color: selected ? Tokens.accent : Tokens.inkRaised2,
+            borderRadius: BorderRadius.circular(Tokens.radiusSmall),
+            border: Border.all(
+              color: selected ? Tokens.accent : Tokens.lineDark,
             ),
-            decoration: BoxDecoration(
-              color: selected ? Tokens.accent : Tokens.inkRaised2,
-              borderRadius: BorderRadius.circular(Tokens.radiusSmall),
-              border: Border.all(
-                color: selected ? Tokens.accent : Tokens.lineDark,
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
+          ),
+          // On a filled accent surface text must be ink, never near-white:
+          // the shared rule, measured at 2.2-3.6:1 for near-white against
+          // WCAG's 4.5:1 floor.
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 11,
-                    // On a filled accent surface text must be ink, never
-                    // near-white: the shared rule, measured at 2.2-3.6:1 for
-                    // near-white against WCAG's 4.5:1 floor.
                     color: selected ? Tokens.onFill : Tokens.mutedOnDark,
                   ),
                 ),
-                const SizedBox(height: Tokens.space1),
-                Text(
-                  odds.format(format),
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: selected ? Tokens.onFill : Tokens.textOnDark,
-                  ),
+              ),
+              Text(
+                odds.format(format),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: selected ? Tokens.onFill : Tokens.textOnDark,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

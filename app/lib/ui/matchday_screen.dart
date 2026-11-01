@@ -8,6 +8,7 @@ import 'package:betting_sim/ui/fixture_tile.dart';
 import 'package:betting_sim/ui/last_matchday_screen.dart';
 import 'package:betting_sim/ui/results_sheet.dart';
 import 'package:betting_sim/ui/tokens.dart';
+import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:league_engine/league_engine.dart';
 
@@ -115,11 +116,10 @@ class _MatchdayScreenState extends State<MatchdayScreen> {
           Expanded(
             child: _game.seasonOver
                 ? const _SeasonOver()
-                : ListView.separated(
-                    padding: const EdgeInsets.all(Tokens.space4),
+                : FitGrid(
+                    columns: 2,
+                    minSquare: 0.85,
                     itemCount: _game.fixtures.length,
-                    separatorBuilder: (_, _) =>
-                        const SizedBox(height: Tokens.space3),
                     itemBuilder: (_, i) {
                       final card = _game.fixtures[i];
                       return FixtureTile(
@@ -174,12 +174,16 @@ class _BankrollBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            'bankroll ${bankroll.toStringAsFixed(2)}',
-            style: const TextStyle(
-              color: Tokens.textOnDark,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              'bankroll ${bankroll.toStringAsFixed(2)}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Tokens.textOnDark,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           if (staked > 0)

@@ -2,6 +2,7 @@ import 'package:betting_sim/state/friends.dart';
 import 'package:betting_sim/state/game.dart';
 import 'package:betting_sim/state/game_save.dart';
 import 'package:betting_sim/state/save_store.dart';
+import 'package:betting_sim/ui/friend_tile.dart';
 import 'package:betting_sim/ui/home_shell.dart';
 import 'package:betting_sim/ui/tokens.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,13 @@ Future<void> _openFriends(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+/// Opens the first offer's sheet: the three choices live there, not on the
+/// tile, so a page of offers fits one screen.
+Future<void> _openOffer(WidgetTester tester) async {
+  await tester.tap(find.byType(FriendTile).first);
+  await tester.pumpAndSettle();
+}
+
 /// A fresh game, with nothing decided yet.
 GameState _chatty() => GameState()..records.peers.clear();
 
@@ -40,6 +48,7 @@ void main() {
     ) async {
       await _mount(tester);
       await _openFriends(tester);
+      await _openOffer(tester);
 
       expect(find.text("YOU'RE ON"), findsWidgets);
       expect(find.text('HAGGLE'), findsWidgets);
@@ -53,7 +62,8 @@ void main() {
       await _mount(tester);
       await _openFriends(tester);
 
-      await tester.tap(find.text("YOU'RE ON").first);
+      await _openOffer(tester);
+      await tester.tap(find.text("YOU'RE ON"));
       await tester.pumpAndSettle();
 
       expect(find.textContaining('shook on'), findsOneWidget);
@@ -64,7 +74,8 @@ void main() {
       await _mount(tester);
       await _openFriends(tester);
 
-      await tester.tap(find.text('LEAVE IT').first);
+      await _openOffer(tester);
+      await tester.tap(find.text('LEAVE IT'));
       await tester.pumpAndSettle();
 
       expect(find.text('left it'), findsOneWidget);
@@ -75,7 +86,8 @@ void main() {
       await _mount(tester);
       await _openFriends(tester);
 
-      await tester.tap(find.text('HAGGLE').first);
+      await _openOffer(tester);
+      await tester.tap(find.text('HAGGLE'));
       await tester.pumpAndSettle();
 
       // One of the two, never neither: a haggle always resolves.
@@ -96,7 +108,8 @@ void main() {
     testWidgets('a settled bet lands in the book', (tester) async {
       await _mount(tester);
       await _openFriends(tester);
-      await tester.tap(find.text("YOU'RE ON").first);
+      await _openOffer(tester);
+      await tester.tap(find.text("YOU'RE ON"));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.sports_soccer));

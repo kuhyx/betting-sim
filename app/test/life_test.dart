@@ -78,7 +78,10 @@ void main() {
       );
       expect(find.text('a bicycle'), findsOneWidget);
 
-      await tester.tap(find.text('180'));
+      // A purchase takes two taps: the tile, then the price in its sheet.
+      await tester.tap(find.text('a bicycle'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('180').last);
       await tester.pumpAndSettle();
       expect(find.text('bought'), findsOneWidget);
 

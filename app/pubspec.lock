@@ -73,6 +73,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
+  design_system:
+    dependency: "direct main"
+    description:
+      path: design_system
+      ref: "design_system-v0.3.0"
+      resolved-ref: b3c9611af212880301ca79ed21f909bc4640f81f
+      url: "https://github.com/kuhyx/utils"
+    source: git
+    version: "0.3.0"
   fake_async:
     dependency: transitive
     description:
@@ -251,10 +260,10 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: c3025c5534b01739267eb7d76959bbc25a6d10f6988e1c2a3036940133dd10bf
+      sha256: "1e85e0dccf5b4a016077fea7dfbb4a7cb39c759ac1596fcf60c06deadb7da91f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.5"
+    version: "2.5.6"
   shared_preferences_android:
     dependency: transitive
     description:

@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:betting_sim/state/game.dart';
 import 'package:betting_sim/ui/tokens.dart';
+import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:league_engine/league_engine.dart';
 
@@ -18,26 +21,38 @@ class Shop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    return ListView(
-      padding: const EdgeInsets.all(Tokens.space4),
+    return Column(
       children: <Widget>[
-        Text(
-          'nothing here makes you better at betting. it buys hours.',
-          style: text.bodySmall?.copyWith(color: Tokens.mutedOnDark),
-        ),
-        const SizedBox(height: Tokens.space4),
-        for (final item in catalogue)
-          _Item(
-            item: item,
-            owned: game.life.owned.contains(item.id),
-            affordable: game.bankroll >= item.cost,
-            onBuy: () => game.buy(item),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            Tokens.space4,
+            0,
+            Tokens.space4,
+            Tokens.space3,
           ),
+          child: Text(
+            'nothing here makes you better at betting. it buys hours.',
+            style: text.bodySmall?.copyWith(color: Tokens.mutedOnDark),
+          ),
+        ),
+        Expanded(
+          child: FitGrid(
+            itemCount: catalogue.length,
+            itemBuilder: (_, i) => _Item(
+              item: catalogue[i],
+              owned: game.life.owned.contains(catalogue[i].id),
+              affordable: game.bankroll >= catalogue[i].cost,
+              onBuy: () => game.buy(catalogue[i]),
+            ),
+          ),
+        ),
       ],
     );
   }
 }
 
+/// A tile: the name and the price. The blurb and the buy button are one tap
+/// away, so a 180 purchase is never one stray touch.
 class _Item extends StatelessWidget {
   const new({
     required this.item,
@@ -51,43 +66,87 @@ class _Item extends StatelessWidget {
   final bool affordable;
   final VoidCallback onBuy;
 
-  @override
-  Widget build(BuildContext context) {
+  void _open(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    return Container(
-      margin: const EdgeInsets.only(bottom: Tokens.space3),
-      padding: const EdgeInsets.all(Tokens.space4),
-      color: Tokens.inkRaised1,
-      child: Row(
-        children: <Widget>[
-          Expanded(
+    unawaited(
+      showModalBottomSheet<void>(
+        context: context,
+        backgroundColor: Tokens.inkRaised1,
+        builder: (sheet) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(Tokens.space4),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(item.name, style: text.bodyMedium),
+                Text(item.name, style: text.titleMedium),
+                const SizedBox(height: Tokens.space1),
                 Text(
                   item.blurb,
                   style: text.bodySmall?.copyWith(color: Tokens.mutedOnDark),
                 ),
+                const SizedBox(height: Tokens.space3),
+                if (!owned)
+                  TextButton(
+                    onPressed: affordable
+                        ? () {
+                            Navigator.of(sheet).pop();
+                            onBuy();
+                          }
+                        : null,
+                    child: Text(
+                      item.cost.toStringAsFixed(0),
+                      style: TextStyle(
+                        color: affordable ? Tokens.accent : Tokens.lineDark,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
-          if (owned)
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return InkWell(
+      onTap: () => _open(context),
+      borderRadius: BorderRadius.circular(Tokens.radius),
+      child: Container(
+        padding: const EdgeInsets.all(Tokens.space2),
+        decoration: BoxDecoration(
+          color: Tokens.inkRaised1,
+          borderRadius: BorderRadius.circular(Tokens.radius),
+          border: Border.all(color: owned ? Tokens.success : Tokens.lineDark),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
             Text(
-              'bought',
-              style: text.bodySmall?.copyWith(color: Tokens.success),
-            )
-          else
-            TextButton(
-              onPressed: affordable ? onBuy : null,
-              child: Text(
+              item.name,
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: text.bodyMedium,
+            ),
+            const SizedBox(height: Tokens.space1),
+            if (owned)
+              Text(
+                'bought',
+                style: text.bodySmall?.copyWith(color: Tokens.success),
+              )
+            else
+              Text(
                 item.cost.toStringAsFixed(0),
-                style: TextStyle(
-                  color: affordable ? Tokens.accent : Tokens.lineDark,
+                style: text.bodySmall?.copyWith(
+                  color: affordable ? Tokens.accent : Tokens.mutedOnDark,
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:betting_sim/state/cards.dart';
 import 'package:betting_sim/state/friends.dart';
 import 'package:betting_sim/state/game.dart';
 import 'package:betting_sim/ui/friend_standings.dart';
-import 'package:betting_sim/ui/proposal_card.dart';
+import 'package:betting_sim/ui/friend_tile.dart';
 import 'package:betting_sim/ui/tokens.dart';
+import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 
 /// What your friends want on today's card, and what you said about it.
@@ -24,7 +27,6 @@ class FriendsScreen extends StatefulWidget {
 class _FriendsScreenState extends State<FriendsScreen> {
   /// What happened to each proposal, for the ones already dealt with.
   final Map<int, String> _outcomes = <int, String>{};
-  bool _showBook = false;
 
   PeerSlip get _peers => widget.game.records.peers;
 
@@ -52,26 +54,36 @@ class _FriendsScreenState extends State<FriendsScreen> {
     });
   }
 
+  void _showBook() {
+    unawaited(
+      showModalBottomSheet<void>(
+        context: context,
+        backgroundColor: Tokens.inkRaised1,
+        isScrollControlled: true,
+        builder: (sheet) => SizedBox(
+          height: MediaQuery.sizeOf(sheet).height * 0.6,
+          child: FriendStandings(
+            book: widget.game.records.friendBook,
+            friends: widget.game.records.friends,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    final fixtures = widget.game.fixtures;
-    final open = <Widget>[];
-
-    for (final card in fixtures) {
-      for (var i = 0; i < card.proposals.length; i++) {
-        open.add(
-          ProposalCard(
+    final offers = <Widget>[
+      for (final card in widget.game.fixtures)
+        for (var i = 0; i < card.proposals.length; i++)
+          FriendTile(
             terms: card.proposals[i],
             fixture: '${card.home.name} v ${card.away.name}',
             outcome: _outcomes[PeerSlip.keyFor(card.index, i)],
-            onAccept: () => _decide(card.index, i, card, 'accept'),
-            onHaggle: () => _decide(card.index, i, card, 'haggle'),
-            onReject: () => _decide(card.index, i, card, 'reject'),
+            onChoose: (choice) => _decide(card.index, i, card, choice.name),
           ),
-        );
-      }
-    }
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -79,20 +91,15 @@ class _FriendsScreenState extends State<FriendsScreen> {
         title: Text('friends', style: text.headlineSmall),
         actions: <Widget>[
           TextButton(
-            onPressed: () => setState(() => _showBook = !_showBook),
-            child: Text(
-              _showBook ? 'offers' : 'who owes who',
-              style: const TextStyle(color: Tokens.accent),
+            onPressed: _showBook,
+            child: const Text(
+              'who owes who',
+              style: TextStyle(color: Tokens.accent),
             ),
           ),
         ],
       ),
-      body: _showBook
-          ? FriendStandings(
-              book: widget.game.records.friendBook,
-              friends: widget.game.records.friends,
-            )
-          : _Offers(offers: open, atRisk: _peers.atRisk),
+      body: _Offers(offers: offers, atRisk: _peers.atRisk),
     );
   }
 }
@@ -127,9 +134,10 @@ class _Offers extends StatelessWidget {
             ),
           ),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(Tokens.space4),
-            children: offers,
+          child: FitGrid(
+            itemCount: offers.length,
+            labelHeight: 32,
+            itemBuilder: (_, i) => offers[i],
           ),
         ),
       ],

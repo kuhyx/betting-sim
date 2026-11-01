@@ -28,7 +28,7 @@ class ActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Tokens.inkRaised1,
-      padding: const EdgeInsets.all(Tokens.space4),
+      padding: const EdgeInsets.all(Tokens.space3),
       child: Row(
         children: <Widget>[
           for (final size in <double>[5, 10, 25, 50]) ...<Widget>[
@@ -39,14 +39,23 @@ class ActionBar extends StatelessWidget {
             ),
             const SizedBox(width: Tokens.space2),
           ],
-          const Spacer(),
-          FilledButton(
-            onPressed: onSettle,
-            style: FilledButton.styleFrom(
-              backgroundColor: Tokens.accent,
-              foregroundColor: Tokens.onFill,
+          // Scaled down rather than wrapped: on a phone the four stakes and
+          // the longer label do not share one row at full size.
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: FilledButton(
+                  onPressed: onSettle,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Tokens.accent,
+                    foregroundColor: Tokens.onFill,
+                  ),
+                  child: Text(hasBets ? 'PLAY MATCHDAY' : 'SKIP MATCHDAY'),
+                ),
+              ),
             ),
-            child: Text(hasBets ? 'PLAY MATCHDAY' : 'SKIP MATCHDAY'),
           ),
         ],
       ),
@@ -68,7 +77,7 @@ class _StakeChip extends StatelessWidget {
       borderRadius: BorderRadius.circular(Tokens.radiusSmall),
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: Tokens.space3,
+          horizontal: Tokens.space2 + Tokens.space1,
           vertical: Tokens.space2,
         ),
         decoration: BoxDecoration(

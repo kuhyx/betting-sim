@@ -52,32 +52,51 @@ class _LifeScreenState extends State<LifeScreen> {
       appBar: AppBar(
         backgroundColor: Tokens.inkRaised1,
         title: Text(life.date.label, style: text.headlineSmall),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => setState(() => _shopping = !_shopping),
-            child: Text(
-              _shopping ? 'today' : 'shop',
-              style: const TextStyle(color: Tokens.accent),
-            ),
-          ),
-        ],
       ),
-      body: _shopping
-          ? Shop(game: widget.game)
-          : !life.running
+      body: !life.running
           ? _Over(life: life)
-          : ListView(
-              padding: const EdgeInsets.all(Tokens.space4),
+          : Column(
               children: <Widget>[
-                _Money(game: widget.game),
-                const SizedBox(height: Tokens.space4),
-                NeedsBars(needs: life.needs),
-                const SizedBox(height: Tokens.space4),
-                HourPlanner(
-                  life: life,
-                  plan: _plan,
-                  onAdd: _add,
-                  onClear: _clear,
+                Padding(
+                  padding: const EdgeInsets.all(Tokens.space3),
+                  child: SegmentedButton<bool>(
+                    showSelectedIcon: false,
+                    segments: const <ButtonSegment<bool>>[
+                      ButtonSegment<bool>(value: false, label: Text('today')),
+                      ButtonSegment<bool>(value: true, label: Text('shop')),
+                    ],
+                    selected: <bool>{_shopping},
+                    onSelectionChanged: (v) =>
+                        setState(() => _shopping = v.first),
+                  ),
+                ),
+                Expanded(
+                  child: _shopping
+                      ? Shop(game: widget.game)
+                      : Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            Tokens.space4,
+                            0,
+                            Tokens.space4,
+                            Tokens.space3,
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              _Money(game: widget.game),
+                              const SizedBox(height: Tokens.space3),
+                              NeedsBars(needs: life.needs),
+                              const SizedBox(height: Tokens.space3),
+                              Expanded(
+                                child: HourPlanner(
+                                  life: life,
+                                  plan: _plan,
+                                  onAdd: _add,
+                                  onClear: _clear,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                 ),
               ],
             ),
@@ -115,7 +134,7 @@ class _Money extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: Tokens.inkRaised1,
-      padding: const EdgeInsets.all(Tokens.space4),
+      padding: const EdgeInsets.all(Tokens.space3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
