@@ -1,5 +1,6 @@
 # Local gates only: each delegates to the shared implementation in ~/src/utils, so
 # every repo enforces one set of rules rather than a drifting copy.
+default_install_hook_types: [pre-commit, post-commit, post-merge, post-rewrite]
 repos:
   - repo: local
     hooks:
@@ -15,6 +16,30 @@ repos:
         language: script
         files: '\.md$'
         pass_filenames: true
+
+      - id: todo-closer
+        name: close Todo trailer tasks
+        entry: scripts/todo_hooks.sh closer
+        language: system
+        stages: [post-commit]
+        always_run: true
+        pass_filenames: false
+
+      - id: todo-import-pr-merge
+        name: import PR Todo sections (pull)
+        entry: scripts/todo_hooks.sh import-pr post-merge
+        language: system
+        stages: [post-merge]
+        always_run: true
+        pass_filenames: false
+
+      - id: todo-import-pr-rewrite
+        name: import PR Todo sections (pull --rebase)
+        entry: scripts/todo_hooks.sh import-pr post-rewrite
+        language: system
+        stages: [post-rewrite]
+        always_run: true
+        pass_filenames: false
 
       - id: dart-analyze
         name: dart analyze (fatal infos)
