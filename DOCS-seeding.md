@@ -71,6 +71,7 @@ below.
 | 2 | the bookmaker |
 | 3 | the bettor |
 | 4-17 | the match narrator (`NarrationSlot`) |
+| 18 | injuries after a match, one club per `match` (`InjuryClock`) |
 | 20 | the panel of tipsters a save is stuck with |
 | 21 | what they say about one fixture |
 | 30 | the circle of friends a save is stuck with |

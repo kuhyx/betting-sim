@@ -16,6 +16,7 @@ class LimitPolicy {
     this.restrictionThreshold = 0.02,
     this.minimumLimit = 5,
     this.restrictionSeverity = 8,
+    this.restrictAfterBets = 20,
   });
 
   /// The stake accepted when a market opens.
@@ -34,6 +35,13 @@ class LimitPolicy {
 
   /// How aggressively limits fall once a player is flagged.
   final double restrictionSeverity;
+
+  /// How many settled bets the book wants before it judges anybody.
+  ///
+  /// [design guess]: under twenty, average CLV is mostly the luck of which
+  /// lines moved, and a book that flagged on five bets would flag half its
+  /// customers by chance.
+  final int restrictAfterBets;
 
   /// The limit for a market that is [sharpness] of the way to kick-off.
   double limitAt(double sharpness) {
@@ -58,4 +66,22 @@ class LimitPolicy {
   /// Whether the book has restricted this player at all.
   bool isRestricted(double closingLineValue) =>
       closingLineValue > restrictionThreshold;
+
+  /// The limit for a player with [bets] settled at mean [averageClv].
+  ///
+  /// The one entry point both round loops use, so the gate and the app cut
+  /// the same player at the same bet.
+  double limitFor(
+    double baseLimit, {
+    required int bets,
+    required double? averageClv,
+  }) => restricts(bets: bets, averageClv: averageClv)
+      ? limitForPlayer(baseLimit, averageClv!)
+      : baseLimit;
+
+  /// Whether a player with [bets] settled at mean [averageClv] is restricted.
+  bool restricts({required int bets, required double? averageClv}) =>
+      bets >= restrictAfterBets &&
+      averageClv != null &&
+      isRestricted(averageClv);
 }

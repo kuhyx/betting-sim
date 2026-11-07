@@ -38,6 +38,9 @@ MatchdayOutcome playMatchday({
   required Map<int, ({Selection selection, double stake})> slip,
   required MatchRunner runner,
   required LatentDecay decay,
+  required InjuryClock injuries,
+  required LatentConfig latentConfig,
+  required SeedPath day,
   required Records records,
   required Map<int, LatentState> states,
   required League league,
@@ -63,18 +66,22 @@ MatchdayOutcome playMatchday({
       );
     }
 
-    states[card.home.id] = decay.afterMatch(
-      states[card.home.id]!,
-      _outcomeFor(result, isHome: true),
-    );
-    states[card.away.id] = decay.afterMatch(
-      states[card.away.id]!,
-      _outcomeFor(result, isHome: false),
-    );
+    for (final (club, isHome) in [
+      (card.home.id, true),
+      (card.away.id, false),
+    ]) {
+      final after = decay.afterMatch(
+        states[club]!,
+        _outcomeFor(result, isHome: isHome),
+      );
+      final hurt = LatentShocks(latentConfig)
+          .rollInjury(after, injuries.rngFor(day: day, clubId: club));
+      states[club] = injuries.afterMatch(after, hurt: hurt);
+    }
   }
 
   for (final team in league.teams) {
-    states[team.id] = decay.rest(states[team.id]!);
+    states[team.id] = injuries.rest(decay.rest(states[team.id]!));
   }
 
   return MatchdayOutcome(played: played, bets: bets, peerBets: peerBets);

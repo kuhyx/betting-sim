@@ -47,7 +47,7 @@ void main() {
     });
 
     test('playing a matchday settles the slip and moves the bankroll', () {
-      final game = GameState()..stake(0, Selection.home, 100);
+      final game = GameState()..stake(0, Selection.home, 50);
       final before = game.bankroll;
 
       game.advanceDay();
@@ -58,9 +58,9 @@ void main() {
       expect(game.bankroll, isNot(before));
 
       final bet = game.history.first;
-      expect(bet.stake, 100);
+      expect(bet.stake, 50);
       // Won or lost, but never both and never nothing.
-      expect(bet.profit == -100 || bet.profit > 0, isTrue);
+      expect(bet.profit == -50 || bet.profit > 0, isTrue);
       expect(bet.won, bet.profit > 0);
     });
 
@@ -71,11 +71,11 @@ void main() {
         final game = GameState(masterSeed: seed);
         final odds = game.fixtures[0].market.priceOf(Selection.home);
         game
-          ..stake(0, Selection.home, 100)
+          ..stake(0, Selection.home, 50)
           ..advanceDay();
         final bet = game.history.first;
         if (bet.won) {
-          expect(bet.profit, closeTo(100 * (odds.decimal - 1), 1e-9));
+          expect(bet.profit, closeTo(50 * (odds.decimal - 1), 1e-9));
           return;
         }
       }

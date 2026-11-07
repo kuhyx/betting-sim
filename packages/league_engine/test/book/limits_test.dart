@@ -72,4 +72,66 @@ void main() {
       );
     });
   });
+
+  group('LimitPolicy.limitFor', () {
+    const policy = LimitPolicy();
+
+    test('nobody is flagged on fewer bets than the book needs to judge', () {
+      expect(policy.limitFor(50, bets: 19, averageClv: 0.10), 50);
+      expect(policy.restricts(bets: 19, averageClv: 0.10), isFalse);
+    });
+
+    test('a sharp record cuts the limit once there are enough bets', () {
+      expect(
+        policy.limitFor(50, bets: 20, averageClv: 0.05),
+        policy.limitForPlayer(50, 0.05),
+      );
+      expect(policy.limitFor(50, bets: 20, averageClv: 0.05), lessThan(50));
+      expect(policy.restricts(bets: 20, averageClv: 0.05), isTrue);
+    });
+
+    test('an ordinary record is left alone, however long', () {
+      expect(policy.limitFor(50, bets: 500, averageClv: -0.01), 50);
+      expect(policy.limitFor(50, bets: 500, averageClv: null), 50);
+      expect(policy.restricts(bets: 500, averageClv: 0.01), isFalse);
+    });
+  });
+
+  group('SeasonRunner limits', () {
+    test('a bettor who beats the close is cut to the restricted limit', () {
+      const policy = LimitPolicy();
+      final season = const SeasonRunner().run(
+        masterSeed: 11,
+        bettor: const OracleBettor(),
+      );
+      final bets = season.bets;
+      expect(bets.length, greaterThan(policy.restrictAfterBets + 10));
+      var clvSum = 0.0;
+      var restricted = 0;
+      for (final (i, b) in bets.indexed) {
+        final cap = policy.limitFor(
+          50,
+          bets: i,
+          averageClv: i == 0 ? null : clvSum / i,
+        );
+        if (cap < 50) {
+          restricted++;
+        }
+        clvSum += b.closingLineValue;
+      }
+      expect(restricted, greaterThan(0), reason: 'the oracle is never sharp?');
+      // The limit is only re-read between matchdays, so check the LAST
+      // matchday, which saw the whole season's record.
+      final last = season.matchdays.lastWhere((d) => d.bets.isNotEmpty);
+      for (final b in last.bets) {
+        expect(b.bet.stake, lessThan(50));
+      }
+    });
+
+    test('limits can be switched off', () {
+      final season = const SeasonRunner(limits: null)
+          .run(masterSeed: 11, bettor: const OracleBettor());
+      expect(season.bets.map((b) => b.bet.stake), contains(50));
+    });
+  });
 }

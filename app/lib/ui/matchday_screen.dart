@@ -149,6 +149,8 @@ class _MatchdayScreenState extends State<MatchdayScreen> {
               onStakeChanged: (v) => setState(() => _stakeSize = v),
               onSettle: _settle,
               hasBets: _game.slip.isNotEmpty,
+              maxStake: _game.stakeCap,
+              restricted: _game.restricted,
             ),
         ],
       ),

@@ -120,8 +120,9 @@ void main() {
           fatigue: 0.25,
           morale: -0.5,
           injuredCount: 1,
+          injuryDays: 7,
         ).toString(),
-        'LatentState(fatigue 0.25, morale -0.50, injured 1)',
+        'LatentState(fatigue 0.25, morale -0.50, injured 1 for 7d)',
       );
     });
   });

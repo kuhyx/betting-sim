@@ -61,6 +61,10 @@ class ScoringRates {
 }
 
 /// Computes both sides' scoring rates from strength, venue and hidden state.
+///
+/// The referee is deliberately absent: their bias reaches fouls and cards
+/// only (`drawDiscipline`), so it is a stat with one fingerprint rather than
+/// a hidden tilt on the scoreline.
 ScoringRates scoringRates(MatchContext ctx, ScoringConfig config) {
   // Attack is measured against the opponent's defence, so a strong attack
   // facing a strong defence produces an ordinary game rather than a rout.
@@ -76,8 +80,7 @@ ScoringRates scoringRates(MatchContext ctx, ScoringConfig config) {
       math.exp(homeEdge) *
       config.homeAdvantage *
       ctx.homeModifiers.attackMultiplier *
-      ctx.awayModifiers.defenceMultiplier *
-      ctx.refereeBias;
+      ctx.awayModifiers.defenceMultiplier;
 
   final away =
       config.baseRate *

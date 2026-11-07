@@ -116,7 +116,7 @@ tolerance. With a slot each it is asserted by **equality**.
 
 Pricing and playing draw from disjoint sub-seeds (`possession: 0` for
 pre-match weather and referee, `1` for the match, `2` for the book, `3` for the
-bettor), so no part can disturb another.
+bettor, `18` for injuries), so no part can disturb another.
 
 ## The life sim is a budget, not a dice roll
 

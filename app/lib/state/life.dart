@@ -14,6 +14,7 @@ class LifeSnapshot {
     required this.ending,
     required this.needs,
     required this.owned,
+    this.studyHours = 0,
   });
 
   /// Which day of the season it was.
@@ -33,6 +34,9 @@ class LifeSnapshot {
 
   /// What had been bought.
   final Set<String> owned;
+
+  /// Hours spent reading up since the last matchday.
+  final int studyHours;
 }
 
 /// How the week is actually going.
@@ -73,6 +77,12 @@ class LifeState {
   /// What you have bought.
   final Set<String> owned = <String>{};
 
+  /// Hours spent reading up since the last matchday.
+  ///
+  /// What the feed is paid for with. Watching does not count: a match shows
+  /// you one result, and the feed is everybody's opinion on the next ten.
+  int studyHours = 0;
+
   /// Today.
   GameDate get date => GameDate(dayOfSeason);
 
@@ -98,6 +108,11 @@ class LifeState {
   /// Lives [plan], and returns what it did to the money.
   double live(List<Activity> plan) {
     final day = liveDay(needs, plan, config.copyWith(hoursPerDay: hoursToday));
+    // Only the hours that fit in the day were lived.
+    studyHours += plan
+        .take(hoursToday)
+        .where((a) => a == Activity.study)
+        .length;
     needs = day.needs.copyWith(stress: day.needs.stress - comfort);
     lifeMoney += day.money;
     dayOfSeason++;
@@ -139,6 +154,7 @@ class LifeState {
     ending: ending,
     needs: needs,
     owned: Set<String>.of(owned),
+    studyHours: studyHours,
   );
 
   /// Puts a saved life back.
@@ -148,10 +164,14 @@ class LifeState {
     arrears = saved.arrears;
     ending = saved.ending;
     needs = saved.needs;
+    studyHours = saved.studyHours;
     owned
       ..clear()
       ..addAll(saved.owned);
   }
+
+  /// Starts the reading over: last week's homework was for last week's card.
+  void newWeek() => studyHours = 0;
 
   /// Ends the run because the season did.
   void finish() {

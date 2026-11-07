@@ -62,7 +62,7 @@ void main() {
       expect(total / league.fixtures.length, closeTo(2.6, 0.3));
     });
 
-    test('referee bias moves the home rate only', () {
+    test('referee bias reaches neither scoring rate', () {
       final neutral = scoringRates(
         _ctx(league.teams[0], league.teams[1]),
         config,
@@ -71,7 +71,7 @@ void main() {
         _ctx(league.teams[0], league.teams[1], refereeBias: 1.2),
         config,
       );
-      expect(biased.home, greaterThan(neutral.home));
+      expect(biased.home, neutral.home);
       expect(biased.away, neutral.away);
     });
 

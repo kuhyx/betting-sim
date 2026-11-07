@@ -29,6 +29,7 @@ export 'src/engine/results.dart';
 export 'src/engine/season_runner.dart';
 export 'src/latent/config.dart';
 export 'src/latent/decay.dart';
+export 'src/latent/injuries.dart';
 export 'src/latent/modifiers.dart';
 export 'src/latent/shocks.dart';
 export 'src/latent/state.dart';

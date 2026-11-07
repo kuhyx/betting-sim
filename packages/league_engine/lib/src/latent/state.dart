@@ -28,6 +28,7 @@ class LatentState {
     this.morale = 0,
     this.form = 0,
     this.injuredCount = 0,
+    this.injuryDays = 0,
   });
 
   /// Accumulated tiredness, 0 (fresh) to 1 (exhausted).
@@ -42,18 +43,26 @@ class LatentState {
   /// How many first-choice players are currently unavailable.
   final int injuredCount;
 
+  /// How many days the longest-standing open injury has lasted.
+  ///
+  /// One clock, not one per player: injuries come back one at a time, and
+  /// the clock restarts for the next one when somebody does.
+  final int injuryDays;
+
   /// Returns a copy with the given fields replaced.
   LatentState copyWith({
     double? fatigue,
     double? morale,
     double? form,
     int? injuredCount,
+    int? injuryDays,
   }) {
     return LatentState(
       fatigue: fatigue ?? this.fatigue,
       morale: morale ?? this.morale,
       form: form ?? this.form,
       injuredCount: injuredCount ?? this.injuredCount,
+      injuryDays: injuryDays ?? this.injuryDays,
     );
   }
 
@@ -61,7 +70,8 @@ class LatentState {
   String toString() {
     final f = fatigue.toStringAsFixed(2);
     final m = morale.toStringAsFixed(2);
-    return 'LatentState(fatigue $f, morale $m, injured $injuredCount)';
+    return 'LatentState(fatigue $f, morale $m, injured $injuredCount '
+        'for ${injuryDays}d)';
   }
 }
 

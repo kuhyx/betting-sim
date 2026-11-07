@@ -13,6 +13,8 @@ class LatentConfig {
     this.injuryBaseRate = 0.04,
     this.injuryFatigueScaling = 0.06,
     this.injuryRecoveryDays = 21,
+    this.maxInjured = 4,
+    this.daysPerMatchday = 7,
     this.moraleWinDelta = 0.22,
     this.moraleLossDelta = -0.26,
     this.moraleDrawDelta = -0.02,
@@ -46,6 +48,18 @@ class LatentConfig {
 
   /// How long an injury keeps a player out.
   final int injuryRecoveryDays;
+
+  /// The most first-choice players a club can have out at once.
+  ///
+  /// [design guess]: without a cap a fatigued club in a congested run could
+  /// stack injuries until `injuryAttackPenalty` drove its scoring to nothing.
+  final int maxInjured;
+
+  /// Calendar days between two matchdays, for the injury clock.
+  ///
+  /// A round is a week in the app's calendar, so a 21-day injury costs about
+  /// three matches.
+  final int daysPerMatchday;
 
   /// Morale gained by a win.
   final double moraleWinDelta;

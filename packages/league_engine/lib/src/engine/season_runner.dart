@@ -1,6 +1,7 @@
 import 'package:league_engine/src/bettors/protocol.dart';
 import 'package:league_engine/src/book/clv.dart';
 import 'package:league_engine/src/book/flow.dart';
+import 'package:league_engine/src/book/limits.dart';
 import 'package:league_engine/src/book/opening.dart';
 import 'package:league_engine/src/book/pricing.dart';
 import 'package:league_engine/src/engine/market_maker.dart';
@@ -8,6 +9,8 @@ import 'package:league_engine/src/engine/match_runner.dart';
 import 'package:league_engine/src/engine/results.dart';
 import 'package:league_engine/src/latent/config.dart';
 import 'package:league_engine/src/latent/decay.dart';
+import 'package:league_engine/src/latent/injuries.dart';
+import 'package:league_engine/src/latent/shocks.dart';
 import 'package:league_engine/src/latent/state.dart';
 import 'package:league_engine/src/league/generate.dart';
 import 'package:league_engine/src/media/desk.dart';
@@ -31,6 +34,7 @@ class SeasonRunner {
     this.midweekFixtureRate = 0.25,
     this.bookLatentAwareness = 0.7,
     this.publishTips = false,
+    this.limits = const LimitPolicy(),
   });
 
   /// The scoreline engine.
@@ -92,6 +96,13 @@ class SeasonRunner {
   /// the feed turn it on.
   final bool publishTips;
 
+  /// How the book cuts a bettor who keeps beating the close, or null for a
+  /// book that never notices.
+  ///
+  /// Judged once per matchday, on the bets settled before it, which is when
+  /// the app's book looks too: a round's bets settle together.
+  final LimitPolicy? limits;
+
   /// Runs one season and returns what [bettor] made of it.
   SeasonResult run({
     required int masterSeed,
@@ -103,6 +114,8 @@ class SeasonRunner {
     final league = generateLeague(masterSeed, leagueConfig);
     final runner = MatchRunner(model: model, latentConfig: latentConfig);
     final decay = LatentDecay(latentConfig);
+    final injuries = InjuryClock(latentConfig);
+    final shocks = LatentShocks(latentConfig);
     final maker = MarketMaker(
       model: model,
       bookmaker: bookmaker,
@@ -122,8 +135,12 @@ class SeasonRunner {
     final days = <MatchdayResult>[];
     var purse = bankroll;
 
+    var clvSum = 0.0;
+    var clvCount = 0;
+
     for (var day = 0; day < league.matchdays; day++) {
       final settled = <SettledBet>[];
+      final averageClv = clvCount == 0 ? null : clvSum / clvCount;
 
       for (final (index, fixture) in league.fixturesOn(day).indexed) {
         final path = SeedPath(
@@ -152,11 +169,24 @@ class SeasonRunner {
           path: path,
         );
 
+        final cap = limits?.limitFor(
+          markets.opening.limit,
+          bets: clvCount,
+          averageClv: averageClv,
+        );
+        final offered = cap == null || cap >= markets.opening.limit
+            ? markets.opening
+            : Market(
+                prices: markets.opening.prices,
+                limit: cap,
+                margin: markets.opening.margin,
+              );
+
         // The player bets the opening line, then the market sharpens.
         final betRng = Mix32Source(deriveSeed(path.child(possession: 3)));
         final bets = bettor.betsFor(
           BettingView(
-            market: markets.opening,
+            market: offered,
             context: ctx,
             observedHomeFatigue: _observe(homeState.fatigue, betRng),
             observedAwayFatigue: _observe(awayState.fatigue, betRng),
@@ -192,14 +222,17 @@ class SeasonRunner {
           );
         }
 
-        states[home.id] = decay.afterMatch(
-          homeState,
-          _outcomeFor(result, true),
-        );
-        states[away.id] = decay.afterMatch(
-          awayState,
-          _outcomeFor(result, false),
-        );
+        for (final (club, before, isHome) in [
+          (home.id, homeState, true),
+          (away.id, awayState, false),
+        ]) {
+          final after = decay.afterMatch(before, _outcomeFor(result, isHome));
+          final hurt = shocks.rollInjury(
+            after,
+            injuries.rngFor(day: path, clubId: club),
+          );
+          states[club] = injuries.afterMatch(after, hurt: hurt);
+        }
       }
 
       // Midweek fixtures: some clubs play again before the next matchday.
@@ -211,13 +244,17 @@ class SeasonRunner {
         ),
       );
       for (final team in league.teams) {
-        var next = decay.rest(states[team.id]!);
+        var next = injuries.rest(decay.rest(states[team.id]!));
         if (congestion.uniform01() < midweekFixtureRate) {
           next = decay.afterMatch(next, MatchOutcome.draw);
         }
         states[team.id] = next;
       }
       days.add(MatchdayResult(day: day, bets: settled));
+      for (final bet in settled) {
+        clvSum += bet.closingLineValue;
+        clvCount++;
+      }
     }
 
     return SeasonResult(matchdays: days, bettorName: bettor.name);

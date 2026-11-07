@@ -34,7 +34,8 @@ losing-night fraction into a measure of bet frequency.
 The **losing fraction** is the assertion, not the median. The median matchday
 ROI is by design a statistic that sits at zero, so testing its sign measures
 sampling noise — across 40/80/150/200 seasons it read +0.64%, +0.30%, −0.87%,
-−1.35% while the fraction held at 49.7%, 49.9%, 50.5%, 50.6%.
+−1.35% while the fraction held at 49.7%, 49.9%, 50.5%, 50.6%. With injuries
+and limits wired in, 200 seasons read −0.65% at 50.3%.
 
 **Gate 3a — the book charges exactly its margin.** Against a deliberately
 infallible book, a random bettor's ROI is `−v/(1+v)`.
@@ -49,8 +50,8 @@ random bettor loses money and the skilled bettor does better.
 
 Stated separately from 3a because a fallible book **necessarily** leaks value
 to every bettor, random ones included: its pricing errors do not cancel in
-payout terms. The live market returns a random bettor about −3.1% against the
-−4.76% a perfect book charges, and that 1.7pp gap *is* the book's fallibility —
+payout terms. The live market returns a random bettor about −1.4% against the
+−4.76% a perfect book charges, and that 3.4pp gap *is* the book's fallibility —
 the same fallibility that makes a studious player's edge possible at all.
 Demanding the exact identity here would demand an infallible book, and an
 infallible book makes the game unwinnable by construction.
@@ -120,7 +121,7 @@ PERFECT knowledge returns on the money you start with, by at least ten times.
 
 This is the gate that gives the bankroll a floor worth fearing. A season of
 rent is 12,160; the oracle's entire season of cheating on a 1,000 bankroll is
-worth about 196. So "can I just bet for a living" is answered by arithmetic
+worth about 174. So "can I just bet for a living" is answered by arithmetic
 rather than by opinion, and somebody who stops working is put out in week four.
 
 The life layer has no RNG and no bettor at all, which is why it can be asserted
@@ -133,8 +134,10 @@ is reported to answer **"is gate 1 reachable at all"** before anyone asks
 whether a given strategy reaches it. If perfect knowledge cannot clear the
 margin, the game is unwinnable and no tuning of the skilled bettor would help.
 
-It currently returns about +20% ROI with a 97.6% beat rate, so there is real
-headroom above the +1.5% the skilled bettor earns.
+It currently returns about +17% ROI with a 96.8% beat rate, so there is real
+headroom above the +1.7% the skilled bettor earns. Every runner keeps book
+limits on: after 20 bets, a mean CLV above 2% cuts the stake limit
+(`LimitPolicy`), which is what takes the oracle down from +20%.
 
 Worth knowing: against a book that prices the truth *exactly*, even the oracle
 declines every bet. Perfect knowledge is not an edge — an edge requires the
@@ -153,11 +156,11 @@ state the book already prices, and it is the balance point of the whole game:
 
 | awareness | random | skilled | oracle |
 | --------- | ------ | ------- | ------ |
-| 1.00 | −4.12% | −4.54% | +22.80% |
-| 0.90 | −4.17% | −2.15% | +22.70% |
-| 0.80 | −4.16% | +0.44% | +22.78% |
-| 0.70 | −4.07% | +3.21% | +23.03% |
-| 0.50 | −3.69% | +9.47% | +24.86% |
+| 1.00 | −1.48% | −6.62% | +17.28% |
+| 0.90 | −1.53% | −4.13% | +17.09% |
+| 0.80 | −1.50% | −1.39% | +17.05% |
+| 0.70 | −1.39% | +1.66% | +17.42% |
+| 0.50 | −0.94% | +8.61% | +19.26% |
 
 At 1.0 there is nothing to know. At 0.0 the market is so soft that a *random*
 bettor profits, which means the house edge has stopped existing. 0.7 is the

@@ -25,6 +25,23 @@ void main() {
   const model = DixonColesModel();
 
   group('simulate', () {
+    test('referee bias does not change the scoreline', () {
+      // Bias is a fouls-and-cards fingerprint only. If it reached goals the
+      // book, which prices it, and the match, which plays it, would have to
+      // agree on a factor that is meant to leave the result alone.
+      final lenient = _ctx(league.teams[0], league.teams[1], refereeBias: 0.8);
+      final strict = _ctx(league.teams[0], league.teams[1], refereeBias: 1.2);
+      expect(
+        model.outcomeProbabilities(strict).asList,
+        model.outcomeProbabilities(lenient).asList,
+      );
+      for (var seed = 0; seed < 50; seed++) {
+        final a = model.simulate(lenient, Mix32Source(seed));
+        final b = model.simulate(strict, Mix32Source(seed));
+        expect((b.homeScore, b.awayScore), (a.homeScore, a.awayScore));
+      }
+    });
+
     test('is reproducible from the same seed', () {
       final ctx = _ctx(league.teams[0], league.teams[1]);
       final a = model.simulate(ctx, Mix32Source(7));

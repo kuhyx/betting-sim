@@ -8,6 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:league_engine/league_engine.dart';
 
+/// A save a Monday into the season, with the week's reading already done.
+String _studied() {
+  final game = GameState()
+    ..liveDay(<Activity>[
+      for (var i = 0; i < 8; i++) Activity.sleep,
+      Activity.eat,
+      Activity.eat,
+      Activity.study,
+      Activity.study,
+    ]);
+  return game.toSave().encode();
+}
+
 Future<void> _mount(WidgetTester tester, {SaveStore? store}) async {
   tester.view
     ..physicalSize = const Size(1000, 1600)
@@ -18,7 +31,7 @@ Future<void> _mount(WidgetTester tester, {SaveStore? store}) async {
       theme: buildTheme(),
       home: HomeShell(
         showDebugTuning: false,
-        store: store ?? MemorySaveStore(),
+        store: store ?? MemorySaveStore(_studied()),
       ),
     ),
   );

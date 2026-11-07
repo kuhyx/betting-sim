@@ -8,10 +8,11 @@ import 'package:league_engine/league_engine.dart';
 
 /// The save format's version. Bumped whenever the shape below changes.
 ///
-/// 2 added the friend bets, 3 the life. Older saves would have been rejected
-/// anyway, by failing to parse -- but relying on that silently would make the
-/// number a lie, and the next change might not be so obliging.
-const int saveVersion = 3;
+/// 2 added the friend bets, 3 the life, 4 the week's reading. Older saves
+/// would have been rejected anyway, by failing to parse -- but relying on that
+/// silently would make the number a lie, and the next change might not be so
+/// obliging. 3 is still read: it only lacks the reading, which starts at zero.
+const int saveVersion = 4;
 
 /// A save: a seed, the knobs it was struck under, how far in it is, and every
 /// bet that has settled.
@@ -77,6 +78,7 @@ class SaveData {
       'fullness': life.needs.fullness,
       'stress': life.needs.stress,
       'owned': life.owned.toList(),
+      'studyHours': life.studyHours,
     },
   });
 
@@ -92,7 +94,8 @@ class SaveData {
     }
     try {
       final json = jsonDecode(raw) as Map<String, dynamic>;
-      if (json['version'] != saveVersion) {
+      final version = json['version'];
+      if (version != saveVersion && version != 3) {
         return null;
       }
       final tuning = json['tuning']! as Map<String, dynamic>;
@@ -127,6 +130,7 @@ class SaveData {
           owned: <String>{
             for (final id in life['owned']! as List<dynamic>) id! as String,
           },
+          studyHours: version == 3 ? 0 : life['studyHours']! as int,
         ),
       );
     } on Object {

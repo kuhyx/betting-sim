@@ -73,6 +73,7 @@ class GameState extends ChangeNotifier {
     latentConfig: tuning.latentConfig,
   );
   late final LatentDecay _decay = LatentDecay(tuning.latentConfig);
+  late final InjuryClock _injuries = InjuryClock(tuning.latentConfig);
   late final MarketMaker _maker = MarketMaker(
     model: _model,
     bookmaker: tuning.bookmaker,
@@ -122,6 +123,18 @@ class GameState extends ChangeNotifier {
   /// The player's money.
   double get bankroll => purse.bankroll;
 
+  /// Hours of reading up a week the feed costs.
+  ///
+  /// Two, which is exactly what the grafter control spends a day, so a life
+  /// that keeps a job can still afford the feed by Tuesday.
+  static const int feedHours = 2;
+
+  /// Whether this week's reading has bought the feed for the current card.
+  bool get feedUnlocked => life.studyHours >= feedHours;
+
+  /// How many more hours of reading the feed wants this week.
+  int get studyHoursNeeded => feedUnlocked ? 0 : feedHours - life.studyHours;
+
   /// Today's fixtures and prices.
   List<FixtureCard> get fixtures => List.unmodifiable(_fixtures);
 
@@ -148,12 +161,39 @@ class GameState extends ChangeNotifier {
   /// Total staked on the current slip.
   double get slipStake => _slip.values.fold(0, (sum, b) => sum + b.stake);
 
-  /// Adds or replaces a selection on the slip.
+  /// How the book cuts a player who keeps beating the close.
+  ///
+  /// The same policy `SeasonRunner` applies, so the gate measures the book
+  /// the player actually faces.
+  static const LimitPolicy limits = LimitPolicy();
+
+  /// Whether the book has started cutting this player's stakes.
+  ///
+  /// Read off the settled bets, so a save restores it by replaying them.
+  bool get restricted => limits.restricts(
+    bets: performance.bets,
+    averageClv: performance.averageClv,
+  );
+
+  /// The largest stake the book will take, in whole units.
+  double get stakeCap => limits
+      .limitFor(
+        tuning.bookmaker.openingLimit,
+        bets: performance.bets,
+        averageClv: performance.averageClv,
+      )
+      .floorToDouble();
+
+  /// Adds or replaces a selection on the slip, cut to [stakeCap].
   void stake(int fixtureIndex, Selection selection, double amount) {
     if (amount <= 0) {
       _slip.remove(fixtureIndex);
     } else {
-      _slip[fixtureIndex] = (selection: selection, stake: amount);
+      final cap = stakeCap;
+      _slip[fixtureIndex] = (
+        selection: selection,
+        stake: amount > cap ? cap : amount,
+      );
     }
     notifyListeners();
   }
@@ -214,6 +254,9 @@ class GameState extends ChangeNotifier {
       slip: _slip,
       runner: _runner,
       decay: _decay,
+      injuries: _injuries,
+      latentConfig: tuning.latentConfig,
+      day: SeedPath(master: masterSeed, season: 0, day: _day),
       records: records,
       states: _states,
       league: _league,
@@ -225,6 +268,7 @@ class GameState extends ChangeNotifier {
 
     _played = round.played;
     _slip.clear();
+    life.newWeek();
     records.nextDay();
     _day++;
     _openDay();

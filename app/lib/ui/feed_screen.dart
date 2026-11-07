@@ -48,7 +48,10 @@ class _FeedScreenState extends State<FeedScreen> {
               ledger: widget.game.records.ledger,
               tipsters: widget.game.records.tipsters,
             )
-          : _Posts(fixtures: fixtures),
+          // Over is over: no amount of reading opens a feed with no card.
+          : widget.game.feedUnlocked || widget.game.seasonOver
+          ? _Posts(fixtures: fixtures)
+          : _Locked(hours: widget.game.studyHoursNeeded),
     );
   }
 }
@@ -74,6 +77,32 @@ class _Posts extends StatelessWidget {
       padding: const EdgeInsets.all(Tokens.space4),
       itemCount: fixtures.length,
       itemBuilder: (_, i) => _FixtureThread(card: fixtures[i]),
+    );
+  }
+}
+
+/// The feed before this week's reading is done.
+///
+/// Names the hours rather than just saying no, so the cost is a decision
+/// made on the life tab and not a mystery.
+class _Locked extends StatelessWidget {
+  const new({required this.hours});
+
+  final int hours;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final unit = hours == 1 ? 'hour' : 'hours';
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(Tokens.space4),
+        child: Text(
+          'read up for $hours more $unit this week to follow the feed.',
+          textAlign: TextAlign.center,
+          style: text.bodySmall?.copyWith(color: Tokens.mutedOnDark),
+        ),
+      ),
     );
   }
 }

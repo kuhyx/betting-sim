@@ -46,7 +46,7 @@ void main() {
       expect(SaveData.decode(''), isNull);
       expect(SaveData.decode('not json at all'), isNull);
       expect(SaveData.decode('{"version":999}'), isNull);
-      expect(SaveData.decode('{"version":3}'), isNull);
+      expect(SaveData.decode('{"version":2}'), isNull);
       // A save from before friend bets existed. Rejected by version, not by
       // luck: it would also have failed to parse, but that is not a contract.
       expect(
